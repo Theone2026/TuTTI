@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Inicia sesión en Tutti Tienda para comenzar a comprar y vender productos.">
+    <title>Iniciar sesión | Tutti Tienda</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e0dfdf, #ffffff);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgb(0, 0, 0);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            font-size: 1rem;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fafafa;
+            transition: all 0.3s ease;
+        }
+
+        input[type="email"]:focus, input[type="password"]:focus {
+            border-color: #2E8B57;
+            box-shadow: 0 0 8px rgba(255, 111, 97, 0.5);
+            outline: none;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .toggle-password {
+            cursor: pointer;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: #777;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #000000, #000000);
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #000000, #bbbdbb);
+        }
+
+        .link {
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: 20px;
+        }
+
+        .link a {
+            color: #ff6f61;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 0.8rem;
+            margin-top: 30px;
+        }
+
+        .footer a {
+            color: #ff6f61;
+            text-decoration: none;
+        }
+
+        .recaptcha {
+            margin-top: 10px;
+        }
+
+        .privacy {
+            display: block;
+            margin-top: 10px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Iniciar sesión</h1>
+
+    <form id="login-form">
+        <div class="form-group">
+            <label for="email">Correo electrónico</label>
+            <input type="email" id="email" name="email" placeholder="Introduce tu correo electrónico" required>
+        </div>
+
+        <div class="form-group password-container">
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" name="password" placeholder="Introduce tu contraseña" required>
+            <span class="toggle-password" onclick="togglePassword()">👁️</span>
+        </div>
+
+        <button type="submit" class="btn">Iniciar sesión</button>
+    </form>
+
+    <p class="link">
+        ¿No tienes cuenta? <a href="registro.html">Crear cuenta</a>
+    </p>
+
+    <div class="footer">
+        <p>&copy; 2025 Tutti Tienda - Todos los derechos reservados</p>
+        <p>
+            <a href="#">Cómo cuidamos tu privacidad</a>
+        </p>
+        <p class="recaptcha">
+            <a href="#">Protegido por reCAPTCHA</a>
+        </p>
+        <p class="privacy">
+            <a href="#">Privacidad</a> | <a href="#">Condiciones</a>
+        </p>
+    </div>
+</div>
+
+<script>
+    // Función para mostrar/ocultar la contraseña
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const passwordIcon = document.querySelector('.toggle-password');
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            passwordIcon.textContent = '🙈'; // Cambiar a ícono de ocultar
+        } else {
+            passwordInput.type = 'password';
+            passwordIcon.textContent = '👁️'; // Cambiar a ícono de mostrar
+        }
+    }
+
+    // Función para manejar el inicio de sesión
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        try {
+            const response = await fetch('http://localhost:3000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                // Login exitoso
+                alert(data.message);  
+
+                // Guardar el estado de autenticación y nombre del usuario
+                localStorage.setItem('isAuthenticated', 'true');
+                localStorage.setItem('userEmail', email);  // Guardamos el correo del usuario
+
+                // Redirigir al perfil
+                window.location.href = 'perfil.html';  // Cambia a la página que desees
+            } else {
+                // Si la respuesta no es exitosa, mostrar el error
+                alert(data.message);
+            }
+        } catch (error) {
+            console.error('Error al autenticar el usuario:', error);
+            alert('Hubo un error al intentar iniciar sesión. Por favor, inténtalo de nuevo.');
+        }
+    });
+</script>
+
+</body>
+</html>
