@@ -1,0 +1,24 @@
+[
+    {
+        "_id": "1",
+        "name": "Smartphone X",
+        "description": "El último smartphone con pantalla OLED.",
+        "price": 799.99,
+        "category": "Celulares",
+        "image": "img/product1.jpg",
+        "userId": {
+            "fullName": "Juan Pérez"
+        }
+    },
+    {
+        "_id": "2",
+        "name": "Laptop Pro",
+        "description": "Laptop potente para profesionales.",
+        "price": 1299.99,
+        "category": "Computadoras",
+        "image": "img/product2.jpg",
+        "userId": {
+            "fullName": "Ana Gómez"
+        }
+    }
+]

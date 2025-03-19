@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos - Tutti Market</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- Contenedor principal -->
+    <div class="flex min-h-screen">
+        <!-- Menú lateral -->
+        <aside class="bg-white w-64 p-6 shadow-lg">
+            <div class="mb-8">
+                <img src="/img/logo.png" alt="Tutti Market Logo" class="w-24">
+            </div>
+            <nav class="space-y-2">
+                <a href="/dashboard.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                    <i class="fas fa-tachometer-alt mr-2"></i>
+                    Dashboard
+                </a>
+                <a href="/pedidos.html" class="flex items-center text-blue-600 bg-blue-50 p-2 rounded-lg">
+                    <i class="fas fa-shopping-cart mr-2"></i>
+                    Pedidos
+                </a>
+                <a href="/pagos.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                    <i class="fas fa-dollar-sign mr-2"></i>
+                    Pagos
+                </a>
+                <a href="/publicaciones.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                    <i class="fas fa-box-open mr-2"></i>
+                    Publicaciones
+                </a>
+                <a href="/mensajes.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                    <i class="fas fa-comments mr-2"></i>
+                    Mensajes
+                </a>
+                <a href="/configuracion.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                    <i class="fas fa-cog mr-2"></i>
+                    Configuración
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Contenido principal -->
+        <main class="flex-1 p-8">
+            <!-- Barra superior -->
+            <header class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold">Pedidos</h1>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <i class="fas fa-bell text-gray-700 cursor-pointer" id="notificationBell"></i>
+                        <span id="notificationCount" class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1 hidden">0</span>
+                        <div id="notificationDropdown" class="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg hidden">
+                            <ul id="notificationList" class="divide-y divide-gray-200">
+                                <!-- Notifications will be dynamically added here -->
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <img id="profile-picture" src="/img/default-avatar.png" alt="Avatar" class="w-8 h-8 rounded-full">
+                        <span id="username" class="ml-2 text-gray-700"></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Lista de pedidos -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-bold mb-4">Pedidos Recientes</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr>
+                                <th class="text-left py-2 hidden">ID</th> <!-- Ocultar la columna ID -->
+                                <th class="text-left py-2">Producto</th>
+                                <th class="text-left py-2">Comprador</th>
+                                <th class="text-left py-2">Fecha</th>
+                                <th class="text-left py-2">Estado</th>
+                                <th class="text-left py-2">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pedidos-list">
+                            <!-- Los pedidos se cargarán aquí dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Script para cargar pedidos y foto de perfil -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('Por favor, inicia sesión para ver tus pedidos.');
+                window.location.href = '/login.html';
+                return;
+            }
+
+            const socket = io("http://localhost:3000");
+            const userId = localStorage.getItem('userId');
+            if (userId) {
+                socket.emit("joinRoom", userId);
+            }
+
+            socket.on("notification", (notification) => {
+                console.log("Nueva notificación:", notification);
+                updateNotificationCount(1);
+                addNotificationToDropdown(notification);
+            });
+
+            async function updateNotificationCount(increment = 0) {
+                const notificationElement = document.getElementById('notificationCount');
+                let count = parseInt(notificationElement.textContent) || 0;
+                count += increment;
+                notificationElement.textContent = count > 0 ? count : '';
+                notificationElement.classList.toggle('hidden', count === 0);
+            }
+
+            async function markAllNotificationsAsRead() {
+                try {
+                    const response = await fetch('http://localhost:3000/api/notifications/mark-all-as-read', {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                        },
+                    });
+
+                    if (response.ok) {
+                        updateNotificationCount(-parseInt(document.getElementById('notificationCount').textContent || 0));
+                    }
+                } catch (error) {
+                    console.error("Error al marcar notificaciones como leídas:", error);
+                }
+            }
+
+            document.getElementById('notificationBell').addEventListener('click', function () {
+                const dropdown = document.getElementById('notificationDropdown');
+                dropdown.classList.toggle('hidden');
+                markAllNotificationsAsRead();
+            });
+
+            async function addNotificationToDropdown(notification) {
+                const notificationList = document.getElementById('notificationList');
+                const notificationItem = document.createElement('li');
+                notificationItem.classList.add('py-2', 'px-4', 'hover:bg-gray-100');
+                notificationItem.textContent = notification.message;
+                notificationList.prepend(notificationItem);
+            }
+
+            try {
+                // Obtener los datos del usuario
+                const userResponse = await fetch('http://localhost:3000/api/user', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (userResponse.status === 403) {
+                    alert('Tu sesión ha expirado o no tienes acceso. Por favor, inicia sesión nuevamente.');
+                    localStorage.removeItem('authToken'); // Eliminar token inválido
+                    window.location.href = '/login.html';
+                    return;
+                }
+
+                if (!userResponse.ok) {
+                    throw new Error(`Error ${userResponse.status}: ${userResponse.statusText}`);
+                }
+
+                const userData = await userResponse.json();
+                const profilePictureUrl = userData.profilePicture || '/img/default-avatar.png';
+                document.getElementById('profile-picture').src = profilePictureUrl;
+                document.getElementById('username').textContent = userData.fullName || 'Usuario Anonimo';
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Hubo un error al cargar los datos del usuario. Inténtalo de nuevo.');
+            }
+
+            try {
+                // Obtener los pedidos del usuario
+                const pedidosResponse = await fetch('http://localhost:3000/api/purchases', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!pedidosResponse.ok) {
+                    throw new Error(`Error ${pedidosResponse.status}: ${pedidosResponse.statusText}`);
+                }
+
+                const pedidos = await pedidosResponse.json();
+                const pedidosList = document.getElementById('pedidos-list');
+                pedidosList.innerHTML = '';
+
+                if (pedidos.length === 0) {
+                    pedidosList.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-gray-600">No tienes pedidos recientes.</td></tr>';
+                } else {
+                    pedidos.forEach(pedido => {
+                        const pedidoRow = `
+                            <tr class="hover:bg-gray-50">
+                                <td class="py-2 hidden">${pedido._id}</td> <!-- Ocultar el ID -->
+                                <td class="py-2">${pedido.productId.name}</td>
+                                <td class="py-2">${pedido.buyerId.fullName}</td>
+                                <td class="py-2">${new Date(pedido.datePurchased).toLocaleDateString()}</td>
+                                <td class="py-2">
+                                    <span class="bg-green-100 text-green-600 px-2 py-1 rounded-full text-sm">${pedido.status}</span>
+                                </td>
+                                <td class="py-2">
+                                    <button class="text-blue-600 hover:underline" onclick="viewOrderDetails('${pedido._id}', '${pedido.deliveryAddress}')">Ver Detalles</button>
+                                </td>
+                            </tr>
+                        `;
+                        pedidosList.innerHTML += pedidoRow;
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Hubo un error al cargar los datos. Inténtalo de nuevo.');
+            }
+        });
+
+        function viewOrderDetails(orderId, deliveryAddress) {
+            alert(`Detalles del Pedido:\nID: ${orderId}\nDirección de Entrega: ${deliveryAddress}`);
+        }
+    </script>
+</body>
+</html>

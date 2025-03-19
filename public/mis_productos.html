@@ -1,0 +1,52 @@
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-6">Mis Productos</h1>
+    <div id="product-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Los productos se cargarán aquí dinámicamente -->
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async function () {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            alert('Por favor, inicia sesión para ver tu perfil.');
+            window.location.href = '/login.html';
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:3000/get-products', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                const productList = document.getElementById('product-list');
+                productList.innerHTML = '';
+
+                data.products.forEach(product => {
+                    const productCard = `
+                        <div class="bg-white p-4 rounded-lg shadow-md">
+                            <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover mb-4">
+                            <h3 class="text-lg font-semibold">${product.name}</h3>
+                            <p class="text-gray-600">${product.description}</p>
+                            <p class="text-gray-800 font-bold">$${product.price}</p>
+                            <p class="text-sm text-gray-500">Stock: ${product.stock}</p>
+                            <p class="text-sm text-gray-500">Estado: ${product.condition}</p>
+                            ${product.freeShipping ? '<p class="text-sm text-green-500">Envío Gratis</p>' : ''}
+                        </div>
+                    `;
+                    productList.innerHTML += productCard;
+                });
+            } else {
+                alert(data.message || 'Error al cargar los productos');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Hubo un error al cargar los productos. Inténtalo de nuevo.');
+        }
+    });
+</script>

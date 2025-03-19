@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Tutti Market</title>
+    <script src="https://cdn.tailwindcss.com"></script>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-1 py-0">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="w-40">
+                    <img src="/img/logo.png" alt="Tutti Market Logo" class="w-full">
+                </div>
+                <!-- Navigation -->
+                <nav class="flex items-center space-x-6">
+                    <a href="/editar_perfil.html" class="flex items-center" id="accountLink">
+                        <i class="fas fa-user mr-2"></i>
+                        <span id="username">Iniciar Sesión</span>
+                    </a>
+                    <a href="/favoritos" class="flex items-center">
+                        <i class="fas fa-heart mr-2"></i>
+                        Favoritos
+                    </a>
+                    <a href="/carrito" class="flex items-center" id="cartLink">
+                        <i class="fas fa-shopping-cart mr-2"></i>
+                        Carrito (0)
+                    </a>
+                    <!-- Botón de Cerrar Sesión -->
+                    <a href="#" onclick="logout()" class="flex items-center" id="logoutButton">
+                        <i class="fas fa-sign-out-alt mr-2"></i>
+                        Cerrar Sesión
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dashboard -->
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-8 animate-fade-in">Mi Perfil</h1>
+
+        <!-- Información del Usuario -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8 animate-fade-in">
+            <h2 class="text-2xl font-bold mb-4">Mis Datos</h2>
+            <div id="user-info" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Los datos del usuario se cargarán aquí dinámicamente -->
+            </div>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-fade-in">
+            <!-- Total de Ventas -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold text-gray-700">Total de Ventas</h3>
+                <p class="text-2xl font-bold text-blue-600" id="total-sales">$0.00</p>
+            </div>
+            <!-- Total de Compras -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold text-gray-700">Total de Compras</h3>
+                <p class="text-2xl font-bold text-green-600" id="total-purchases">$0.00</p>
+            </div>
+            <!-- Productos en Venta -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold text-gray-700">Productos en Venta</h3>
+                <p class="text-2xl font-bold text-purple-600" id="total-products">0</p>
+            </div>
+        </div>
+
+        <!-- Productos en Venta -->
+        <div class="mb-8 animate-fade-in">
+            <h2 class="text-2xl font-bold mb-4">Mis Productos en Venta</h2>
+            <div id="product-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Los productos se cargarán aquí dinámicamente -->
+            </div>
+        </div>
+
+        <!-- Compras Realizadas -->
+        <div class="animate-fade-in">
+            <h2 class="text-2xl font-bold mb-4">Mis Compras Realizadas</h2>
+            <div id="purchase-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Las compras se cargarán aquí dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Script para cargar datos del perfil -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('Por favor, inicia sesión para ver tu perfil.');
+                window.location.href = '/login.html';
+                return;
+            }
+
+            try {
+                // Decodificar el token JWT para obtener el userId
+                const user = JSON.parse(atob(token.split('.')[1])); // Decodificar el payload del token
+                const userId = user.userId; // Asegúrate de que el token incluya un campo "userId"
+
+                if (!userId) {
+                    throw new Error('No se pudo obtener el userId del token.');
+                }
+
+                // Obtener datos del usuario
+                const userResponse = await fetch(`http://localhost:3000/api/user?userId=${userId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!userResponse.ok) {
+                    throw new Error(`Error ${userResponse.status}: ${userResponse.statusText}`);
+                }
+
+                const userData = await userResponse.json();
+                const userInfo = document.getElementById('user-info');
+                userInfo.innerHTML = `
+                    <div>
+                        <p class="text-gray-700"><strong>Nombre:</strong> ${userData.fullName}</p>
+                        <p class="text-gray-700"><strong>Correo:</strong> ${userData.email}</p>
+                        <p class="text-gray-700"><strong>Teléfono:</strong> ${userData.phoneNumber}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-700"><strong>Dirección:</strong> ${userData.address}</p>
+                        <p class="text-gray-700"><strong>Ciudad:</strong> ${userData.city}</p>
+                        <p class="text-gray-700"><strong>País:</strong> ${userData.country}</p>
+                    </div>
+                `;
+
+                // Mostrar el nombre del usuario en la barra superior
+                document.getElementById('username').textContent = userData.fullName;
+
+                // Obtener estadísticas del usuario
+                const statsResponse = await fetch(`http://localhost:3000/api/stats?userId=${userId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!statsResponse.ok) {
+                    throw new Error(`Error ${statsResponse.status}: ${statsResponse.statusText}`);
+                }
+
+                const statsData = await statsResponse.json();
+                console.log('Estadísticas:', statsData);
+
+                // Actualizar la interfaz con los datos
+                document.getElementById('total-sales').textContent = `$${statsData.totalSales.toFixed(2)}`;
+                document.getElementById('total-purchases').textContent = `$${statsData.totalPurchases.toFixed(2)}`;
+                document.getElementById('total-products').textContent = statsData.totalProducts;
+
+                // Obtener productos en venta del usuario logueado
+                const productsResponse = await fetch(`http://localhost:3000/api/products`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!productsResponse.ok) {
+                    throw new Error(`Error ${productsResponse.status}: ${productsResponse.statusText}`);
+                }
+
+                const productsData = await productsResponse.json();
+                const productList = document.getElementById('product-list');
+                productList.innerHTML = '';
+
+                if (productsData.length === 0) {
+                    productList.innerHTML = '<p class="text-gray-600">No tienes productos en venta.</p>';
+                } else {
+                    productsData.forEach(product => {
+                        const productCard = `
+                            <div class="bg-white p-4 rounded-lg shadow-md">
+                                <img src="${product.images[0]}" alt="${product.name}" class="w-full h-48 object-cover mb-4">
+                                <h3 class="text-lg font-semibold">${product.name}</h3>
+                                <p class="text-gray-600">${product.description}</p>
+                                <p class="text-gray-800 font-bold">$${product.price}</p>
+                                <p class="text-sm text-gray-500">Stock: ${product.stock}</p>
+                                <p class="text-sm text-gray-500">Estado: ${product.condition}</p>
+                                ${product.freeShipping ? '<p class="text-sm text-green-500">Envío Gratis</p>' : ''}
+                                <div class="flex space-x-2 mt-4">
+                                    <button onclick="editProduct('${product._id}')" class="bg-blue-500 text-white px-4 py-2 rounded-md">Editar</button>
+                                    <button onclick="deleteProduct('${product._id}')" class="bg-red-500 text-white px-4 py-2 rounded-md">Eliminar</button>
+                                </div>
+                            </div>
+                        `;
+                        productList.innerHTML += productCard;
+                    });
+                }
+
+                // Obtener compras realizadas
+                const purchasesResponse = await fetch(`http://localhost:3000/api/purchases?userId=${userId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!purchasesResponse.ok) {
+                    throw new Error(`Error ${purchasesResponse.status}: ${purchasesResponse.statusText}`);
+                }
+
+                const purchasesData = await purchasesResponse.json();
+                const purchaseList = document.getElementById('purchase-list');
+                purchaseList.innerHTML = '';
+
+                if (purchasesData.length === 0) {
+                    purchaseList.innerHTML = '<p class="text-gray-600">No has realizado ninguna compra.</p>';
+                } else {
+                    purchasesData.forEach(purchase => {
+                        const purchaseCard = `
+                            <div class="bg-white p-4 rounded-lg shadow-md">
+                                <h3 class="text-lg font-semibold">${purchase.productName}</h3>
+                                <p class="text-gray-600">Comprado el: ${new Date(purchase.date).toLocaleDateString()}</p>
+                                <p class="text-gray-800 font-bold">$${purchase.price}</p>
+                                <p class="text-sm text-gray-500">Vendedor: ${purchase.sellerName}</p>
+                            </div>
+                        `;
+                        purchaseList.innerHTML += purchaseCard;
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Hubo un error al cargar los datos del perfil. Inténtalo de nuevo.');
+            }
+        });
+
+        // Función para editar un producto
+        function editProduct(productId) {
+            window.location.href = `/editar_producto.html?id=${productId}`; // Redirigir a la página de edición
+        }
+
+        // Función para eliminar un producto
+        async function deleteProduct(productId) {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('Por favor, inicia sesión para realizar esta acción.');
+                window.location.href = '/login.html';
+                return;
+            }
+
+            if (!confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/products/${productId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                }
+
+                alert('Producto eliminado exitosamente.');
+                window.location.reload(); // Recargar la página para actualizar la lista de productos
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Hubo un error al eliminar el producto. Inténtalo de nuevo.');
+            }
+        }
+
+        // Función para cerrar sesión
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userLoggedIn');
+            localStorage.removeItem('userName');
+            window.location.href = '/index.html'; // Redirigir al inicio después de cerrar sesión
+        }
+    </script>
+</body>
+</html>

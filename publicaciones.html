@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicaciones - Tutti Market</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <!-- Contenedor principal -->
+    <div class="flex min-h-screen">
+        <!-- Menú lateral -->
+        <aside class="bg-white w-64 p-6 shadow-lg">
+            <div class="mb-8">
+                <img src="/img/logo.png" alt="Tutti Market Logo" class="w-24">
+            </div>
+            <nav class="space-y-2">
+                <a href="/perfil.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                    <i class="fas fa-tachometer-alt mr-2"></i>
+                    Dashboard
+                </a>
+                <a href="/pedidos.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                    <i class="fas fa-shopping-cart mr-2"></i>
+                    Pedidos
+                </a>
+                <a href="/pagos.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                    <i class="fas fa-dollar-sign mr-2"></i>
+                    Pagos
+                </a>
+                <a href="/publicaciones.html" class="flex items-center text-blue-600 bg-blue-50 p-2 rounded-lg">
+                    <i class="fas fa-box-open mr-2"></i>
+                    Publicaciones
+                </a>
+                <a href="/mensajes.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                    <i class="fas fa-comments mr-2"></i>
+                    Mensajes
+                </a>
+                <a href="/configuracion.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                    <i class="fas fa-cog mr-2"></i>
+                    Configuración
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Contenido principal -->
+        <main class="flex-1 p-8">
+            <!-- Barra superior -->
+            <header class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold">Publicaciones</h1>
+                <div class="flex items-center space-x-4">
+                    <a href="nueva-publicacion.html" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+                        <i class="fas fa-plus mr-2"></i>
+                        Nueva Publicación
+                    </a>
+                    <div class="relative">
+                        <i class="fas fa-bell text-gray-700 cursor-pointer"></i>
+                        <span id="notificationCount" class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1 hidden">0</span>
+                    </div>
+                    <div class="flex items-center">
+                        <img id="profile-picture" src="/img/default-avatar.png" alt="Avatar" class="w-8 h-8 rounded-full">
+                        <span id="username" class="ml-2 text-gray-700">Usuario Anonimo</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Lista de publicaciones -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-bold mb-4">Mis Productos en Venta</h2>
+                <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Los productos se cargarán aquí dinámicamente -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Script para cargar publicaciones -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('Por favor, inicia sesión para ver tus publicaciones.');
+                window.location.href = '/login.html';
+                return;
+            }
+
+            try {
+                // Obtener los datos del usuario
+                const userResponse = await fetch('http://localhost:3000/api/user', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!userResponse.ok) {
+                    throw new Error(`Error ${userResponse.status}: ${userResponse.statusText}`);
+                }
+
+                const userData = await userResponse.json();
+                const profilePictureUrl = userData.profilePicture || '/img/default-avatar.png';
+                document.getElementById('profile-picture').src = profilePictureUrl;
+                document.getElementById('username').textContent = userData.fullName || 'Usuario Anonimo';
+
+                // Obtener los productos del usuario
+                const response = await fetch('http://localhost:3000/api/products', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                }
+
+                const products = await response.json();
+                const productList = document.getElementById('product-list');
+                productList.innerHTML = '';
+
+                if (products.length === 0) {
+                    productList.innerHTML = '<p class="text-gray-600">No tienes productos en venta.</p>';
+                } else {
+                    products.forEach(product => {
+                        if (product.status === "archived" || product.status === "out_of_stock") {
+                            return;
+                        }
+                        const productCard = `
+                            <div class="bg-white p-4 rounded-lg shadow-md flex flex-col cursor-pointer" onclick="window.location.href='edit-producto.html?id=${product._id}'">
+                                <img src="${product.images[0]}" alt="${product.name}" class="w-full h-48 object-cover rounded-lg mb-4">
+                                <h3 class="text-lg font-semibold">${product.name}</h3>
+                                <p class="text-gray-600 text-sm mb-2">${product.description}</p>
+                                <p class="text-gray-800 font-bold">${product.currency === 'USD' ? 'US$' : '$'}${product.price}</p>
+                                <p class="text-sm text-gray-500">Stock: ${product.stock ?? 'No disponible'}</p>
+                                <p class="text-sm text-gray-500">Estado: ${product.condition || 'No especificado'}</p>
+                                ${product.freeShipping ? '<p class="text-sm text-green-500">Envío Gratis</p>' : ''}
+                            </div>
+                        `;
+                        productList.innerHTML += productCard;
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Hubo un error al cargar las publicaciones. Inténtalo de nuevo.');
+            }
+        });
+
+        async function loadNotifications() {
+            const token = localStorage.getItem('authToken');
+            if (!token) return;
+
+            try {
+                const response = await fetch('http://localhost:3000/api/notifications', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) throw new Error('Error al cargar las notificaciones.');
+
+                const notifications = await response.json();
+                const notificationCount = notifications.length;
+                const notificationElement = document.getElementById('notificationCount');
+
+                if (notificationCount > 0) {
+                    notificationElement.textContent = notificationCount;
+                    notificationElement.classList.remove('hidden');
+                } else {
+                    notificationElement.classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('Error al cargar las notificaciones:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadNotifications);
+
+        function contactBuyer(buyerId, productId) {
+            window.location.href = `/chat-comprador.html?buyerId=${buyerId}&productId=${productId}`;
+        }
+    </script>
+</body>
+</html>

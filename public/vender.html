@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicar Producto - Tutti Market</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .image-upload-box {
+            width: 100%;
+            height: 150px;
+            border: 2px dashed #ccc;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .image-upload-box:hover {
+            border-color: #667eea;
+            background-color: #f7fafc;
+        }
+        .uploaded-image {
+            max-width: 100%;
+            max-height: 150px;
+            border-radius: 0.5rem;
+            margin: 5px;
+            object-fit: cover;
+        }
+        .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: rgba(255, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Barra de Navegación -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-2">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="w-24">
+                    <img src="img/logo.png" alt="Tutti Market Logo" class="w-full">
+                </div>
+                <!-- Search Bar -->
+                <div class="flex-1 mx-4">
+                    <div class="relative">
+                        <input type="text"
+                               id="searchInput"
+                               placeholder="¿Qué estás buscando?"
+                               class="w-full px-3 py-1 border border-gray-300 rounded-full focus:outline-none focus:border-primary">
+                        <button id="searchButton" class="absolute right-2 top-1/2 transform -translate-y-1/2">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- Navigation -->
+                <nav class="flex items-center space-x-4">
+                    <a href="/cuenta" class="flex items-center" id="accountLink">
+                        <i class="fas fa-user mr-1"></i>
+                        <span id="username">Iniciar Sesión</span>
+                    </a>
+                    <a href="/favoritos" class="flex items-center">
+                        <i class="fas fa-heart mr-1"></i>
+                        Favoritos
+                    </a>
+                    <a href="/carrito" class="flex items-center" id="cartLink">
+                        <i class="fas fa-shopping-cart mr-1"></i>
+                        Carrito (0)
+                    </a>
+                    <!-- Botón de Vender -->
+                    <a href="/vender.html" class="flex items-center">
+                        <i class="fas fa-tag mr-1"></i>
+                        Vender
+                    </a>
+                    <!-- Botón de Cerrar Sesión -->
+                    <a href="#" onclick="logout()" class="flex items-center hidden" id="logoutButton">
+                        <i class="fas fa-sign-out-alt mr-1"></i>
+                        Cerrar Sesión
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenedor Principal -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Galería de Imágenes -->
+            <div>
+                <div class="form-container">
+                    <h2 class="text-xl font-bold mb-4">Galería de Imágenes</h2>
+                    <!-- Foto de Portada -->
+                    <div class="mb-4">
+                        <label class="font-bold">Foto de Portada (Obligatoria)</label>
+                        <div class="image-upload-box" onclick="document.getElementById('coverImageInput').click()">
+                            <input type="file" id="coverImageInput" name="coverImage" accept="image/*" style="display: none;" onchange="handleImageUpload(event, 'cover')">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <div id="coverImagePreview" class="mt-2"></div>
+                    </div>
+                    <!-- Otras Fotos -->
+                    <div>
+                        <label class="font-bold">Otras Fotos (Máximo 4)</label>
+                        <div class="grid grid-cols-2 gap-4" id="otherImagesContainer">
+                            <div class="image-upload-box" onclick="document.getElementById('otherImageInput1').click()">
+                                <input type="file" id="otherImageInput1" name="otherImage1" accept="image/*" style="display: none;" onchange="handleImageUpload(event, 'other1')">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                            <div class="image-upload-box" onclick="document.getElementById('otherImageInput2').click()">
+                                <input type="file" id="otherImageInput2" name="otherImage2" accept="image/*" style="display: none;" onchange="handleImageUpload(event, 'other2')">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                            <div class="image-upload-box" onclick="document.getElementById('otherImageInput3').click()">
+                                <input type="file" id="otherImageInput3" name="otherImage3" accept="image/*" style="display: none;" onchange="handleImageUpload(event, 'other3')">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                            <div class="image-upload-box" onclick="document.getElementById('otherImageInput4').click()">
+                                <input type="file" id="otherImageInput4" name="otherImage4" accept="image/*" style="display: none;" onchange="handleImageUpload(event, 'other4')">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                        </div>
+                        <div id="otherImagesPreview" class="mt-2 flex flex-wrap gap-2"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario -->
+            <div>
+                <div class="form-container">
+                    <h1 class="text-2xl font-bold mb-6 text-center">Publicar Producto</h1>
+                    <!-- Mensaje de comisión -->
+                    <div id="commissionMessage" class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 hidden">
+                        <p>¡Atención! A partir de tu segunda publicación, se cobrará una comisión del 10% sobre el precio del producto.</p>
+                    </div>
+                    <form id="product-form" enctype="multipart/form-data">
+                        <!-- Nombre del Producto -->
+                        <div class="mb-4">
+                            <label for="product-name" class="block font-bold mb-2">Nombre del Producto</label>
+                            <input type="text" id="product-name" name="productName" placeholder="Ej: iPhone 15 Pro" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary" required>
+                        </div>
+                        <!-- Categoría -->
+                        <div class="mb-4">
+                            <label for="product-category" class="block font-bold mb-2">Categoría</label>
+                            <select id="product-category" name="productCategory" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary" required>
+                                <option value="">Selecciona una categoría</option>
+                                <option value="Celulares">Celulares</option>
+                                <option value="Computadoras">Computadoras</option>
+                                <option value="Audio">Audio</option>
+                                <option value="Tablets">Tablets</option>
+                                <option value="Accesorios">Accesorios</option>
+                                <option value="Smart TV">Smart TV</option>
+                                <option value="Gaming">Gaming</option>
+                            </select>
+                        </div>
+                        <!-- Precio -->
+                        <div class="mb-4">
+                            <label class="block font-bold mb-2">Precio</label>
+                            <div class="flex gap-4">
+                                <select id="currency" name="currency" class="w-1/2 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary" required>
+                                    <option value="">Moneda</option>
+                                    <option value="UYU">UYU</option>
+                                    <option value="USD">$US</option>
+                                </select>
+                                <input type="number" id="product-price" name="productPrice" placeholder="Precio" class="w-1/2 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary" required>
+                            </div>
+                        </div>
+                        <!-- Descripción -->
+                        <div class="mb-4">
+                            <label for="product-description" class="block font-bold mb-2">Descripción</label>
+                            <textarea id="product-description" name="productDescription" rows="4" placeholder="Describe tu producto..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary" required></textarea>
+                        </div>
+                        <!-- Stock -->
+                        <div class="mb-4">
+                            <label for="product-stock" class="block font-bold mb-2">Stock Disponible</label>
+                            <input type="number" id="product-stock" name="productStock" placeholder="Ej: 10" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary" required>
+                        </div>
+                        <!-- Estado del Producto -->
+                        <div class="mb-4">
+                            <label for="product-condition" class="block font-bold mb-2">Estado del Producto</label>
+                            <select id="product-condition" name="productCondition" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary" required>
+                                <option value="">Selecciona el estado</option>
+                                <option value="Nuevo">Nuevo</option>
+                                <option value="Usado">Usado</option>
+                                <option value="Reacondicionado">Reacondicionado</option>
+                            </select>
+                        </div>
+                        <!-- Envío Gratis -->
+                        <div class="mb-4">
+                            <label for="free-shipping" class="flex items-center">
+                                <input type="checkbox" id="free-shipping" name="freeShipping" class="mr-2">
+                                Envío Gratis
+                            </label>
+                        </div>
+                        <!-- Botón de envío -->
+                        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-cart-plus mr-2"></i> Publicar Producto
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Función para manejar la subida de imágenes
+        function handleImageUpload(event, type) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                if (type === 'cover') {
+                    const coverPreview = document.getElementById('coverImagePreview');
+                    coverPreview.innerHTML = `<img src="${e.target.result}" alt="Foto de Portada" class="uploaded-image">`;
+                } else {
+                    const otherPreview = document.getElementById('otherImagesPreview');
+                    const imgContainer = document.createElement('div');
+                    imgContainer.className = 'uploaded-image-container';
+                    imgContainer.innerHTML = `
+                        <img src="${e.target.result}" alt="Foto ${type}" class="uploaded-image">
+                        <button class="delete-btn" onclick="removeImage(this)">×</button>
+                    `;
+                    otherPreview.appendChild(imgContainer);
+                }
+            };
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Función para eliminar imágenes
+        function removeImage(button) {
+            const imgContainer = button.parentElement;
+            imgContainer.remove();
+        }
+
+        // Función para verificar si es la primera publicación
+        async function checkFirstPublication() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('Por favor, inicia sesión para publicar un producto.');
+                window.location.href = '/login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/api/user/products', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error al verificar publicaciones.');
+                }
+
+                const products = await response.json();
+                const isFirstPublication = products.length === 0;
+
+                // Mostrar mensaje de comisión si no es la primera publicación
+                const commissionMessage = document.getElementById('commissionMessage');
+                if (!isFirstPublication) {
+                    commissionMessage.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Hubo un error al verificar tus publicaciones.');
+            }
+        }
+
+        // Manejar el envío del formulario
+        document.getElementById('product-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('Por favor, inicia sesión para publicar un producto.');
+                window.location.href = '/login.html';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('productName', document.getElementById('product-name').value);
+            formData.append('productCategory', document.getElementById('product-category').value);
+            formData.append('currency', document.getElementById('currency').value);
+            formData.append('productPrice', document.getElementById('product-price').value);
+            formData.append('productDescription', document.getElementById('product-description').value);
+            formData.append('productStock', document.getElementById('product-stock').value);
+            formData.append('productCondition', document.getElementById('product-condition').value);
+            formData.append('freeShipping', document.getElementById('free-shipping').checked);
+
+            // Adjuntar la foto de portada
+            const coverImageInput = document.getElementById('coverImageInput');
+            if (coverImageInput.files.length > 0) {
+                formData.append('images', coverImageInput.files[0]);
+            }
+
+            // Adjuntar otras fotos
+            for (let i = 1; i <= 4; i++) {
+                const otherImageInput = document.getElementById(`otherImageInput${i}`);
+                if (otherImageInput && otherImageInput.files.length > 0) {
+                    formData.append('images', otherImageInput.files[0]);
+                }
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/submit-product', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Error del servidor:', errorText);
+                    alert(`Error: ${errorText}`);
+                    return;
+                }
+
+                const data = await response.json();
+                alert('Producto publicado exitosamente');
+                window.location.href = '/perfil.html';
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Hubo un error al publicar el producto. Inténtalo de nuevo.');
+            }
+        });
+
+        // Verificar si es la primera publicación al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            checkFirstPublication();
+        });
+    </script>
+</body>
+</html>

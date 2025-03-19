@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprar Producto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .product-gallery img { width: 100%; border-radius: 5px; }
+        .thumbnails img { width: 80px; cursor: pointer; transition: 0.3s; }
+        .thumbnails img:hover { opacity: 0.7; }
+        .price { font-size: 2rem; color: #dc3545; font-weight: bold; }
+        .seller-info { background: #f8f9fa; padding: 15px; border-radius: 5px; margin-top: 20px; }
+        .seller-rating { color: #ffc107; }
+        .comments-section { margin-top: 40px; }
+        .comment { border-bottom: 1px solid #eee; padding: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="product-gallery">
+                    <img id="mainImage" class="img-fluid" src="https://via.placeholder.com/600x400" alt="Producto">
+                    <div class="thumbnails d-flex gap-2 mt-3" id="thumbnail-container"></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h1 id="productName">Nombre del Producto</h1>
+                <div class="price" id="productPrice">US$ 1,200</div>
+                <p id="productCondition">Estado: Nuevo</p>
+                <p id="productDescription">Descripción del producto.</p>
+                <button class="btn btn-danger btn-lg w-100 mt-3">
+                    <i class="fas fa-cart-plus"></i> Agregar al Carrito
+                </button>
+
+                <!-- Información del vendedor -->
+                <div class="seller-info mt-4">
+                    <h5>Información del vendedor</h5>
+                    <p><strong>Nombre:</strong> <span id="sellerName">Vendedor Ejemplo</span></p>
+                    <p><strong>Reputación:</strong> <span class="seller-rating">★★★★☆</span> (4.5/5)</p>
+                    <p><strong>Ventas realizadas:</strong> <span id="sellerSales">120</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de comentarios -->
+        <div class="comments-section mt-5">
+            <h3>Comentarios y calificaciones</h3>
+            <div id="commentsContainer">
+                <!-- Ejemplo de comentario -->
+                <div class="comment">
+                    <p><strong>Usuario1:</strong> Excelente producto, llegó en perfecto estado.</p>
+                    <small class="text-muted">Publicado el 10/10/2023</small>
+                </div>
+                <div class="comment">
+                    <p><strong>Usuario2:</strong> Muy buena atención por parte del vendedor.</p>
+                    <small class="text-muted">Publicado el 09/10/2023</small>
+                </div>
+            </div>
+            <form class="mt-3">
+                <div class="mb-3">
+                    <textarea class="form-control" placeholder="Escribe tu comentario..." rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Enviar comentario</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        async function loadProduct() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get("id");
+
+            if (!productId) {
+                alert("Producto no encontrado.");
+                window.location.href = "index.html";
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/product/${productId}`);
+                const product = await response.json();
+
+                // Actualizar detalles del producto
+                document.getElementById("productName").textContent = product.name;
+                document.getElementById("productPrice").textContent = formatPrice(product.price, product.currency);
+                document.getElementById("productCondition").textContent = `Estado: ${product.condition}`;
+                document.getElementById("productDescription").textContent = product.description;
+
+                // Actualizar imágenes
+                const mainImage = document.getElementById("mainImage");
+                mainImage.src = product.images[0] || "https://via.placeholder.com/600x400";
+
+                const thumbnailContainer = document.getElementById("thumbnail-container");
+                thumbnailContainer.innerHTML = product.images
+                    .map((img) => `<img src="${img}" class="img-thumbnail" onclick="changeImage('${img}')">`)
+                    .join("");
+
+                // Actualizar información del vendedor
+                document.getElementById("sellerName").textContent = product.userId?.fullName || "Anónimo";
+                document.getElementById("sellerSales").textContent = product.userId?.sales || 0;
+
+            } catch (error) {
+                console.error("Error al cargar el producto:", error);
+            }
+        }
+
+        // Función para formatear el precio
+        function formatPrice(price, currency = "USD") {
+            const numericPrice = parseFloat(price);
+            const formattedPrice = new Intl.NumberFormat('en-US', {
+                style: 'decimal',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(numericPrice);
+            return `US$ ${formattedPrice}`;
+        }
+
+        // Cambiar imagen principal
+        function changeImage(src) {
+            document.getElementById("mainImage").src = src;
+        }
+
+        // Cargar el producto al iniciar la página
+        document.addEventListener("DOMContentLoaded", loadProduct);
+    </script>
+</body>
+</html>

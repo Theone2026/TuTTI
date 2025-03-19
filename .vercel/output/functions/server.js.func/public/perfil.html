@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Tutti Tienda</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Verificar si el usuario está autenticado
+        if (!localStorage.getItem('isAuthenticated')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+</head>
+
+<body class="bg-gray-50 text-gray-900 font-sans">
+
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
+            <h1 class="text-2xl font-bold text-gray-800">Tutti Tienda - Dashboard</h1>
+            <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition">
+                Cerrar Sesión
+            </button>
+        </div>
+    </header>
+
+    <!-- Layout -->
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-gray-800 text-white h-screen sticky top-0 p-6 space-y-6">
+            <nav>
+                <a href="#" class="block py-2 px-4 bg-gray-700 rounded-md hover:bg-gray-600 transition">Inicio</a>
+                <a href="#perfil" class="block py-2 px-4 hover:bg-gray-700 rounded-md transition">Mi Perfil</a>
+                <a href="#productos" class="block py-2 px-4 hover:bg-gray-700 rounded-md transition">Productos</a>
+                <a href="#pedidos" class="block py-2 px-4 hover:bg-gray-700 rounded-md transition">Pedidos</a>
+                <a href="#estadisticas" class="block py-2 px-4 hover:bg-gray-700 rounded-md transition">Estadísticas</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 space-y-12 bg-gray-50">
+            <!-- Mi Perfil -->
+            <section id="perfil" class="bg-white shadow-md rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-700 mb-4">Mi Perfil</h2>
+                <div id="user-info">
+                    <p class="text-gray-600">Correo electrónico: <span id="user-email">Loading...</span></p>
+                    <button onclick="editProfile()" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Editar Perfil</button>
+                </div>
+            </section>
+
+            <!-- Productos -->
+            <section id="productos" class="bg-white shadow-md rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-700 mb-4">Mis Productos</h2>
+                <button onclick="addProduct()" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition">Añadir Producto</button>
+            </section>
+
+            <!-- Pedidos -->
+            <section id="pedidos" class="bg-white shadow-md rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-700 mb-4">Pedidos</h2>
+                <p>Visualiza y gestiona los pedidos de tus productos.</p>
+            </section>
+
+            <!-- Estadísticas -->
+            <section id="estadisticas" class="bg-white shadow-md rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-700 mb-4">Estadísticas</h2>
+                <p>Analiza las estadísticas de tu tienda y productos.</p>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Función para mostrar el email del usuario
+        document.getElementById('user-email').textContent = localStorage.getItem('userEmail');
+
+        // Función de Cerrar Sesión
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('isAuthenticated');
+            localStorage.removeItem('userEmail');
+            window.location.href = 'login.html';
+        }
+
+        // Función para editar perfil
+        function editProfile() {
+            alert('Aquí puedes editar tu perfil.');
+        }
+
+        // Función para añadir productos
+        function addProduct() {
+            alert('Aquí puedes añadir productos.');
+        }
+    </script>
+
+</body>
+
+</html>

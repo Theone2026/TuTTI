@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TuTTi - Tu Tienda Online</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-2">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="w-24">
+                    <img src="img/logo.png" alt="Tutti Market Logo" class="w-full">
+                </div>
+                <!-- Search Bar -->
+                <div class="flex-1 mx-4">
+                    <div class="relative">
+                        <input type="text"
+                               id="searchInput"
+                               placeholder="¿Qué estás buscando?"
+                               class="w-full px-3 py-1 border border-gray-300 rounded-full focus:outline-none focus:border-primary">
+                        <button id="searchButton" class="absolute right-2 top-1/2 transform -translate-y-1/2">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- Navigation -->
+                <nav class="flex items-center space-x-4">
+                    <a href="/cuenta" class="flex items-center" id="accountLink">
+                        <i class="fas fa-user mr-1"></i>
+                        <span id="username">¡Hola Usuario Anonimo!</span>
+                    </a>
+                    <a href="/favoritos" class="flex items-center">
+                        <i class="fas fa-heart mr-1"></i>
+                        Favoritos
+                    </a>
+                    <a href="/carrito" class="flex items-center" id="cartLink">
+                        <i class="fas fa-shopping-cart mr-1"></i>
+                        Carrito (0)
+                    </a>
+                    <!-- Botón de Vender -->
+                    <a href="/vender.html" class="flex items-center">
+                        <i class="fas fa-tag mr-1"></i>
+                        Vender
+                    </a>
+                    <!-- Botón de Cerrar Sesión (solo visible cuando el usuario está loggeado) -->
+                    <a href="#" onclick="logout()" class="flex items-center hidden" id="logoutButton">
+                        <i class="fas fa-sign-out-alt mr-1"></i>
+                        Cerrar Sesión
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Categories Bar -->
+    <div class="bg-white border-b">
+        <div class="container mx-auto px-4 py-2">
+            <div class="flex space-x-3 overflow-x-auto">
+                <button data-category="Celulares" class="category-pill whitespace-nowrap">Celulares</button>
+                <button data-category="Computadoras" class="category-pill whitespace-nowrap">Computadoras</button>
+                <button data-category="Audio" class="category-pill whitespace-nowrap">Audio</button>
+                <button data-category="Tablets" class="category-pill whitespace-nowrap">Tablets</button>
+                <button data-category="Accesorios" class="category-pill whitespace-nowrap">Accesorios</button>
+                <button data-category="Smart TV" class="category-pill whitespace-nowrap">Smart TV</button>
+                <button data-category="Gaming" class="category-pill whitespace-nowrap">Gaming</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Banner -->
+    <div class="container mx-auto px-4 py-6">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+            <!-- Carrusel de Ofertas (Ocupa 3 columnas en pantallas grandes) -->
+            <div class="lg:col-span-3 rounded-lg overflow-hidden relative">
+                <!-- Imágenes del Carrusel -->
+                <div class="carousel">
+                    <!-- Las ofertas se cargarán dinámicamente aquí -->
+                </div>
+                <!-- Flechas de Navegación -->
+                <button class="carousel-prev absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-75 p-1 rounded-full shadow-md">
+                    <i class="fas fa-chevron-left text-gray-800"></i>
+                </button>
+                <button class="carousel-next absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-75 p-1 rounded-full shadow-md">
+                    <i class="fas fa-chevron-right text-gray-800"></i>
+                </button>
+            </div>
+
+            <!-- Banner Lateral (Ocupa 1 columna en pantallas grandes) -->
+            <div class="lg:col-span-1 flex flex-col space-y-4">
+                <div class="bg-white rounded-lg shadow-md p-3">
+                    <h3 class="text-md font-semibold mb-1">Ofertas del Día</h3>
+                    <div id="ofertas-del-dia">
+                        <!-- Las ofertas se cargarán dinámicamente aquí -->
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-3">
+                    <h3 class="text-md font-semibold mb-1">Nuevos Ingresos</h3>
+                    <div id="nuevos-ingresos">
+                        <!-- Los nuevos productos se cargarán dinámicamente aquí -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Products -->
+    <section class="container mx-auto px-4 py-6">
+        <h2 class="text-xl font-bold mb-4">Productos Recientes</h2>
+        <div id="recent-products" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <!-- Los productos se cargarán aquí dinámicamente -->
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="bg-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                <div>
+                    <i class="fas fa-truck text-3xl text-primary mb-2"></i>
+                    <h3 class="font-semibold">Envío Gratis</h3>
+                    <p class="text-gray-600">En compras superiores a $500</p>
+                </div>
+                <div>
+                    <i class="fas fa-shield-alt text-3xl text-primary mb-2"></i>
+                    <h3 class="font-semibold">Compra Segura</h3>
+                    <p class="text-gray-600">Garantía de satisfacción</p>
+                </div>
+                <div>
+                    <i class="fas fa-headset text-3xl text-primary mb-2"></i>
+                    <h3 class="font-semibold">Soporte 24/7</h3>
+                    <p class="text-gray-600">Atención personalizada</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div>
+                    <h4 class="font-bold mb-2">Sobre Nosotros</h4>
+                    <p class="text-gray-400">Tu tienda de tecnología de confianza con los mejores precios del mercado.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-2">Enlaces Rápidos</h4>
+                    <ul class="space-y-1 text-gray-400">
+                        <li><a href="#">Inicio</a></li>
+                        <li><a href="#">Productos</a></li>
+                        <li><a href="#">Ofertas</a></li>
+                        <li><a href="#">Contacto</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-2">Contacto</h4>
+                    <ul class="space-y-1 text-gray-400">
+                        <li><i class="fas fa-map-marker-alt mr-1"></i>Dirección: Calle Principal 123</li>
+                        <li><i class="fas fa-phone mr-1"></i>Tel: 099 123 456</li>
+                        <li><i class="fas fa-envelope mr-1"></i>Email: info@tuttimarket.com</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-2">Newsletter</h4>
+                    <form class="flex">
+                        <input type="email"
+                               placeholder="Tu email"
+                               class="flex-1 px-3 py-1 rounded-l-lg focus:outline-none">
+                        <button class="primary-button rounded-l-none">Suscribir</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script>
+        // Función para cargar productos
+        async function loadProducts() {
+            try {
+                const response = await fetch("/api/recent-products");
+                if (!response.ok) {
+                    throw new Error("Error al cargar los productos");
+                }
+                const products = await response.json();
+                return products.filter(product => product.status !== 'archived' && product.status !== 'out_of_stock');
+            } catch (error) {
+                console.error("Error:", error);
+                return [];
+            }
+        }
+
+        // Función para formatear el precio
+        function formatPrice(price, currency = "USD") {
+            const numericPrice = parseFloat(price);
+            const formattedPrice = new Intl.NumberFormat('es-UY', {
+                style: 'currency',
+                currency: currency,
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(numericPrice);
+            return formattedPrice;
+        }
+
+        // Función para mostrar productos
+        function displayProducts(products) {
+            const productsContainer = document.getElementById("recent-products");
+            productsContainer.innerHTML = "";
+
+            if (products.length > 0) {
+                products.forEach((product) => {
+                    // Formatear el precio actual y el precio anterior
+                    const formattedPrice = formatPrice(product.price, product.currency || 'USD');
+                    const formattedOldPrice = product.oldPrice ? formatPrice(product.oldPrice, product.currency || 'USD') : null;
+
+                    // Calcular el tiempo restante para la entrega
+                    const deliveryTime = calculateDeliveryTime();
+
+                    // Corregir stock disponible y cantidad
+                    const availableStock = product.stock || 0;
+                    const additionalStock = availableStock > 1 ? `(+${availableStock - 1} disponibles)` : '';
+
+                    // Crear tarjeta del producto
+                    const productCard = `
+                        <div class="product-card bg-white rounded-lg overflow-hidden shadow-md flex flex-col h-full">
+                            <a href="producto.html?id=${product._id}">
+                                <img src="${product.images[0] || 'img/default-product.jpg'}" alt="${product.name}" class="w-full h-48 object-cover">
+                            </a>
+                            <div class="p-4 flex-1 flex flex-col justify-between">
+                                <div>
+                                    <span class="text-sm text-gray-500">${product.category}</span>
+                                    <h3 class="font-semibold mb-2">${product.name}</h3>
+                                    <p class="text-gray-600 mb-2">${product.description}</p>
+                                </div>
+                                <div>
+                                    <!-- Precio anterior tachado (si existe) -->
+                                    ${formattedOldPrice ? `
+                                        <div class="text-sm text-gray-400 line-through">
+                                            ${formattedOldPrice}
+                                        </div>
+                                    ` : ''}
+                                    <!-- Precio actual -->
+                                    <div class="text-xl font-bold text-blue-600">
+                                        ${formattedPrice}
+                                    </div>
+                                    <!-- Información adicional -->
+                                    <p class="text-sm text-gray-500 mt-2">${deliveryTime}</p>
+                                    <p class="text-sm text-gray-500">Stock disponible: ${availableStock}</p>
+                                    <p class="text-sm text-gray-500">Estado: ${product.condition || 'No especificado'}</p>
+                                    <p class="text-sm text-gray-500">Cantidad: 1 unidad ${additionalStock}</p>
+                                    <p class="text-sm text-gray-500 mt-2">Publicado por: ${product.userId?.fullName || "Anónimo"}</p>
+                                    <!-- Botón "Agregar al carrito" -->
+                                    <button class="w-full bg-blue-600 text-white py-2 mt-2 rounded-lg hover:bg-blue-700 transition-colors" onclick="addToCart('${product._id}')">
+                                        <i class="fas fa-shopping-cart mr-2"></i>Agregar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    productsContainer.innerHTML += productCard;
+                });
+            } else {
+                productsContainer.innerHTML = "<p class='text-gray-600'>No hay productos para mostrar.</p>";
+            }
+        }
+
+        // Función para calcular el tiempo restante para la entrega
+        function calculateDeliveryTime() {
+            const now = new Date();
+            const deadline = new Date(now.getTime() + 10 * 60 * 60 * 1000); // 10 horas más
+            const hoursLeft = deadline.getHours();
+            const minutesLeft = deadline.getMinutes();
+
+            return `Llega gratis el jueves. Comprando dentro de las próximas ${hoursLeft} h ${minutesLeft} min`;
+        }
+
+        // Función para filtrar productos por categoría
+        function filterProductsByCategory(products, category) {
+            return products.filter((product) => product.category === category);
+        }
+
+        // Función para filtrar productos por búsqueda
+        function filterProductsBySearch(products, searchText) {
+            return products.filter((product) =>
+                product.name.toLowerCase().includes(searchText.toLowerCase()) ||
+                product.description.toLowerCase().includes(searchText.toLowerCase())
+            );
+        }
+
+        // Función para agregar un producto al carrito
+        async function addToCart(productId) {
+            const token = localStorage.getItem("authToken");
+
+            // Verificar si el usuario está autenticado
+            if (!token) {
+                alert("Debes iniciar sesión para agregar productos al carrito.");
+                window.location.href = "/login.html";
+                return;
+            }
+
+            try {
+                const response = await fetch("/api/cart/add", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ productId }),
+                });
+
+                if (!response.ok) {
+                    throw new Error("Error al agregar el producto al carrito");
+                }
+
+                const data = await response.json();
+                alert("Producto agregado al carrito");
+                console.log("Producto agregado:", data);
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Hubo un error al agregar el producto al carrito");
+            }
+        }
+
+        // Función para verificar la sesión del usuario
+        async function checkUserSession() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('Por favor, inicia sesión.');
+                window.location.href = '/login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/api/user', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                }
+
+                const userData = await response.json();
+                document.getElementById('username').textContent = userData.fullName || 'Usuario Anonimo';
+                document.getElementById('profile-picture').src = userData.profilePicture || '/img/default-avatar.png';
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al obtener los datos del usuario.');
+            }
+        }
+
+        // Función para cerrar sesión
+        async function logout() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('Por favor, inicia sesión.');
+                window.location.href = '/login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/api/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                }
+
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('userLoggedIn');
+                localStorage.removeItem('userName');
+                alert('Sesión cerrada exitosamente.');
+                window.location.href = '/login.html';
+            } catch (error) {
+                console.error('Error al cerrar sesión:', error);
+                alert('Error al cerrar sesión.');
+            }
+        }
+
+        // Cargar y mostrar productos al iniciar la página
+        document.addEventListener("DOMContentLoaded", async () => {
+            const products = await loadProducts();
+            displayProducts(products);
+
+            // Evento para los botones de categoría
+            const categoryButtons = document.querySelectorAll("[data-category]");
+            categoryButtons.forEach((button) => {
+                button.addEventListener("click", () => {
+                    const category = button.getAttribute("data-category");
+                    const filteredProducts = filterProductsByCategory(products, category);
+                    displayProducts(filteredProducts);
+                });
+            });
+
+            // Evento para la barra de búsqueda
+            const searchInput = document.getElementById("searchInput");
+            const searchButton = document.getElementById("searchButton");
+            searchButton.addEventListener("click", () => {
+                const searchText = searchInput.value.trim();
+                const filteredProducts = filterProductsBySearch(products, searchText);
+                displayProducts(filteredProducts);
+            });
+
+            // Evento para la tecla "Enter" en la barra de búsqueda
+            searchInput.addEventListener("keyup", (event) => {
+                if (event.key === "Enter") {
+                    const searchText = searchInput.value.trim();
+                    const filteredProducts = filterProductsBySearch(products, searchText);
+                    displayProducts(filteredProducts);
+                }
+            });
+
+            // Verificar la sesión del usuario al cargar la página
+            checkUserSession();
+        });
+
+        // Obtener ID del producto desde la URL
+        function getProductIdFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get("id");
+        }
+
+        // Cargar detalles del producto
+        async function loadProductDetails() {
+            const productId = getProductIdFromURL();
+            if (!productId) {
+                alert("Producto no encontrado.");
+                window.location.href = "/";
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/product/${productId}`);
+                if (!response.ok) {
+                    throw new Error("Error al cargar el producto.");
+                }
+
+                const product = await response.json();
+
+                // Actualizar el contenido en la página
+                document.getElementById("productName").textContent = product.name;
+                document.getElementById("productPrice").textContent = formatPrice(product.price, product.currency);
+                document.getElementById("productDescription").textContent = product.description;
+                document.getElementById("sellerInfo").innerHTML = `Publicado por: <strong>${product.userId?.fullName || "Vendedor desconocido"}</strong>`;
+
+                // Mostrar la imagen principal
+                const mainImage = document.getElementById("mainImage");
+                mainImage.src = product.images.length > 0 ? product.images[0] : "placeholder.jpg";
+                mainImage.alt = product.name;
+
+                // Generar miniaturas de imágenes
+                const thumbnailsContainer = document.getElementById("thumbnails");
+                thumbnailsContainer.innerHTML = ""; 
+                product.images.forEach((imgSrc, index) => {
+                    const thumbnail = document.createElement("img");
+                    thumbnail.src = imgSrc;
+                    thumbnail.classList.add("img-thumbnail");
+                    thumbnail.onclick = () => changeImage(imgSrc);
+                    thumbnailsContainer.appendChild(thumbnail);
+                });
+
+                // Mostrar detalles de stock y entrega
+                const deliveryInfo = document.querySelector(".delivery-time");
+                const stockInfo = document.querySelector(".stock-info");
+                const quantityInfo = document.querySelector(".quantity-info");
+
+                deliveryInfo.textContent = `Llega gratis el jueves. Comprando dentro de las próximas 23 h 50 min`;
+                stockInfo.textContent = `Stock disponible: ${product.stock || 0}`;
+                quantityInfo.textContent = `Cantidad: 1 unidad (+${product.stock || 0} disponibles)`;
+
+                // Especificaciones del producto
+                const specsList = document.getElementById("productSpecs");
+                specsList.innerHTML = ""; // Limpiar antes de agregar nuevos elementos
+                if (product.specifications) {
+                    product.specifications.forEach(spec => {
+                        const listItem = document.createElement("li");
+                        listItem.textContent = spec;
+                        specsList.appendChild(listItem);
+                    });
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Hubo un error al cargar el producto.");
+            }
+        }
+
+        // Cambiar la imagen principal al hacer clic en una miniatura
+        function changeImage(src) {
+            document.getElementById("mainImage").src = src;
+        }
+
+        // Ejemplo de script para actualizar dinámicamente el nombre de usuario
+        document.addEventListener('DOMContentLoaded', async function() {
+            const token = localStorage.getItem('authToken');
+            const usernameElement = document.getElementById('username');
+            if (!token) {
+                if (usernameElement) {
+                    usernameElement.textContent = '¡Hola Usuario Anonimo!';
+                }
+                return;
+            }
+
+            try {
+                const userResponse = await fetch('http://localhost:3000/api/user', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!userResponse.ok) {
+                    throw new Error(`Error ${userResponse.status}: ${userResponse.statusText}`);
+                }
+
+                const userData = await userResponse.json();
+                const userName = userData.fullName.split(' ')[0]; // Obtener solo el primer nombre
+                if (usernameElement) {
+                    usernameElement.textContent = `¡Hola ${userName}!`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                if (usernameElement) {
+                    usernameElement.textContent = '¡Hola Usuario Anonimo!';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

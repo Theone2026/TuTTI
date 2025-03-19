@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprar Producto</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .product-gallery {
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+            overflow: hidden;
+            position: relative;
+            border-radius: 10px;
+            margin: 0 auto;
+        }
+        .product-gallery img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .thumbnails {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+        .thumbnails img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+        .thumbnails img:hover {
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Barra superior con logo y búsqueda -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-4">
+                <img src="/img/logo.png" alt="Tutti Market Logo" class="h-10">
+            </a>
+            <div class="flex-grow mx-6">
+                <div class="flex items-center">
+                    <input type="text" placeholder="Buscar productos..." class="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button class="ml-2 px-4 py-2 bg-black text-white rounded-full hover:bg-gray-800 transition-colors">Buscar</button>
+                </div>
+            </div>
+            <nav class="flex items-center space-x-6">
+                <a href="index.html" class="text-black hover:text-gray-700">Inicio</a>
+                <a href="perfil.html" id="profileLink" class="text-black hover:text-gray-700">
+                    <i class="fas fa-user"></i> <span id="profileText">Iniciar sesión</span>
+                </a>
+                <a href="favoritos.html" class="text-black hover:text-gray-700">
+                    <i class="fas fa-heart"></i> Favoritos
+                </a>
+                <a href="cart.html" class="text-black hover:text-gray-700">
+                    <i class="fas fa-shopping-cart"></i> Carrito (0)
+                </a>
+                <a href="vender.html" class="text-black hover:text-gray-700">
+                    <i class="fas fa-tag"></i> Vender
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container mx-auto py-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Galería de imágenes -->
+            <div>
+                <div class="product-gallery">
+                    <img id="mainImage" class="w-full h-full" src="https://via.placeholder.com/600x400" alt="Producto">
+                </div>
+                <div class="thumbnails" id="thumbnail-container"></div>
+            </div>
+
+            <!-- Detalles del producto -->
+            <div>
+                <h1 id="productName" class="text-3xl font-bold">Macbook Air M1 256GB Silver</h1>
+                <div id="productPrice" class="text-2xl text-red-600 font-bold mt-2">US$ 1200</div>
+                <p id="productCondition" class="text-gray-600 mt-2">Estado: Nuevo</p>
+                <p id="productDescription" class="text-gray-700 mt-4">Nuevita poco uso</p>
+
+                <!-- Botones de acción para el vendedor -->
+                <div id="sellerActions" class="mt-6 space-y-4 hidden">
+                    <div class="flex items-center space-x-4">
+                        <input type="number" id="newPriceInput" placeholder="Nuevo precio" class="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button onclick="updatePrice()" class="w-1/2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Actualizar Precio</button>
+                    </div>
+                    <button onclick="archiveProduct()" class="w-full bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">Archivar Producto</button>
+                </div>
+
+                <button class="w-full bg-red-600 text-white py-3 rounded-lg mt-6 hover:bg-red-700 transition-colors">
+                    <i class="fas fa-cart-plus"></i> Agregar al Carrito
+                </button>
+
+                <!-- Información del vendedor -->
+                <div class="seller-info bg-white p-6 rounded-lg mt-6">
+                    <h5 class="text-xl font-semibold">Información del vendedor</h5>
+                    <p class="mt-2"><strong>Nombre:</strong> <span id="sellerName">CompuTec</span></p>
+                    <p class="mt-2"><strong>Reputación:</strong> <span class="seller-rating text-yellow-400">★★★★☆</span> (4.5/5)</p>
+                    <p class="mt-2"><strong>Ventas realizadas:</strong> <span id="sellerSales">0</span></p>
+                </div>
+            </div>
+
+            <!-- Sección de comentarios -->
+            <div class="comments-section mt-12 col-span-full">
+                <h3 class="text-2xl font-bold">Comentarios</h3>
+                <div id="commentsContainer" class="mt-6">
+                    <!-- Los comentarios se cargarán aquí dinámicamente -->
+                </div>
+                <form id="commentForm" class="mt-6">
+                    <div class="mb-4">
+                        <textarea id="commentText" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Escribe tu comentario..." rows="3"></textarea>
+                    </div>
+                    <button type="submit" id="submitCommentButton" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">Enviar comentario</button>
+                    <p id="commentMessage" class="text-gray-600 mt-2 hidden">
+                        <a href="login.html" class="text-blue-600 hover:underline">Inicia sesión</a> o <a href="registro.html" class="text-blue-600 hover:underline">crea una cuenta</a> para comentar.
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="publicar-producto/main.js"></script>
+</body>
+</html>
