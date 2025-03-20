@@ -25,8 +25,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "mi_super_secreto";
 const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
 
 // Cadena de conexión a MongoDB Atlas
-const mongoURI =
-  "mongodb+srv://Tutti:Maikelfox@cluster0.uw1mo.mongodb.net/TuTTI?retryWrites=true&w=majority&appName=Cluster0";
+const mongoURI = process.env.MONGO_URI;
 
 // Conexión a MongoDB
 mongoose
