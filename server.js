@@ -22,7 +22,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ['https://tu-tti.vercel.app', 'http://localhost:3000'],
+    origin: ['https://tutti-production.up.railway.app' || 'http://localhost:3000'],
     methods: ['GET', 'POST']
   }
 });
@@ -40,12 +40,12 @@ mongoose.connect(mongoURI, {
 })
 .then(() => console.log("✅ Conectado a MongoDB"))
 .catch((err) => {
-  console.error("❌ Error de conexión a MongoDB:", err.message);
+  console.error("❌ Error de conexión a MongoDB:", err.messaage);
   process.exit(1);
 });
 
 // Configuración de CORS
-const allowedOrigins = ['http://localhost:3000', 'https://tu-tti.vercel.app'];
+const allowedOrigins = ['http://localhost:3000', https:'//tutti-production.up.railway.app'];
 
 const corsOptions = {
   origin: function (origin, callback) {

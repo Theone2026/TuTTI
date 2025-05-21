@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000';
+const API_URL = 'http:/tutti-production.up.railway.app' || 'http://localhost:3000';
 
 async function fetchData(url) {
     try {
