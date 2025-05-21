@@ -19,33 +19,7 @@ async function loadRecentProducts() {
         loadHeroBanner(recentProducts, offers);
 
         // Mostrar los productos en la sección de productos recientes
-        const productsContainer = document.getElementById("recent-products");
-        if (recentProducts.length > 0) {
-            productsContainer.innerHTML = ""; // Limpiar el contenedor
-
-            recentProducts.forEach((product) => {
-                const productCard = `
-                    <div class="product-card bg-white rounded-lg overflow-hidden">
-                        <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <span class="text-sm text-gray-500">${product.category}</span>
-                            <h3 class="font-semibold mb-2">${product.name}</h3>
-                            <p class="text-gray-600 mb-2">${product.description}</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-xl font-bold">$${product.price}</span>
-                                <button class="primary-button" onclick="addToCart('${product._id}')">
-                                    <i class="fas fa-shopping-cart mr-2"></i>Agregar
-                                </button>
-                            </div>
-                            <p class="text-sm text-gray-500 mt-2">Publicado por: ${product.userId?.fullName || "Anónimo"}</p>
-                        </div>
-                    </div>
-                `;
-                productsContainer.innerHTML += productCard;
-            });
-        } else {
-            productsContainer.innerHTML = "<p class='text-gray-600'>No hay productos recientes.</p>";
-        }
+        renderRecentProducts(recentProducts);
     } catch (error) {
         console.error("Error:", error);
         document.getElementById("recent-products").innerHTML =
@@ -53,8 +27,39 @@ async function loadRecentProducts() {
     }
 }
 
-// Función para cargar el Hero Banner con productos recientes
-function loadHeroBanner(recentProducts) {
+// Función para renderizar los productos recientes en la sección correspondiente
+function renderRecentProducts(recentProducts) {
+    const productsContainer = document.getElementById("recent-products");
+    productsContainer.innerHTML = ""; // Limpiar contenedor antes de agregar nuevos productos
+
+    if (recentProducts.length > 0) {
+        recentProducts.forEach((product) => {
+            const productCard = `
+                <div class="product-card bg-white rounded-lg overflow-hidden">
+                    <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <span class="text-sm text-gray-500">${product.category}</span>
+                        <h3 class="font-semibold mb-2">${product.name}</h3>
+                        <p class="text-gray-600 mb-2">${product.description}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xl font-bold">$${product.price}</span>
+                            <button class="primary-button" onclick="addToCart('${product._id}')">
+                                <i class="fas fa-shopping-cart mr-2"></i>Agregar
+                            </button>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">Publicado por: ${product.userId?.fullName || "Anónimo"}</p>
+                    </div>
+                </div>
+            `;
+            productsContainer.innerHTML += productCard;
+        });
+    } else {
+        productsContainer.innerHTML = "<p class='text-gray-600'>No hay productos recientes.</p>";
+    }
+}
+
+// Función para cargar el Hero Banner con productos recientes y ofertas
+function loadHeroBanner(recentProducts, offers) {
     try {
         // Mostrar los productos en el carrusel
         const carousel = document.querySelector('.carousel');
