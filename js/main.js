@@ -53,6 +53,7 @@ async function loadRecentProducts() {
     }
 }
 
+// Función para cargar el Hero Banner con productos recientes
 function loadHeroBanner(recentProducts) {
     try {
         // Mostrar los productos en el carrusel
@@ -186,54 +187,4 @@ function logout() {
 document.addEventListener('DOMContentLoaded', function() {
     loadRecentProducts(); // Cargar productos recientes y Hero Banner
     checkUserSession();   // Verificar la sesión del usuario
-});
-
-
-// Función para cargar productos recientes
-async function loadRecentProducts() {
-    try {
-        // Obtener productos recientes desde la API
-        const response = await fetch("https://tu-tti.vercel.app/api/recent-products");
-        if (!response.ok) {
-            throw new Error("Error al cargar los productos");
-        }
-        const products = await response.json();
-
-        const recentProductsContainer = document.getElementById("recent-products");
-        recentProductsContainer.innerHTML = ""; // Limpiar el contenedor
-
-        // Mostrar cada producto
-        products.forEach((product) => {
-            const productCard = `
-                <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                    <div class="relative h-48">
-                        <img src="${product.images[0] || 'img/default-product.jpg'}" alt="${product.name}" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-4">
-                        <h3 class="text-lg font-semibold">${product.name}</h3>
-                        <p class="text-gray-600">${product.description}</p>
-                        <p class="text-primary font-bold mt-2">$${product.price}</p>
-                        <button class="primary-button w-full mt-4">Ver Detalles</button>
-                    </div>
-                </div>
-            `;
-            recentProductsContainer.insertAdjacentHTML("beforeend", productCard);
-        });
-    } catch (error) {
-        console.error("Error:", error);
-        alert("Hubo un error al cargar los productos. Inténtalo de nuevo.");
-    }
-}
-
-// Función para cerrar sesión
-function logout() {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userLoggedIn');
-    localStorage.removeItem('userName');
-    window.location.href = '/index.html'; // Redirigir al inicio después de cerrar sesión
-}
-
-// Cargar productos al iniciar la página
-document.addEventListener("DOMContentLoaded", function () {
-    loadRecentProducts();
 });
