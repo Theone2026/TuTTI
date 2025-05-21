@@ -33,7 +33,7 @@
             }
 
             try {
-                const response = await fetch(`http://localhost:3000/api/purchases/${orderId}`, {
+                const response = await fetch(`https://tu-tti.vercel.app/api/purchases/${orderId}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,

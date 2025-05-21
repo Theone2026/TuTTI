@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport"="width=device-width, initial-scale=1.0">
     <title>Pagos - Tutti Market</title>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://cdn.socket.io">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
@@ -48,8 +51,8 @@
         </aside>
 
         <!-- Botón para abrir el menú -->
-        <button class="fixed bg-blue-500 text-white p-2 rounded-full shadow-lg md:hidden" id="openSidebar" style="top: 80px; right: 16px;">
-            <i class="fas fa-bars"></i>
+        <button class="fixed bg-blue-500 text-white p-2 rounded-full shadow-lg md:hidden" id="openSidebar" style="top: 80px; right: 16px;" aria-label="Abrir menú">
+          <i class="fas fa-bars" aria-hidden="true"></i>
         </button>
 
         <!-- Contenido principal -->
@@ -77,6 +80,14 @@
             <!-- Historial de Pagos -->
             <section class="mb-8">
                 <h2 class="text-lg md:text-xl font-bold mb-4">Historial de Pagos</h2>
+<div class="mb-4">
+  <label for="filter" class="mr-2">Filtrar por:</label>
+  <select id="filter" class="p-2 border rounded">
+    <option value="all">Todos</option>
+    <option value="bought">Compras</option>
+    <option value="sold">Ventas</option>
+  </select>
+</div>
                 <div class="overflow-x-auto bg-white p-4 md:p-6 rounded-lg shadow-md">
                     <table class="min-w-full w-full border-collapse table-auto text-sm md:text-base">
                         <thead>
@@ -114,186 +125,168 @@
 
     <!-- Script para cargar pagos -->
     <script>
+        // ... (el resto del código JavaScript permanece igual)
+    </script>
+</body>
+</html>
+
+    <!-- Script para cargar pagos -->
+    <script>
+        let token;
+        let currentPage = 1;
+        const itemsPerPage = 10;
+    
         document.addEventListener('DOMContentLoaded', async function () {
-            const token = localStorage.getItem('authToken');
+            token = localStorage.getItem('authToken');
             if (!token) {
                 alert('Por favor, inicia sesión para ver tus pagos.');
                 window.location.href = '/login.html';
                 return;
             }
-
-            let currentPage = 1; // Track the current page
-            const itemsPerPage = 10; // Number of items to load per page
-
-            function formatCurrency(amount, currency) {
-                const formatter = new Intl.NumberFormat('es-UY', {
-                    style: 'currency',
-                    currency: currency,
-                    minimumFractionDigits: 0,
-                });
-                return formatter.format(amount);
-            }
-
-            async function loadPayments(page = 1) {
-                try {
-                    const paymentsResponse = await fetch(`http://localhost:3000/api/payments?page=${page}&limit=${itemsPerPage}`, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                        },
-                    });
-
-                    if (!paymentsResponse.ok) {
-                        throw new Error(`Error ${paymentsResponse.status}: ${paymentsResponse.statusText}`);
-                    }
-
-                    const payments = await paymentsResponse.json();
-                    const pagosList = document.getElementById('pagos-list');
-
-                    if (payments.length === 0 && page === 1) {
-                        pagosList.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-gray-600">No tienes pagos registrados aún.</td></tr>';
-                    } else if (payments.length < itemsPerPage) {
-                        document.getElementById('expandButton').classList.add('hidden');
-                    }
-
-                    // Sort payments by date (most recent first)
-                    payments.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-                    payments.forEach(payment => {
-                        const formattedAmount = formatCurrency(payment.amount, payment.currency);
-                        const pagoRow = `
-                            <tr class="hover:bg-gray-50">
-                                <td class="py-3 px-4 ${payment.type === 'sold' ? 'text-green-600' : 'text-red-600'} whitespace-nowrap">
-                                    ${payment.type === 'sold' ? '+' : '-'}${formattedAmount}
-                                </td>
-                                <td class="py-3 px-4 whitespace-nowrap">${payment.product.name || 'Producto desconocido'}</td>
-                                <td class="py-3 px-4 whitespace-nowrap">${new Date(payment.date).toLocaleDateString()}</td>
-                                <td class="py-3 px-4 whitespace-nowrap">
-                                    <span class="bg-green-100 text-green-600 px-2 py-1 rounded-full text-sm">Completado</span>
-                                </td>
-                            </tr>
-                        `;
-                        pagosList.innerHTML += pagoRow;
-                    });
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('Hubo un error al cargar los pagos. Inténtalo de nuevo.');
-                }
-            }
-
-            // Load initial payments
-            loadPayments();
-
+    
+            await loadUserData();
+            await loadPayments(currentPage);
+    
+            // Configurar el filtro
+            const filterSelect = document.getElementById('filter');
+            filterSelect.addEventListener('change', function() {
+                loadPayments(1); // Reiniciar a la primera página al cambiar el filtro
+            });
+        });
+    
+        async function loadUserData() {
             try {
-                // Fetch user data
                 const userResponse = await fetch('http://localhost:3000/api/user', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
                     },
                 });
-
+    
                 if (!userResponse.ok) {
-                    throw new Error(`Error ${userResponse.status}: ${userResponse.statusText}`);
+                    throw new Error(`HTTP error! status: ${userResponse.status}`);
                 }
-
+    
                 const userData = await userResponse.json();
-                const profilePictureUrl = userData.profilePicture || '/img/default-avatar.png';
-                document.getElementById('profile-picture').src = profilePictureUrl;
-                document.getElementById('username').textContent = userData.fullName || 'Usuario Anonimo';
-
-                // Fetch payments for the user
-                const paymentsResponse = await fetch('http://localhost:3000/api/payments', {
+                console.log('User data:', userData); // Para depuración
+    
+                // Actualizar la interfaz con los datos del usuario
+                document.getElementById('username').textContent = userData.fullName;
+                if (userData.profilePicture) {
+                    document.getElementById('profile-picture').src = userData.profilePicture;
+                }
+            } catch (error) {
+                console.error('Error al cargar los datos del usuario:', error);
+                alert('Hubo un error al cargar los datos del usuario. Por favor, intenta de nuevo.');
+            }
+        }
+    
+        async function loadPayments(page = 1) {
+            try {
+                const filterType = document.getElementById('filter').value;
+                const paymentsResponse = await fetch(`http://localhost:3000/api/payments?page=${page}&limit=${itemsPerPage}&type=${filterType}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
                     },
                 });
-
+    
                 if (!paymentsResponse.ok) {
-                    throw new Error(`Error ${paymentsResponse.status}: ${paymentsResponse.statusText}`);
+                    throw new Error(`HTTP error! status: ${paymentsResponse.status}`);
                 }
-
+    
                 const payments = await paymentsResponse.json();
+                console.log('Payments received:', payments); // Para depuración
+    
                 const pagosList = document.getElementById('pagos-list');
                 const paymentsContainer = document.getElementById('paymentsContainer');
                 const salesContainer = document.getElementById('salesContainer');
-                pagosList.innerHTML = '';
-                paymentsContainer.innerHTML = '';
-                salesContainer.innerHTML = '';
-
-                if (payments.length === 0) {
-                    pagosList.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-gray-600">No tienes pagos registrados aún.</td></tr>';
-                    paymentsContainer.innerHTML = '<p class="text-center text-gray-600">No tienes pagos registrados aún.</p>';
-                    salesContainer.innerHTML = '<p class="text-center text-gray-600">No tienes ventas registradas aún.</p>';
-                } else {
-                    let hasSales = false;
-                    let hasPurchases = false;
-
-                    payments.forEach(payment => {
-                        if (payment._id === 'N/A') return; // Skip rows with ID N/A
-
-                        const formattedAmount = formatCurrency(payment.amount, payment.currency);
-
-                        // Add a container for sales
-                        if (payment.type === 'sold' && !hasSales) {
-                            pagosList.innerHTML += `
-                                <tr>
-                                    <td colspan="4" class="bg-green-100 text-green-600 text-center py-2 font-bold">Ventas</td>
-                                </tr>
-                            `;
-                            hasSales = true;
-                        }
-
-                        // Add a container for purchases
-                        if (payment.type === 'bought' && !hasPurchases) {
-                            pagosList.innerHTML += `
-                                <tr>
-                                    <td colspan="4" class="bg-blue-100 text-blue-600 text-center py-2 font-bold">Compras</td>
-                                </tr>
-                            `;
-                            hasPurchases = true;
-                        }
-
-                        // Add payment row
-                        const pagoRow = `
-                            <tr class="hover:bg-gray-50 border-b border-gray-200">
-                                <td class="py-2 px-4 ${payment.type === 'sold' ? 'text-green-600' : 'text-red-600'} whitespace-nowrap">
-                                    ${payment.type === 'sold' ? '+' : '-'}${formattedAmount}
-                                </td>
-                                <td class="py-2 px-4 whitespace-nowrap">${payment.product.name || 'Producto desconocido'}</td>
-                                <td class="py-2 px-4 whitespace-nowrap">${new Date(payment.date).toLocaleDateString()}</td>
-                                <td class="py-2 px-4 whitespace-nowrap">
-                                    <span class="bg-green-100 text-green-600 px-2 py-1 rounded-full text-sm">Completado</span>
-                                </td>
-                            </tr>
-                        `;
-                        pagosList.innerHTML += pagoRow;
-
-                        // Add to the payments summary
-                        const paymentElement = document.createElement('div');
-                        paymentElement.className = 'bg-white p-4 border border-gray-200 rounded-lg shadow-md';
-                        paymentElement.innerHTML = `
-                            <h3 class="text-lg font-semibold truncate break-words" title="${payment.product.name}">
-                                ${payment.product.name}
-                            </h3>
-                            <p class="text-sm text-gray-600">${payment.type === 'sold' ? 'Vendido' : 'Comprado'} el ${new Date(payment.date).toLocaleDateString()}</p>
-                            <p class="text-lg font-bold ${payment.type === 'sold' ? 'text-green-600' : 'text-red-600'}">
-                                ${payment.type === 'sold' ? '+' : '-'}${formattedAmount}
-                            </p>
-                        `;
-                        if (payment.type === 'sold') {
-                            salesContainer.appendChild(paymentElement);
-                        } else {
-                            paymentsContainer.appendChild(paymentElement);
-                        }
-                    });
-                }
+    
+                displayPaymentsTable(payments.data, pagosList);
+                displayPayments(payments.data.filter(p => p.type === 'bought'), paymentsContainer, 'Compras');
+                displayPayments(payments.data.filter(p => p.type === 'sold'), salesContainer, 'Ventas');
+    
+                // Añadir botones de paginación
+                addPaginationButtons(payments.totalPages, page);
             } catch (error) {
-                console.error('Error:', error);
-                alert('Hubo un error al cargar los pagos. Inténtalo de nuevo.');
+                alert('Hubo un error al cargar los pagos. Por favor, intenta de nuevo.');
             }
-        });
+        }
+    
+        // ... (el resto de las funciones permanecen igual)
+    
+        function addPaginationButtons(totalPages, currentPage) {
+            const paginationContainer = document.createElement('div');
+            paginationContainer.className = 'flex justify-center mt-4 space-x-2';
+            
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                button.className = `px-3 py-1 rounded ${i === currentPage ? 'bg-blue-500 text-white' : 'bg-gray-200'}`;
+                button.addEventListener('click', () => loadPayments(i));
+                paginationContainer.appendChild(button);
+            }
+    
+            const existingPagination = document.querySelector('.pagination-container');
+            if (existingPagination) {
+                existingPagination.replaceWith(paginationContainer);
+            } else {
+                document.querySelector('main').appendChild(paginationContainer);
+            }
+        }
+    
+        // ... (el resto del código permanece igual)
+    </script>
+
+        function displayPayments(payments, container, title) {
+            if (payments.length === 0) {
+                container.innerHTML = `<p class="text-center text-gray-600">No tienes ${title.toLowerCase()} registradas aún.</p>`;
+                return;
+            }
+
+            container.innerHTML = `<h3 class="text-xl font-bold mb-4">${title}</h3>`;
+            payments.forEach(payment => {
+                const formattedAmount = formatCurrency(payment.amount, payment.currency);
+                const paymentElement = document.createElement('div');
+                paymentElement.className = 'bg-white p-4 border border-gray-200 rounded-lg shadow-md mb-4';
+                paymentElement.innerHTML = `
+                    <h4 class="text-lg font-semibold truncate break-words" title="${payment.product.name}">
+                        ${payment.product.name}
+                    </h4>
+                    <p class="text-sm text-gray-600">${new Date(payment.date).toLocaleDateString()}</p>
+                    <p class="text-lg font-bold ${payment.type === 'sold' ? 'text-green-600' : 'text-red-600'}">
+                        ${payment.type === 'sold' ? '+' : '-'}${formattedAmount}
+                    </p>
+                `;
+                container.appendChild(paymentElement);
+            });
+        }
+
+        function displayPaymentsTable(payments, container) {
+            container.innerHTML = `
+                <tr>
+                    <th class="py-2 px-4 bg-gray-100 font-bold text-left">Tipo</th>
+                    <th class="py-2 px-4 bg-gray-100 font-bold text-left">Monto</th>
+                    <th class="py-2 px-4 bg-gray-100 font-bold text-left">Producto</th>
+                    <th class="py-2 px-4 bg-gray-100 font-bold text-left">Fecha</th>
+                </tr>
+            `;
+
+            payments.forEach(payment => {
+                const formattedAmount = formatCurrency(payment.amount, payment.currency);
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50 border-b border-gray-200';
+                row.innerHTML = `
+                    <td class="py-2 px-4">${payment.type === 'sold' ? 'Venta' : 'Compra'}</td>
+                    <td class="py-2 px-4 ${payment.type === 'sold' ? 'text-green-600' : 'text-red-600'}">
+                        ${payment.type === 'sold' ? '+' : '-'}${formattedAmount}
+                    </td>
+                    <td class="py-2 px-4">${payment.product.name || 'Producto desconocido'}</td>
+                    <td class="py-2 px-4">${new Date(payment.date).toLocaleDateString()}</td>
+                `;
+                container.appendChild(row);
+            });
+        }
 
         document.addEventListener('DOMContentLoaded', function () {
             const sidebar = document.getElementById('sidebar');
@@ -321,6 +314,7 @@
                     openSidebar.style.top = '80px';
                     openSidebar.style.bottom = 'auto';
                 }
+
             });
         });
     </script>

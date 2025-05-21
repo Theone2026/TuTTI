@@ -61,7 +61,9 @@
         </div>
     </div>
     <script>
-        const BACKEND_URL = 'http://localhost:3000/api/login';
+        const BACKEND_URL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:3000/api/login'
+            : 'https://tu-tti.vercel.app/api/login';
 
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -69,10 +71,8 @@
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            // Validar el formulario
             if (!validateForm(email, password)) return;
 
-            // Mostrar spinner y deshabilitar el botón
             const button = document.querySelector('button[type="submit"]');
             const buttonText = document.getElementById('button-text');
             const buttonSpinner = document.getElementById('button-spinner');
@@ -89,12 +89,11 @@
                     body: JSON.stringify({ email, password }),
                 });
 
+                const data = await response.json();
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || "Error al iniciar sesión.");
+                    throw new Error(data.message || "Error al iniciar sesión.");
                 }
 
-                const data = await response.json();
                 console.log('Respuesta del backend:', data);
 
                 if (data.token) {
@@ -102,16 +101,16 @@
                     localStorage.setItem('userLoggedIn', JSON.stringify(true));
                     localStorage.setItem('userEmail', email);
 
-                    // Decodificar el token para obtener los datos del usuario
                     const decodedToken = JSON.parse(atob(data.token.split('.')[1]));
                     const userId = decodedToken.userId;
-                    const userName = decodedToken.email; // Suponiendo que el nombre de usuario es el email
+                    const userName = decodedToken.email;
 
-                    // Almacenar los datos del usuario en localStorage
                     localStorage.setItem("userId", userId);
                     localStorage.setItem("userName", userName);
 
                     window.location.href = 'index.html';
+                } else {
+                    throw new Error("No se recibió un token válido del servidor.");
                 }
             } catch (error) {
                 console.error('Error al autenticar el usuario:', error);

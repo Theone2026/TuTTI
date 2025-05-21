@@ -36,10 +36,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Login exitoso
                 alert(data.message);
 
-                // Guardar el token y la autenticación en localStorage
-                localStorage.setItem("token", data.token); // Usa "token" en lugar de "authToken"
-                localStorage.setItem("userId", data.user.id); // Guarda el ID del usuario
-                localStorage.setItem("userName", data.user.name); // Guarda el nombre del usuario
+                // Después de una autenticación exitosa
+                localStorage.setItem('authToken', response.token);
+                localStorage.setItem('userId', response.userId); // Asegúrate de que esto se está haciendo
 
                 // Redirigir al perfil
                 window.location.href = "perfil.html"; // Redirige a la página del perfil

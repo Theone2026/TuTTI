@@ -1,7 +1,24 @@
-// Función para cargar productos
+const API_URL = 'http://localhost:3000';
+
+async function fetchData(url) {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            throw new Error("Oops, we haven't got JSON!");
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
 async function loadProducts() {
     try {
-        const response = await fetch("/api/recent-products");
+        const response = await fetch(`${API_URL}/api/recent-products`);
         if (!response.ok) {
             throw new Error("Error al cargar los productos");
         }
@@ -13,7 +30,6 @@ async function loadProducts() {
     }
 }
 
-// Función para formatear el precio
 function formatPrice(price, currency = "USD") {
     const numericPrice = parseFloat(price);
     const currencySymbol = currency === "USD" ? "US$" : "$";
@@ -25,57 +41,35 @@ function formatPrice(price, currency = "USD") {
     return `${currencySymbol} ${formattedPrice}`;
 }
 
-// Función para mostrar productos
 function displayProducts(products) {
     const productsContainer = document.getElementById("recent-products");
     productsContainer.innerHTML = "";
 
-    if (products.length > 0) {
-        products.forEach((product) => {
-            // Formatear el precio actual y el precio anterior
+    const filteredProducts = products.filter(product => 
+        !/EJEMPLO/i.test(product.name) && product.stock > 0
+    );
+
+    if (filteredProducts.length > 0) {
+        filteredProducts.forEach((product) => {
             const formattedPrice = formatPrice(product.price, product.currency || 'USD');
-            const formattedOldPrice = product.oldPrice ? formatPrice(product.oldPrice, product.currency || 'USD') : null;
 
-            // Calcular el tiempo restante para la entrega
-            const deliveryTime = calculateDeliveryTime();
-
-            // Corregir stock disponible y cantidad
-            const availableStock = product.stock || 0;
-            const additionalStock = availableStock > 1 ? `(+${availableStock - 1} disponibles)` : '';
-
-            // Crear tarjeta del producto
+            const productImage = product.images && product.images.length > 0 
+                ? product.images[0] 
+                : '/img/default-product.jpg';
             const productCard = `
                 <div class="product-card bg-white rounded-lg overflow-hidden shadow-md flex flex-col h-full">
-                    <a href="producto.html?id=${product._id}">
-                        <img src="${product.images[0] || 'img/default-product.jpg'}" alt="${product.name}" class="w-full h-48 object-cover">
+                    <a href="producto.html?id=${product._id}" class="block h-48 overflow-hidden">
+                        <img src="${productImage}" alt="${product.name}" class="w-full h-full object-cover object-center" onerror="this.src='/img/default-product.jpg'">
                     </a>
-                    <div class="p-4 flex-1 flex flex-col justify-between">
-                        <div>
-                            <span class="text-sm text-gray-500">${product.category}</span>
-                            <h3 class="font-semibold mb-2">${product.name}</h3>
-                            <p class="text-gray-600 mb-2">${product.description}</p>
-                        </div>
-                        <div>
-                            <!-- Precio anterior tachado (si existe) -->
-                            ${formattedOldPrice ? `
-                                <div class="text-sm text-gray-400 line-through">
-                                    ${formattedOldPrice}
-                                </div>
-                            ` : ''}
-                            <!-- Precio actual -->
-                            <div class="text-xl font-bold text-blue-600">
-                                ${formattedPrice}
-                            </div>
-                            <!-- Información adicional -->
-                            <p class="text-sm text-gray-500 mt-2">${deliveryTime}</p>
-                            <p class="text-sm text-gray-500">Stock disponible: ${availableStock}</p>
-                            <p class="text-sm text-gray-500">Cantidad: 1 unidad ${additionalStock}</p>
-                            <p class="text-sm text-gray-500 mt-2">Publicado por: ${product.userId?.fullName || "Anónimo"}</p>
-                            <!-- Botón "Agregar al carrito" -->
-                            <button class="w-full bg-blue-600 text-white py-2 mt-2 rounded-lg hover:bg-blue-700 transition-colors" onclick="addToCart('${product._id}')">
-                                <i class="fas fa-shopping-cart mr-2"></i>Agregar
-                            </button>
-                        </div>
+                    <div class="p-4 flex-grow">
+                        <h3 class="text-lg font-semibold mb-2">${product.name}</h3>
+                        <p class="text-gray-600 mb-2">${product.description.substring(0, 100)}...</p>
+                        <p class="text-xl font-bold text-primary">${formattedPrice}</p>
+                    </div>
+                    <div class="p-4 bg-gray-50">
+                        <button onclick="addToCart('${product._id}')" class="w-full bg-primary text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors">
+                            Agregar al carrito
+                        </button>
                     </div>
                 </div>
             `;
@@ -86,22 +80,105 @@ function displayProducts(products) {
     }
 }
 
-// Función para calcular el tiempo restante para la entrega
 function calculateDeliveryTime() {
     const now = new Date();
-    const deadline = new Date(now.getTime() + 10 * 60 * 60 * 1000); // 10 horas más
+    const deadline = new Date(now.getTime() + 10 * 60 * 60 * 1000);
     const hoursLeft = deadline.getHours();
     const minutesLeft = deadline.getMinutes();
 
     return `Llega gratis el jueves. Comprando dentro de las próximas ${hoursLeft} h ${minutesLeft} min`;
 }
 
-// Función para filtrar productos por categoría
+async function loadOfertasDelDia() {
+    try {
+        const response = await fetch(`${API_URL}/api/ofertas-del-dia`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            const text = await response.text();
+            console.log("Raw response for ofertas del día:", text);
+            throw new Error("La respuesta del servidor no es JSON válido");
+        }
+        const ofertas = await response.json();
+        const ofertasContainer = document.getElementById("ofertas-del-dia");
+        if (!ofertasContainer) {
+            console.error("Element with ID 'ofertas-del-dia' not found");
+            return;
+        }
+        ofertasContainer.innerHTML = "";
+        ofertas.slice(0, 3).forEach(oferta => {
+            ofertasContainer.innerHTML += `
+                <div class="flex items-center space-x-2">
+                    <img src="${oferta.image}" alt="${oferta.name}" class="w-12 h-12 object-cover rounded">
+                    <div>
+                        <p class="text-sm font-semibold">${oferta.name}</p>
+                        <p class="text-xs text-red-600">${formatPrice(oferta.price, oferta.currency)}</p>
+                    </div>
+                </div>
+            `;
+        });
+    } catch (error) {
+        console.error("Error al cargar ofertas del día:", error);
+        const ofertasContainer = document.getElementById("ofertas-del-dia");
+        if (ofertasContainer) {
+            ofertasContainer.innerHTML = "<p>No se pudieron cargar las ofertas del día.</p>";
+        }
+    }
+}
+
+async function loadNuevosIngresos() {
+    try {
+        const response = await fetch(`${API_URL}/api/nuevos-ingresos`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            const text = await response.text();
+            console.log("Raw response for nuevos ingresos:", text);
+            throw new Error("La respuesta del servidor no es JSON válido");
+        }
+        const nuevosIngresos = await response.json();
+        const nuevosIngresosContainer = document.getElementById("nuevos-ingresos");
+        if (!nuevosIngresosContainer) {
+            console.error("Element with ID 'nuevos-ingresos' not found");
+            return;
+        }
+        nuevosIngresosContainer.innerHTML = "";
+        nuevosIngresos.slice(0, 3).forEach(producto => {
+            nuevosIngresosContainer.innerHTML += `
+                <div class="flex items-center space-x-2">
+                    <img src="${producto.image}" alt="${producto.name}" class="w-12 h-12 object-cover rounded">
+                    <div>
+                        <p class="text-sm font-semibold">${producto.name}</p>
+                        <p class="text-xs text-gray-600">${formatPrice(producto.price, producto.currency)}</p>
+                    </div>
+                </div>
+            `;
+        });
+    } catch (error) {
+        console.error("Error al cargar nuevos ingresos:", error);
+        const nuevosIngresosContainer = document.getElementById("nuevos-ingresos");
+        if (nuevosIngresosContainer) {
+            nuevosIngresosContainer.innerHTML = "<p>No se pudieron cargar los nuevos ingresos.</p>";
+        }
+    }
+}
+
 function filterProductsByCategory(products, category) {
     return products.filter((product) => product.category === category);
 }
 
-// Función para filtrar productos por búsqueda
 function filterProductsBySearch(products, searchText) {
     return products.filter((product) =>
         product.name.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -109,11 +186,9 @@ function filterProductsBySearch(products, searchText) {
     );
 }
 
-// Función para agregar un producto al carrito
 async function addToCart(productId) {
     const token = localStorage.getItem("authToken");
 
-    // Verificar si el usuario está autenticado
     if (!token) {
         alert("Debes iniciar sesión para agregar productos al carrito.");
         window.location.href = "/login.html";
@@ -143,83 +218,211 @@ async function addToCart(productId) {
     }
 }
 
-// Función para verificar la sesión del usuario
-function checkUserSession() {
-    const isLoggedIn = JSON.parse(localStorage.getItem('userLoggedIn')) || false;
-    const userAccountLink = document.querySelector('#accountLink');
-    const logoutButton = document.getElementById('logoutButton');
+async function checkUserSession() {
+    const token = localStorage.getItem('authToken');
+    const userDisplayElement = document.getElementById('userDisplay');
+    const accountLinkElement = document.getElementById('accountLink');
+    const sessionButtonContainer = document.getElementById('sessionButtonContainer');
 
-    if (isLoggedIn) {
-        const userName = localStorage.getItem('userName') || 'Mi Perfil';
-        if (userAccountLink) {
-            userAccountLink.innerHTML = `
-                <i class="fas fa-user mr-2"></i>
-                ${userName}
-            `;
-            userAccountLink.href = "#";
-            userAccountLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                window.location.href = "/perfil.html";
-            });
-        }
-        if (logoutButton) {
-            logoutButton.classList.remove('hidden');
-        }
-    } else {
-        if (userAccountLink) {
-            userAccountLink.innerHTML = `
-                <i class="fas fa-user mr-2"></i>
-                Iniciar Sesión
-            `;
-            userAccountLink.href = "#";
-            userAccountLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                window.location.href = "/login.html";
-            });
-        }
-        if (logoutButton) {
-            logoutButton.classList.add('hidden');
-        }
+    if (!token) {
+        updateUIForLoggedOutUser(userDisplayElement, accountLinkElement, sessionButtonContainer);
+        return;
     }
-}
-
-// Cerrar sesión
-async function logout() {
-    const token = localStorage.getItem("authToken");
 
     try {
-        // Llamar a la ruta de logout en el backend
-        const response = await fetch("/api/logout", {
-            method: "POST",
+        const response = await fetch(`${API_URL}/api/user`, {
+            method: 'GET',
             headers: {
-                "Authorization": `Bearer ${token}`,
+                'Authorization': `Bearer ${token}`,
             },
         });
 
         if (!response.ok) {
-            throw new Error("Error al cerrar sesión");
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
         }
 
-        // Eliminar el token y otros datos del localStorage
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("userLoggedIn");
-        localStorage.removeItem("userName");
-        localStorage.removeItem("userId");
-
-        // Redirigir al usuario a la página de login
-        window.location.href = "/login.html";
+        const userData = await response.json();
+        updateUIForLoggedInUser(userData, userDisplayElement, accountLinkElement, sessionButtonContainer);
     } catch (error) {
-        console.error("Error al cerrar sesión:", error);
-        alert("Hubo un error al cerrar sesión. Por favor, inténtalo de nuevo.");
+        console.error('Error:', error);
+        updateUIForLoggedOutUser(userDisplayElement, accountLinkElement, sessionButtonContainer);
+        localStorage.removeItem('authToken');
     }
 }
 
-// Cargar y mostrar productos al iniciar la página
+function updateUIForLoggedInUser(userData, userDisplayElement, accountLinkElement, sessionButtonContainer) {
+    let userName = localStorage.getItem('userName') || userData.fullName || userData.email.split('@')[0] || 'Usuario';
+    userName = userName.replace(/@.*$/, '');
+    const greeting = `¡Hola, ${userName}!`;
+
+    if (userDisplayElement) userDisplayElement.textContent = greeting;
+    if (accountLinkElement) {
+        accountLinkElement.innerHTML = `<i class="fas fa-user mr-1"></i><span>${greeting}</span>`;
+        accountLinkElement.href = "/dashboard.html";
+    }
+    if (sessionButtonContainer) {
+        sessionButtonContainer.innerHTML = `
+            <a href="/cerrar_sesion.html" class="text-sm text-gray-600 hover:text-gray-800">Cerrar Sesión</a>
+        `;
+        const logoutButton = sessionButtonContainer.querySelector('a[href="/cerrar_sesion.html"]');
+        if (logoutButton) {
+            logoutButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                logout();
+            });
+        }
+    }
+}
+
+function updateUIForLoggedOutUser(userDisplayElement, accountLinkElement, sessionButtonContainer) {
+    if (userDisplayElement) userDisplayElement.textContent = "";
+    if (accountLinkElement) {
+        accountLinkElement.innerHTML = '<i class="fas fa-user mr-1"></i><span>Iniciar Sesión</span>';
+        accountLinkElement.href = "/login.html";
+    }
+    if (sessionButtonContainer) {
+        sessionButtonContainer.innerHTML = '';
+    }
+}
+
+function loadHeroBanner(recentProducts) {
+    try {
+        const carousel = document.querySelector('.carousel');
+        if (carousel && recentProducts.length > 0) {
+            carousel.innerHTML = "";
+            carousel.classList.add('relative', 'w-full', 'h-64', 'md:h-80', 'lg:h-96', 'overflow-hidden', 'rounded-lg', 'shadow-md');
+
+            recentProducts.slice(0, 3).forEach((product, index) => {
+                const slide = document.createElement('div');
+                slide.classList.add('absolute', 'inset-0', 'w-full', 'h-full', 'transition-opacity', 'duration-500');
+                slide.style.opacity = index === 0 ? '1' : '0';
+
+                const imgContainer = document.createElement('div');
+                imgContainer.classList.add('relative', 'w-full', 'h-full');
+                const img = document.createElement('img');
+                img.src = product.images[0] || '/img/default-product.jpg';
+                img.alt = product.name;
+                img.classList.add('w-full', 'h-full', 'object-contain');
+
+                const textOverlay = document.createElement('div');
+                textOverlay.classList.add('absolute', 'bottom-0', 'left-0', 'right-0', 'bg-black', 'bg-opacity-50', 'text-white', 'p-4');
+                textOverlay.innerHTML = `
+                    <h3 class="text-xl font-semibold mb-2">${product.name}</h3>
+                    <p class="text-2xl font-bold">${formatPrice(product.price, product.currency)}</p>
+                `;
+
+                imgContainer.appendChild(img);
+                imgContainer.appendChild(textOverlay);
+                slide.appendChild(imgContainer);
+                carousel.appendChild(slide);
+            });
+
+            const prevButton = document.createElement('button');
+            prevButton.innerHTML = '&#10094;';
+            prevButton.classList.add('absolute', 'top-1/2', 'left-4', 'transform', '-translate-y-1/2', 'bg-white', 'bg-opacity-50', 'rounded-full', 'p-2', 'text-gray-800', 'hover:bg-opacity-75', 'text-2xl', 'z-10');
+
+            const nextButton = document.createElement('button');
+            nextButton.innerHTML = '&#10095;';
+            nextButton.classList.add('absolute', 'top-1/2', 'right-4', 'transform', '-translate-y-1/2', 'bg-white', 'bg-opacity-50', 'rounded-full', 'p-2', 'text-gray-800', 'hover:bg-opacity-75', 'text-2xl', 'z-10');
+
+            carousel.appendChild(prevButton);
+            carousel.appendChild(nextButton);
+
+            let currentSlide = 0;
+            const slides = carousel.querySelectorAll('div[class^="absolute"]');
+
+            const showSlide = (index) => {
+                slides[currentSlide].style.opacity = '0';
+                slides[index].style.opacity = '1';
+                currentSlide = index;
+            };
+
+            prevButton.addEventListener('click', () => {
+                let index = currentSlide - 1;
+                if (index < 0) index = slides.length - 1;
+                showSlide(index);
+            });
+
+            nextButton.addEventListener('click', () => {
+                let index = currentSlide + 1;
+                if (index >= slides.length) index = 0;
+                showSlide(index);
+            });
+
+            setInterval(() => {
+                let index = currentSlide + 1;
+                if (index >= slides.length) index = 0;
+                showSlide(index);
+            }, 5000);
+        }
+
+        const ofertasDelDia = document.querySelector('.ofertas-del-dia');
+        const nuevosIngresos = document.querySelector('.nuevos-ingresos');
+        if (ofertasDelDia && nuevosIngresos && recentProducts.length > 1) {
+            ofertasDelDia.innerHTML = `
+                <h3 class="text-sm font-semibold mb-2">Ofertas del Día</h3>
+                <div class="bg-white p-2 rounded-lg shadow-sm">
+                    <div class="w-full h-32 overflow-hidden">
+                        <img src="${recentProducts[0].images[0] || '/img/default-product.jpg'}" alt="${recentProducts[0].name}" class="w-full h-full object-contain">
+                    </div>
+                    <p class="text-sm font-semibold mt-2 truncate">${recentProducts[0].name}</p>
+                    <p class="text-base text-red-600 font-bold">${formatPrice(recentProducts[0].price, recentProducts[0].currency)}</p>
+                </div>
+            `;
+
+            nuevosIngresos.innerHTML = `
+                <h3 class="text-sm font-semibold mb-2">Nuevos Ingresos</h3>
+                <div class="bg-white p-2 rounded-lg shadow-sm">
+                    <div class="w-full h-32 overflow-hidden">
+                        <img src="${recentProducts[1].images[0] || '/img/default-product.jpg'}" alt="${recentProducts[1].name}" class="w-full h-full object-contain">
+                    </div>
+                    <p class="text-sm font-semibold mt-2 truncate">${recentProducts[1].name}</p>
+                    <p class="text-base text-gray-600">${formatPrice(recentProducts[1].price, recentProducts[1].currency)}</p>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Error al cargar el Hero Banner:', error);
+    }
+}
+
+import { setupNotificationPanel, loadNotifications, handleNewNotification } from './notifications.js';
+
+document.addEventListener('DOMContentLoaded', async () => {
+    setupNotificationPanel();
+    await loadNotifications();
+
+    // Configurar WebSocket para notificaciones en tiempo real
+    const userId = localStorage.getItem('userId');
+    const ws = new WebSocket("ws://localhost:3000");
+
+    ws.onopen = () => {
+        if (userId) {
+            ws.send(JSON.stringify({ type: "joinRoom", userId: userId }));
+        }
+    };
+
+    ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type === "notification") {
+            console.log("Nueva notificación:", data.notification);
+            handleNewNotification(data.notification);
+        }
+    };
+
+    // Aquí puedes agregar más código para manejar otras funcionalidades de la página principal
+});
+
+// Asegúrate de que handleNotificationClick esté disponible globalmente
+window.handleNotificationClick = handleNotificationClick;
 document.addEventListener("DOMContentLoaded", async () => {
     const products = await loadProducts();
+    loadHeroBanner(products);
     displayProducts(products);
+    checkUserSession();
+    loadOfertasDelDia();
+    loadNuevosIngresos();
 
-    // Evento para los botones de categoría
     const categoryButtons = document.querySelectorAll("[data-category]");
     categoryButtons.forEach((button) => {
         button.addEventListener("click", () => {
@@ -229,7 +432,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     });
 
-    // Evento para la barra de búsqueda
     const searchInput = document.getElementById("searchInput");
     const searchButton = document.getElementById("searchButton");
     searchButton.addEventListener("click", () => {
@@ -238,7 +440,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         displayProducts(filteredProducts);
     });
 
-    // Evento para la tecla "Enter" en la barra de búsqueda
     searchInput.addEventListener("keyup", (event) => {
         if (event.key === "Enter") {
             const searchText = searchInput.value.trim();
@@ -246,18 +447,52 @@ document.addEventListener("DOMContentLoaded", async () => {
             displayProducts(filteredProducts);
         }
     });
-
-    // Verificar la sesión del usuario al cargar la página
-    checkUserSession();
 });
+function logout() {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userInfo');
+    window.location.href = '/login.html';
+}
 
-// Obtener ID del producto desde la URL
+function loadTopBar() {
+    const topBar = document.querySelector('header');
+    if (!topBar) return;
+
+    const isLoggedIn = isUserLoggedIn();
+    const currentUser = getCurrentUser();
+
+    topBar.innerHTML = `
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="w-40">
+                    <a href="index.html">
+                        <img src="/img/logo.png" alt="Tutti Market Logo" class="w-full">
+                    </a>
+                </div>
+                <div class="flex-1 mx-8 max-w-md"> <!-- Añadido max-w-md para limitar el ancho -->
+                    <div class="relative">
+                        <input type="text" id="searchInput"
+                               placeholder="¿Qué estás buscando?"
+                               class="w-full px-3 py-1 border border-gray-300 rounded-full focus:outline-none focus:border-primary text-sm"> <!-- Reducido padding y tamaño de texto -->
+                        <button type="button" id="searchButton" aria-label="Buscar" class="absolute right-2 top-1/2 transform -translate-y-1/2">
+                            <i class="fas fa-search text-gray-400 text-sm"></i> <!-- Reducido tamaño del icono -->
+                        </button>
+                    </div>
+                </div>
+                <!-- ... resto del código ... -->
+            </div>
+        </div>
+    `;
+
+    // ... resto de la función ...
+}
+
 function getProductIdFromURL() {
     const params = new URLSearchParams(window.location.search);
     return params.get("id");
 }
 
-// Cargar detalles del producto
 async function loadProductDetails() {
     const productId = getProductIdFromURL();
     if (!productId) {
@@ -267,25 +502,22 @@ async function loadProductDetails() {
     }
 
     try {
-        const response = await fetch(`http://localhost:3000/api/product/${productId}`);
+        const response = await fetch(`${API_URL}/api/product/${productId}`);
         if (!response.ok) {
             throw new Error("Error al cargar el producto.");
         }
 
         const product = await response.json();
 
-        // Actualizar el contenido en la página
         document.getElementById("productName").textContent = product.name;
         document.getElementById("productPrice").textContent = formatPrice(product.price, product.currency);
         document.getElementById("productDescription").textContent = product.description;
         document.getElementById("sellerInfo").innerHTML = `Publicado por: <strong>${product.userId?.fullName || "Vendedor desconocido"}</strong>`;
 
-        // Mostrar la imagen principal
         const mainImage = document.getElementById("mainImage");
         mainImage.src = product.images.length > 0 ? product.images[0] : "placeholder.jpg";
         mainImage.alt = product.name;
 
-        // Generar miniaturas de imágenes
         const thumbnailsContainer = document.getElementById("thumbnails");
         thumbnailsContainer.innerHTML = ""; 
         product.images.forEach((imgSrc, index) => {
@@ -296,7 +528,6 @@ async function loadProductDetails() {
             thumbnailsContainer.appendChild(thumbnail);
         });
 
-        // Mostrar detalles de stock y entrega
         const deliveryInfo = document.querySelector(".delivery-time");
         const stockInfo = document.querySelector(".stock-info");
         const quantityInfo = document.querySelector(".quantity-info");
@@ -305,9 +536,8 @@ async function loadProductDetails() {
         stockInfo.textContent = `Stock disponible: ${product.stock || 0}`;
         quantityInfo.textContent = `Cantidad: 1 unidad (+${product.stock || 0} disponibles)`;
 
-        // Especificaciones del producto
         const specsList = document.getElementById("productSpecs");
-        specsList.innerHTML = ""; // Limpiar antes de agregar nuevos elementos
+        specsList.innerHTML = "";
         if (product.specifications) {
             product.specifications.forEach(spec => {
                 const listItem = document.createElement("li");
@@ -321,7 +551,6 @@ async function loadProductDetails() {
     }
 }
 
-// Cambiar la imagen principal al hacer clic en una miniatura
 function changeImage(src) {
     document.getElementById("mainImage").src = src;
 }

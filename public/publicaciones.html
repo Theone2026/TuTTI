@@ -2,198 +2,220 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Publicaciones - Tutti Market</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    @media (min-width: 768px) {
+        main {
+            transition: margin-left 0.3s ease-in-out;
+        }
+    }
+</style>
 </head>
 <body class="bg-gray-100">
     <!-- Contenedor principal -->
-    <div class="flex flex-col md:flex-row min-h-screen">
+    <div class="flex min-h-screen">
         <!-- Menú lateral -->
-        <aside class="bg-white w-full md:w-64 p-6 shadow-lg md:static fixed z-10 md:z-auto transform md:translate-x-0 -translate-x-full transition-transform duration-300 ease-in-out" id="sidebar">
-            <div class="flex justify-between items-center mb-8 md:block">
-                <img src="/img/logo.png" alt="Tutti Market Logo" class="w-24">
-                <button class="md:hidden text-gray-700" id="closeSidebar">
-                    <i class="fas fa-times"></i>
-                </button>
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out -translate-x-full md:translate-x-0">
+            <div class="flex items-center justify-center h-16 border-b border-gray-200">
+                <img src="/img/logo.png" alt="Tutti Market" class="h-8">
             </div>
-            <nav class="space-y-2">
-                <a href="/dashboard.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
-                    <i class="fas fa-tachometer-alt mr-2"></i>
-                    Dashboard
+            <nav class="flex-1 overflow-y-auto">
+                <a href="index.html" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-100">
+                    <i class="fas fa-home w-5 h-5 mr-3"></i>
+                    <span>Inicio</span>
                 </a>
-                <a href="/pedidos.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
-                    <i class="fas fa-shopping-cart mr-2"></i>
-                    Pedidos
+                <a href="dashboard.html" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-100">
+                    <i class="fas fa-tachometer-alt w-5 h-5 mr-3"></i>
+                    <span>Dashboard</span>
                 </a>
-                <a href="/pagos.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
-                    <i class="fas fa-dollar-sign mr-2"></i>
-                    Pagos
+                <a href="pedidos.html" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-100">
+                    <i class="fas fa-shopping-cart w-5 h-5 mr-3"></i>
+                    <span>Pedidos</span>
                 </a>
-                <a href="/publicaciones.html" class="flex items-center text-blue-600 bg-blue-50 p-2 rounded-lg">
-                    <i class="fas fa-box-open mr-2"></i>
-                    Publicaciones
+                <a href="pagos.html" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-100">
+                    <i class="fas fa-dollar-sign w-5 h-5 mr-3"></i>
+                    <span>Pagos</span>
                 </a>
-                <a href="/mensajes.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
-                    <i class="fas fa-comments mr-2"></i>
-                    Mensajes
+                <a href="publicaciones.html" class="flex items-center px-6 py-3 bg-blue-50 text-blue-600">
+                    <i class="fas fa-box-open w-5 h-5 mr-3"></i>
+                    <span>Publicaciones</span>
                 </a>
-                <a href="/configuracion.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
-                    <i class="fas fa-cog mr-2"></i>
-                    Configuración
+                <a href="mensajes.html" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-100">
+                    <i class="fas fa-comments w-5 h-5 mr-3"></i>
+                    <span>Mensajes</span>
                 </a>
             </nav>
+            <div class="flex items-center px-6 py-3 border-t border-gray-200">
+                <img id="profile-picture" src="/img/default-avatar.png" alt="Avatar" class="w-8 h-8 rounded-full mr-3">
+                <span id="username" class="text-sm font-medium text-gray-700"></span>
+            </div>
         </aside>
 
         <!-- Botón para abrir el menú -->
-        <button class="fixed bg-blue-500 text-white p-2 rounded-full shadow-lg md:hidden" id="openSidebar" style="top: 80px; right: 16px;">
-            <i class="fas fa-bars"></i>
+        <button id="openSidebar" class="fixed top-4 left-4 z-50 bg-white p-2 rounded-md shadow-md md:hidden">
+            <i class="fas fa-bars text-gray-600"></i>
         </button>
 
         <!-- Contenido principal -->
-        <main class="flex-1 p-4 md:p-8">
-            <!-- Barra superior -->
-            <header class="flex justify-between items-center mb-8">
-                <h1 class="text-xl md:text-2xl font-bold">Publicaciones</h1>
-                <div class="flex items-center space-x-4">
-                    <a href="nueva-publicacion.html" class="bg-blue-500 text-white px-3 py-1 text-sm rounded-md hover:bg-blue-600 transition-all">
-                        <i class="fas fa-plus mr-1"></i>
-                        Nueva Publicación
-                    </a>
-                    <div class="relative">
-                        <i class="fas fa-bell text-gray-700 cursor-pointer" id="notificationBell"></i>
-                        <span id="notificationCount" class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1 hidden">0</span>
-                        <div id="notificationDropdown" class="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg hidden">
-                            <ul id="notificationList" class="divide-y divide-gray-200">
-                                <!-- Notifications will be dynamically added here -->
-                            </ul>
+            <!-- Contenido principal -->
+            <main class="flex-1 p-4 md:ml-64 transition-all duration-300">
+                <header class="bg-white shadow-sm">
+                    <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+                        <div class="flex items-center">
+                            <button id="sidebarToggle" class="mr-4 text-gray-500 md:hidden" aria-label="Abrir menú">
+                                <i class="fas fa-bars"></i>
+                            </button>
+                            <h1 class="text-2xl font-semibold text-gray-900">Publicaciones</h1>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <a href="nueva-publicacion.html" class="bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                Nueva Publicación
+                            </a>
+                            <button id="notificationBell" class="text-gray-400 hover:text-gray-500 focus:outline-none relative" aria-label="Notificaciones">
+                                <i class="fas fa-bell"></i>
+                                <span id="notificationCount" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center hidden">0</span>
+                            </button>
                         </div>
                     </div>
-                    <div class="flex items-center">
-                        <img id="profile-picture" src="/img/default-avatar.png" alt="Avatar" class="w-8 h-8 rounded-full">
-                        <span id="username" class="ml-2 text-gray-700">Usuario Anonimo</span>
+                </header>
+
+                <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                    <!-- Aquí comienza el contenido de las publicaciones -->
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h2 class="text-xl font-bold mb-4">Mis Productos en Venta</h2>
+                        <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Los productos se cargarán aquí dinámicamente -->
+                        </div>
                     </div>
                 </div>
-            </header>
-
-            <!-- Lista de publicaciones -->
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h2 class="text-xl font-bold mb-4">Mis Productos en Venta</h2>
-                <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Los productos se cargarán aquí dinámicamente -->
-                </div>
-            </div>
-        </main>
+            </main>
+        </div>
     </div>
 
     <!-- Script para cargar publicaciones -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', async function () {
-            const token = localStorage.getItem('authToken');
-            if (!token) {
-                alert('Por favor, inicia sesión para ver tus publicaciones.');
-                window.location.href = '/login.html';
-                return;
-            }
+    document.addEventListener('DOMContentLoaded', function () {
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const openSidebar = document.getElementById('openSidebar');
+        const main = document.querySelector('main');
 
-            try {
-                // Obtener los datos del usuario
-                const userResponse = await fetch('http://localhost:3000/api/user', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            main.classList.toggle('md:ml-64');
+            main.classList.toggle('ml-0');
+            openSidebar.classList.toggle('hidden');
+        }
 
-                if (!userResponse.ok) {
-                    throw new Error(`Error ${userResponse.status}: ${userResponse.statusText}`);
-                }
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        openSidebar.addEventListener('click', toggleSidebar);
 
-                const userData = await userResponse.json();
-                const profilePictureUrl = userData.profilePicture || '/img/default-avatar.png';
-                document.getElementById('profile-picture').src = profilePictureUrl;
-                document.getElementById('username').textContent = userData.fullName || 'Usuario Anonimo';
-
-                // Obtener los productos del usuario
-                const response = await fetch('http://localhost:3000/api/products', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Error ${response.status}: ${response.statusText}`);
-                }
-
-                const products = await response.json();
-                const productList = document.getElementById('product-list');
-                productList.innerHTML = '';
-
-                if (products.length === 0) {
-                    productList.innerHTML = '<p class="text-gray-600">No tienes productos en venta.</p>';
-                } else {
-                    products.forEach(product => {
-                        if (product.status === "archived" || product.status === "out_of_stock") {
-                            return;
-                        }
-                        const productCard = `
-                            <div class="bg-white p-4 rounded-lg shadow-md flex flex-col cursor-pointer" onclick="window.location.href='edit-producto.html?id=${product._id}'">
-                                <img src="${product.images[0]}" alt="${product.name}" class="w-full h-48 object-cover rounded-lg mb-4">
-                                <h3 class="text-lg font-semibold">${product.name}</h3>
-                                <p class="text-gray-600 text-sm mb-2">${product.description}</p>
-                                <p class="text-gray-800 font-bold">${product.currency === 'USD' ? 'US$' : '$'}${product.price}</p>
-                                <p class="text-sm text-gray-500">Stock: ${product.stock ?? 'No disponible'}</p>
-                                <p class="text-sm text-gray-500">Estado: ${product.condition || 'No especificado'}</p>
-                                ${product.freeShipping ? '<p class="text-sm text-green-500">Envío Gratis</p>' : ''}
-                            </div>
-                        `;
-                        productList.innerHTML += productCard;
-                    });
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Hubo un error al cargar las publicaciones. Inténtalo de nuevo.');
+        // Cerrar sidebar al hacer clic fuera en pantallas pequeñas
+        document.addEventListener('click', function(event) {
+            const isClickInsideSidebar = sidebar.contains(event.target);
+            const isClickOnToggle = sidebarToggle.contains(event.target) || openSidebar.contains(event.target);
+            if (!isClickInsideSidebar && !isClickOnToggle && window.innerWidth < 768) {
+                sidebar.classList.add('-translate-x-full');
+                main.classList.remove('md:ml-64');
+                main.classList.add('ml-0');
+                openSidebar.classList.remove('hidden');
             }
         });
 
-        async function loadNotifications() {
-            const token = localStorage.getItem('authToken');
-            if (!token) return;
-
-            try {
-                const response = await fetch('http://localhost:3000/api/notifications', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
-
-                if (!response.ok) throw new Error('Error al cargar las notificaciones.');
-
-                const notifications = await response.json();
-                const notificationCount = notifications.length;
-                const notificationElement = document.getElementById('notificationCount');
-
-                if (notificationCount > 0) {
-                    notificationElement.textContent = notificationCount;
-                    notificationElement.classList.remove('hidden');
-                } else {
-                    notificationElement.classList.add('hidden');
-                }
-            } catch (error) {
-                console.error('Error al cargar las notificaciones:', error);
+        // Ajustar sidebar en resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                sidebar.classList.remove('-translate-x-full');
+                main.classList.add('md:ml-64');
+                main.classList.remove('ml-0');
+                openSidebar.classList.add('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                main.classList.remove('md:ml-64');
+                main.classList.add('ml-0');
+                openSidebar.classList.remove('hidden');
             }
+        });
+    });
+    async function isTokenValid(token) {
+        try {
+            const response = await fetch('http://localhost:3000/api/validate-token', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            return response.ok;
+        } catch (error) {
+            console.error('Error validating token:', error);
+            return false;
+        }
+    }
+
+    async function fetchWithAuth(url, options = {}) {
+        const token = localStorage.getItem('authToken');
+        const headers = {
+            ...options.headers,
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        };
+        const response = await fetch(url, { ...options, headers });
+        if (!response.ok) {
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+    }
+
+    document.addEventListener('DOMContentLoaded', async function () {
+        const token = localStorage.getItem('authToken');
+        if (!token || !(await isTokenValid(token))) {
+            alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
+            window.location.href = '/login.html';
+            return;
         }
 
-        document.addEventListener('DOMContentLoaded', loadNotifications);
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', async function () {
-            const token = localStorage.getItem('authToken');
-            if (!token) return;
+        try {
+            // Obtener los datos del usuario
+            const userData = await fetchWithAuth('http://localhost:3000/api/user');
+            const profilePictureUrl = userData.profilePicture || '/img/default-avatar.png';
+            document.getElementById('profile-picture').src = profilePictureUrl;
+            document.getElementById('username').textContent = userData.fullName || 'Usuario Anonimo';
 
+            // Obtener los productos del usuario
+            const products = await fetchWithAuth('http://localhost:3000/api/products');
+            const productList = document.getElementById('product-list');
+            productList.innerHTML = '';
+
+            if (products.length === 0) {
+                productList.innerHTML = '<p class="text-gray-600">No tienes productos en venta.</p>';
+            } else {
+                products.forEach(product => {
+                    if (product.status === "archived" || product.status === "out_of_stock") {
+                        return;
+                    }
+                    const productCard = `
+                        <div class="bg-white p-4 rounded-lg shadow-md flex flex-col cursor-pointer" onclick="window.location.href='edit-producto.html?id=${product._id}'">
+                            <img src="${product.images[0]}" alt="${product.name}" class="w-full h-48 object-cover rounded-lg mb-4">
+                            <h3 class="text-lg font-semibold">${product.name}</h3>
+                            <p class="text-gray-600 text-sm mb-2">${product.description}</p>
+                            <p class="text-gray-800 font-bold">${product.currency === 'USD' ? 'US$' : '$'}${product.price}</p>
+                            <p class="text-sm text-gray-500">Stock: ${product.stock ?? 'No disponible'}</p>
+                            <p class="text-sm text-gray-500">Estado: ${product.condition || 'No especificado'}</p>
+                            ${product.freeShipping ? '<p class="text-sm text-green-500">Envío Gratis</p>' : ''}
+                        </div>
+                    `;
+                    productList.innerHTML += productCard;
+                });
+            }
+
+            // Load notifications
+            await loadNotifications();
+
+            // Set up Socket.IO
             const socket = io("http://localhost:3000");
             const userId = localStorage.getItem('userId');
             if (userId) {
@@ -205,62 +227,60 @@
                 updateNotificationCount(1);
             });
 
-            async function updateNotificationCount(increment = 0) {
-                const notificationElement = document.querySelector('.fa-bell + span');
-                let count = parseInt(notificationElement.textContent) || 0;
-                count += increment;
-                notificationElement.textContent = count > 0 ? count : '';
-                notificationElement.classList.toggle('hidden', count === 0);
-            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Hubo un error al cargar la información. Por favor, inténtalo de nuevo más tarde.');
+        }
+    });
 
-            async function markAllNotificationsAsRead() {
-                try {
-                    const response = await fetch('http://localhost:3000/api/notifications/mark-all-as-read', {
-                        method: 'PUT',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                        },
-                    });
+    async function loadNotifications() {
+        try {
+            const notifications = await fetchWithAuth('http://localhost:3000/api/notifications');
+            updateNotificationCount(notifications.length);
+        } catch (error) {
+            console.error('Error al cargar las notificaciones:', error);
+        }
+    }
 
-                    if (response.ok) {
-                        updateNotificationCount(-parseInt(document.querySelector('.fa-bell + span').textContent || 0));
-                    }
-                } catch (error) {
-                    console.error("Error al marcar notificaciones como leídas:", error);
-                }
-            }
+    function updateNotificationCount(count) {
+        const notificationElement = document.getElementById('notificationCount');
+        if (notificationElement) {
+            notificationElement.textContent = count;
+            notificationElement.classList.toggle('hidden', count === 0);
+        }
+    }
 
-            document.querySelector('.fa-bell').addEventListener('click', markAllNotificationsAsRead);
+    async function markAllNotificationsAsRead() {
+        try {
+            await fetchWithAuth('http://localhost:3000/api/notifications/mark-all-as-read', { method: 'PUT' });
+            updateNotificationCount(0);
+        } catch (error) {
+            console.error("Error al marcar notificaciones como leídas:", error);
+        }
+    }
+
+    document.getElementById('notificationBell').addEventListener('click', markAllNotificationsAsRead);
+
+    // Sidebar functionality
+    document.addEventListener('DOMContentLoaded', function () {
+        const sidebar = document.getElementById('sidebar');
+        const closeSidebar = document.getElementById('closeSidebar');
+        const openSidebar = document.getElementById('openSidebar');
+
+        closeSidebar?.addEventListener('click', () => {
+            sidebar.classList.add('-translate-x-full');
+            openSidebar.classList.remove('hidden');
         });
 
-        document.addEventListener('DOMContentLoaded', function () {
-            const sidebar = document.getElementById('sidebar');
-            const closeSidebar = document.getElementById('closeSidebar');
-            const openSidebar = document.getElementById('openSidebar');
-
-            // Close the sidebar and show the open button
-            closeSidebar?.addEventListener('click', () => {
-                sidebar.classList.add('-translate-x-full');
-                openSidebar.classList.remove('hidden'); // Ensure the open button is visible
-            });
-
-            // Open the sidebar and hide the open button
-            openSidebar?.addEventListener('click', () => {
-                sidebar.classList.remove('-translate-x-full');
-                openSidebar.classList.add('hidden'); // Hide the open button when sidebar is open
-            });
-
-            // Adjust the position of the open button based on scroll
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 50) {
-                    openSidebar.style.top = 'auto';
-                    openSidebar.style.bottom = '16px';
-                } else {
-                    openSidebar.style.top = '80px';
-                    openSidebar.style.bottom = 'auto';
-                }
-            });
+        openSidebar?.addEventListener('click', () => {
+            sidebar.classList.remove('-translate-x-full');
+            openSidebar.classList.add('hidden');
         });
-    </script>
-</body>
+
+        window.addEventListener('scroll', () => {
+            openSidebar.style.top = window.scrollY > 50 ? 'auto' : '80px';
+            openSidebar.style.bottom = window.scrollY > 50 ? '16px' : 'auto';
+        });
+    });
+</script>
 </html>

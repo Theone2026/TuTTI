@@ -180,7 +180,7 @@
                 }
 
                 // Obtener datos del usuario
-                const userResponse = await fetch(`http://localhost:3000/api/user?userId=${userId}`, {
+                const userResponse = await fetch(`https://tu-tti.vercel.app/api/user?userId=${userId}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -225,7 +225,7 @@
                     };
 
                     try {
-                        const updateResponse = await fetch(`http://localhost:3000/api/user/${userId}`, {
+                        const updateResponse = await fetch(`https://tu-tti.vercel.app/api/user/${userId}`, {
                             method: 'PUT',
                             headers: {
                                 'Authorization': `Bearer ${token}`,
@@ -255,7 +255,7 @@
                         formData.append('profilePicture', file);
 
                         try {
-                            const uploadResponse = await fetch(`http://localhost:3000/api/user/${userId}/profile-picture`, {
+                            const uploadResponse = await fetch(`https://tu-tti.vercel.app/api/user/${userId}/profile-picture`, {
                                 method: 'POST',
                                 headers: {
                                     'Authorization': `Bearer ${token}`,

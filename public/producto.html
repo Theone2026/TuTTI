@@ -2,79 +2,72 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Producto - TuTTi</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="/socket.io/socket.io.js"></script> <!-- Add this line -->
 </head>
 <body class="bg-gray-50">
-    <!-- Header -->
     <header class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-1"> <!-- Reduce padding -->
+        <div class="container mx-auto px-4 py-1">
             <div class="flex items-center justify-between">
                 <!-- Logo -->
-                <div class="w-16"> <!-- Reduce width -->
+                <div class="w-16">
                     <img src="img/logo.png" alt="Tutti Market Logo" class="w-full">
                 </div>
                 <!-- Search Bar -->
-                <div class="flex-1 mx-2"> <!-- Reduce margin -->
+                <div class="flex-1 mx-2">
                     <div class="relative">
                         <input type="text"
                                id="searchInput"
                                placeholder="¿Qué estás buscando?"
-                               class="w-full px-2 py-1 border border-gray-300 rounded-full focus:outline-none focus:border-primary"> <!-- Reduce padding -->
+                               class="w-full px-2 py-1 border border-gray-300 rounded-full focus:outline-none focus:border-primary">
                         <button id="searchButton" class="absolute right-2 top-1/2 transform -translate-y-1/2">
                             <i class="fas fa-search text-gray-400"></i>
                         </button>
                     </div>
                 </div>
                 <!-- Navigation -->
-                <nav class="flex items-center space-x-2"> <!-- Reduce space between items -->
-                    <a href="/perfil.html" class="flex items-center" id="accountLink">
+                <nav class="flex items-center space-x-2 relative">
+                    <a href="/login.html" class="flex items-center" id="accountLink">
                         <i class="fas fa-user mr-1"></i>
                         <span id="username">Iniciar Sesión</span>
-                    </a>
-                    <a href="/favoritos" class="flex items-center">
-                        <i class="fas fa-heart mr-1"></i>
-                        Favoritos
                     </a>
                     <a href="/carrito" class="flex items-center" id="cartLink">
                         <i class="fas fa-shopping-cart mr-1"></i>
                         Carrito (0)
-                    </a>
-                    <!-- Botón de Vender -->
-                    <a href="/vender.html" class="flex items-center">
-                        <i class="fas fa-tag mr-1"></i>
-                        Vender
                     </a>
                     <!-- Botón de Cerrar Sesión (solo visible cuando el usuario está loggeado) -->
                     <a href="#" onclick="logout()" class="flex items-center hidden" id="logoutButton">
                         <i class="fas fa-sign-out-alt mr-1"></i>
                         Cerrar Sesión
                     </a>
+                    <!-- Botón de Notificaciones -->
                     <div class="relative">
-                        <button class="relative bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition duration-300 shadow-lg">
-                            <i class="fas fa-bell"></i>
-                            <span id="notificationCount" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center hidden animate-bounce">0</span>
-                        </button>
-                    </div>
-                    <div class="relative">
-                        <i class="fas fa-bell text-gray-700 cursor-pointer" id="notificationBell"></i>
-                        <span id="notificationCount" class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1 hidden">0</span>
-                        <div id="notificationDropdown" class="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg hidden">
-                            <ul id="notificationList" class="divide-y divide-gray-200">
-                                <!-- Notifications will be dynamically added here -->
+                        <div id="notificationIcon" class="cursor-pointer">
+                            <i class="fas fa-bell text-gray-600 hover:text-gray-800 text-xl"></i>
+                            <span id="notificationCount" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                        </div>
+                        <div id="notificationPanel" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl hidden overflow-hidden z-50">
+                            <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                                <h3 class="text-sm font-semibold text-gray-700">Notificaciones</h3>
+                            </div>
+                            <ul id="notificationList" class="max-h-96 overflow-y-auto divide-y divide-gray-200">
+                                <!-- Las notificaciones se insertarán aquí -->
                             </ul>
+                            <div class="bg-gray-100 px-4 py-3 border-t border-gray-200">
+                                <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium">Ver todas</a>
+                            </div>
                         </div>
                     </div>
                 </nav>
+                </nav>
             </div>
         </div>
-    </header>
+    </div>
 
-    <!-- Contenido del Producto -->
-    <div class="container mx-auto px-4 py-6">
+    <main>
+        <div class="container mx-auto px-4 py-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <!-- Galería de Fotos -->
             <div>
@@ -136,383 +129,9 @@
             <!-- Los comentarios se cargarán dinámicamente aquí -->
         </div>
     </div>
+    </main>
 
-    <!-- Scripts -->
-    <script>
-        // Función para obtener el ID del producto desde la URL
-        function getProductIdFromURL() {
-            const params = new URLSearchParams(window.location.search);
-            return params.get("id");
-        }
-
-        // Función para manejar el envío de comentarios
-        document.getElementById("commentForm").addEventListener("submit", async (e) => {
-            e.preventDefault(); // Evitar que el formulario se envíe de forma tradicional
-
-            const productId = getProductIdFromURL();
-            if (!productId) return;
-
-            const commentText = document.getElementById("commentText").value.trim();
-            if (!commentText) {
-                alert("Por favor, escribe un comentario.");
-                return;
-            }
-
-            try {
-                const token = localStorage.getItem("authToken"); // Obtener el token de autenticación
-                if (!token) {
-                    alert("Debes iniciar sesión para comentar.");
-                    window.location.href = "/login.html";
-                    return;
-                }
-
-                // Realizar la solicitud al backend para agregar el comentario
-                const response = await fetch(`http://localhost:3000/api/product/${productId}/comments`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({ text: commentText }),
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Error ${response.status}: ${response.statusText}`);
-                }
-
-                const data = await response.json();
-                if (data.message === "Comentario agregado") {
-                    alert("Comentario agregado exitosamente.");
-                    loadProduct(); // Recargar los detalles del producto para mostrar el nuevo comentario
-                } else {
-                    alert("Error al agregar el comentario.");
-                }
-            } catch (error) {
-                console.error("Error al enviar el comentario:", error);
-                alert("Hubo un error al enviar el comentario. Por favor, intenta nuevamente.");
-            }
-        });
-
-        // Función para cargar los comentarios en la página
-        function loadComments(comments, isOwner) {
-            const commentsContainer = document.getElementById("commentsContainer");
-            if (!commentsContainer) return;
-
-            commentsContainer.innerHTML = "";
-
-            if (comments.length === 0) {
-                commentsContainer.innerHTML = '<p class="text-gray-600">No hay comentarios aún.</p>';
-                return;
-            }
-
-            comments.forEach(comment => {
-                const commentElement = document.createElement("div");
-                commentElement.className = "bg-white p-4 rounded-lg shadow-sm mb-4";
-
-                commentElement.innerHTML = `
-                    <div class="flex items-start space-x-4">
-                        <div class="flex-1">
-                            <p class="text-gray-600">${comment.text}</p>
-                            <p class="text-xs text-gray-500">${new Date(comment.date).toLocaleDateString()}</p>
-                            <button class="like-button text-blue-600 text-sm mt-2">Me gusta (${comment.likes || 0})</button>
-                        </div>
-                    </div>
-                    <div class="mt-4 space-y-2">
-                        ${comment.replies.map(reply => `
-                            <div class="flex items-start space-x-4">
-                                <div class="flex-1">
-                                    <p class="text-gray-600">${reply.text}</p>
-                                    <p class="text-xs text-gray-500">${new Date(reply.date).toLocaleDateString()}</p>
-                                    <p class="text-xs text-gray-500">Respuesta del vendedor</p>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-
-                if (isOwner) {
-                    const replyForm = document.createElement("form");
-                    replyForm.className = "mt-2";
-                    replyForm.innerHTML = `
-                        <textarea class="w-full p-2 border border-gray-300 rounded-lg text-sm" placeholder="Escribe una respuesta..." required></textarea>
-                        <button type="submit" class="bg-blue-600 text-white px-4 py-1 rounded-lg mt-2 text-sm">Responder</button>
-                    `;
-
-                    replyForm.addEventListener("submit", async (e) => {
-                        e.preventDefault();
-                        const replyText = e.target.querySelector("textarea").value.trim();
-
-                        if (!replyText) {
-                            alert("Por favor, escribe una respuesta.");
-                            return;
-                        }
-
-                        try {
-                            const productId = getProductIdFromURL();
-                            const token = localStorage.getItem("authToken");
-
-                            const response = await fetch(`http://localhost:3000/api/product/${productId}/comments/${comment._id}/reply`, {
-                                method: "POST",
-                                headers: {
-                                    "Content-Type": "application/json",
-                                    "Authorization": `Bearer ${token}`,
-                                },
-                                body: JSON.stringify({ text: replyText }),
-                            });
-
-                            if (!response.ok) throw new Error("Error al enviar la respuesta.");
-                            const data = await response.json();
-
-                            if (data.message === "Respuesta agregada") {
-                                loadProduct();
-                            } else {
-                                alert("Error al enviar la respuesta.");
-                            }
-                        } catch (error) {
-                            console.error("Error:", error);
-                            alert("Hubo un error al enviar la respuesta.");
-                        }
-                    });
-
-                    commentElement.appendChild(replyForm);
-                }
-
-                commentElement.querySelector(".like-button").addEventListener("click", async () => {
-                    try {
-                        const productId = getProductIdFromURL();
-                        const token = localStorage.getItem("authToken");
-
-                        const response = await fetch(`http://localhost:3000/api/product/${productId}/comments/${comment._id}/like`, {
-                            method: "POST",
-                            headers: {
-                                "Authorization": `Bearer ${token}`,
-                            },
-                        });
-
-                        if (!response.ok) throw new Error("Error al dar me gusta.");
-                        const data = await response.json();
-
-                        if (data.message === "Me gusta agregado") {
-                            loadProduct();
-                        } else {
-                            alert("Error al dar me gusta.");
-                        }
-                    } catch (error) {
-                        console.error("Error:", error);
-                        alert("Hubo un error al dar me gusta.");
-                    }
-                });
-
-                commentsContainer.appendChild(commentElement);
-            });
-        }
-
-        // Función para cargar los datos del producto desde la API
-        async function loadProduct() {
-            const productId = getProductIdFromURL();
-            if (!productId) {
-                alert("Producto no encontrado.");
-                window.location.href = "/";
-                return;
-            }
-
-            try {
-                const productResponse = await fetch(`http://localhost:3000/api/product/${productId}`);
-                if (!productResponse.ok) throw new Error("Error al cargar el producto.");
-                const product = await productResponse.json();
-
-                if (!product) {
-                    alert("El producto no existe o ha sido eliminado.");
-                    window.location.href = "/";
-                    return;
-                }
-
-                // Verificar si el usuario es el dueño del producto
-                const userId = localStorage.getItem("userId");
-                const isOwner = product.userId._id === userId;
-
-                // Mostrar u ocultar elementos según el rol del usuario
-                if (isOwner) {
-                    document.getElementById("buyButton").classList.add("hidden");
-                    document.getElementById("publicationsButton").classList.remove("hidden");
-                } else {
-                    document.getElementById("buyButton").classList.remove("hidden");
-                    document.getElementById("publicationsButton").classList.add("hidden");
-                }
-
-                // Cargar imágenes
-                const mainImage = document.getElementById("mainImage");
-                const thumbnailContainer = document.getElementById("thumbnail-container");
-                if (product.images && product.images.length > 0) {
-                    mainImage.src = product.images[0];
-                    thumbnailContainer.innerHTML = product.images.map((img, index) => `
-                        <img src="${img}" class="w-20 h-20 object-cover rounded-lg cursor-pointer hover:opacity-75" onclick="changeImage('${img}')" alt="Miniatura ${index + 1}">
-                    `).join("");
-                } else {
-                    mainImage.src = "https://via.placeholder.com/600x400";
-                    thumbnailContainer.innerHTML = "";
-                }
-
-                // Cargar información del producto
-                const formattedPrice = formatCurrency(product.price, product.currency);
-                document.getElementById("productName").textContent = product.name;
-                document.getElementById("productPrice").textContent = `${formattedPrice}`;
-                document.getElementById("productCondition").textContent = `Estado: ${product.condition || "Nuevo"}`;
-                document.getElementById("productDescription").textContent = product.description;
-
-                // Cargar información del vendedor
-                document.getElementById("sellerName").textContent = product.userId?.fullName || "Anónimo";
-                document.getElementById("sellerSales").textContent = product.userId?.sales || 0;
-                document.getElementById("productStock").textContent = product.stock || 0;
-                document.getElementById("productAvailability").textContent = product.availability || "En stock";
-
-                // Cargar comentarios
-                const commentsResponse = await fetch(`http://localhost:3000/api/product/${productId}/comments`);
-                if (!commentsResponse.ok) throw new Error("Error al cargar los comentarios.");
-                const comments = await commentsResponse.json();
-                loadComments(comments, isOwner); // Llamar a la función loadComments
-            } catch (error) {
-                console.error("Error al cargar el producto:", error);
-                alert("Hubo un error al cargar el producto.");
-            }
-        }
-
-        // Función para cambiar la imagen principal
-        function changeImage(src) {
-            document.getElementById("mainImage").src = src;
-        }
-
-        // Función para verificar la sesión del usuario
-        function checkUserSession() {
-            const isLoggedIn = JSON.parse(localStorage.getItem('userLoggedIn')) || false;
-            const usernameElement = document.getElementById('username');
-            const logoutButton = document.getElementById('logoutButton');
-
-            if (isLoggedIn) {
-                const userName = localStorage.getItem('userName') || "Usuario Anonimo";
-                usernameElement.textContent = userName;
-                logoutButton.classList.remove('hidden');
-            } else {
-                usernameElement.textContent = "Iniciar Sesión";
-                logoutButton.classList.add('hidden');
-            }
-        }
-
-        // Función para cerrar sesión
-        function logout() {
-            localStorage.removeItem('userLoggedIn');
-            localStorage.removeItem('userName');
-            localStorage.removeItem('token'); // Eliminar el token
-            window.location.href = "/login.html";
-        }
-
-        async function loadNotifications() {
-            const token = localStorage.getItem('authToken');
-            if (!token) return;
-
-            try {
-                const response = await fetch('http://localhost:3000/api/notifications', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
-
-                if (!response.ok) throw new Error('Error al cargar las notificaciones.');
-
-                const notifications = await response.json();
-                const notificationCount = notifications.length;
-                const notificationElement = document.getElementById('notificationCount');
-
-                if (notificationCount > 0) {
-                    notificationElement.textContent = notificationCount;
-                    notificationElement.classList.remove('hidden');
-                } else {
-                    notificationElement.classList.add('hidden');
-                }
-            } catch (error) {
-                console.error('Error al cargar las notificaciones:', error);
-            }
-        }
-
-        // Función para formatear valores de moneda
-        function formatCurrency(amount, currency) {
-            const formatter = new Intl.NumberFormat('es-UY', {
-                style: 'currency',
-                currency: currency,
-                minimumFractionDigits: 0,
-            });
-            return formatter.format(amount);
-        }
-
-        // Inicializar al cargar la página
-        document.addEventListener("DOMContentLoaded", () => {
-            checkUserSession();
-            loadProduct();
-            loadNotifications();
-
-            // Redirigir a comprar.html al hacer clic en "Comprar Ahora"
-            const buyButton = document.getElementById("buyButton");
-            if (buyButton) {
-                buyButton.addEventListener("click", () => {
-                    const productId = getProductIdFromURL(); // Obtener el ID del producto
-                    if (productId) {
-                        window.location.href = `comprar.html?id=${productId}`; // Redirigir con el ID
-                    } else {
-                        alert("No se pudo obtener el ID del producto.");
-                    }
-                });
-            } else {
-                console.error("El botón 'Comprar Ahora' no fue encontrado.");
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', async function () {
-            const token = localStorage.getItem('authToken');
-            if (!token) {
-                alert('Por favor, inicia sesión para ver los detalles del producto.');
-                window.location.href = '/login.html';
-                return;
-            }
-
-            const socket = io("http://localhost:3000");
-            const userId = localStorage.getItem('userId');
-            if (userId) {
-                socket.emit("joinRoom", userId);
-            }
-
-            socket.on("notification", (notification) => {
-                console.log("Nueva notificación:", notification);
-                updateNotificationCount(1);
-            });
-
-            async function updateNotificationCount(increment = 0) {
-                const notificationElement = document.querySelector('.fa-bell + span');
-                let count = parseInt(notificationElement.textContent) || 0;
-                count += increment;
-                notificationElement.textContent = count > 0 ? count : '';
-                notificationElement.classList.toggle('hidden', count === 0);
-            }
-
-            async function markAllNotificationsAsRead() {
-                try {
-                    const response = await fetch('http://localhost:3000/api/notifications/mark-all-as-read', {
-                        method: 'PUT',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                        },
-                    });
-
-                    if (response.ok) {
-                        updateNotificationCount(-parseInt(document.querySelector('.fa-bell + span').textContent || 0));
-                    }
-                } catch (error) {
-                    console.error("Error al marcar notificaciones como leídas:", error);
-                }
-            }
-
-            document.querySelector('.fa-bell').addEventListener('click', markAllNotificationsAsRead);
-        });
-    </script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="module" src="/js/producto.js"></script>
 </body>
 </html>

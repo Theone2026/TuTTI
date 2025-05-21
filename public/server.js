@@ -115,23 +115,19 @@ const productSchema = new mongoose.Schema({
   datePosted: { type: Date, default: Date.now },
   isOnSale: { type: Boolean, default: false }, // Nuevo campo para ofertas
   originalPrice: { type: Number }, // Precio original (opcional)
-  comments: {
-    type: [
+  comments: [{
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    text: { type: String, required: true },
+    date: { type: Date, default: Date.now },
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Agregamos este campo
+    replies: [
       {
         userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
         text: { type: String, required: true },
         date: { type: Date, default: Date.now },
-        replies: [
-          {
-            userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-            text: { type: String, required: true },
-            date: { type: Date, default: Date.now },
-          },
-        ],
       },
     ],
-    default: [], // Array vacío por defecto
-  },
+  }],
   currency: { type: String, required: true }, // Añadir campo para la moneda
   stock: { type: Number, required: true }, // Añadir campo para el stock
   status: { type: String, default: "active" }, // Añadir campo para el estado del producto
@@ -158,35 +154,20 @@ const purchaseSchema = new mongoose.Schema({
 const Purchase = mongoose.model("Purchase", purchaseSchema);
 
 // Middleware de autenticación
-const authenticate = async (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) {
-    return res.status(403).json({ message: "Acceso denegado. No hay token." });
-  }
+const jwt = require('jsonwebtoken');
 
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    const isValidToken = await ValidToken.findOne({ token, userId: decoded.userId });
-    if (!isValidToken) {
-      return res.status(403).json({ message: "Token inválido o sesión cerrada." });
-    }
+function authenticate(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
 
-    const user = await User.findById(decoded.userId); // Fetch user data
-    if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado." });
-    }
+  if (token == null) return res.sendStatus(401);
 
-    req.userId = decoded.userId;
-    req.user = user; // Attach user data to the request
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.userId = user.userId;
     next();
-  } catch (error) {
-    console.error("❌ Error de autenticación:", error);
-    if (error.name === "TokenExpiredError") {
-      return res.status(403).json({ message: "Token expirado. Por favor, inicia sesión nuevamente." });
-    }
-    return res.status(403).json({ message: "Token inválido." });
-  }
-};
+  });
+}
 
 // Esquema de notificaciones
 const notificationSchema = new mongoose.Schema({
@@ -444,6 +425,12 @@ app.post("/api/product/:productId/comments", authenticate, async (req, res) => {
   const { text } = req.body;
   const userId = req.userId; // Obtén el userId del middleware de autenticación
 
+// En el backend, al crear un comentario o respuesta
+const newComment = new Comment({
+  text: req.body.text,
+  userId: req.user._id,
+  isOwner: req.user._id.toString() === product.userId.toString()
+});
   try {
     // Verificar si el ID del producto es válido
     if (!mongoose.Types.ObjectId.isValid(productId)) {
@@ -484,7 +471,7 @@ app.post("/api/product/:productId/comments", authenticate, async (req, res) => {
   }
 });
 
-app.post("/api/checkout", authenticate, async (req, res) => {
+app.post('/api/checkout', authenticate, async (req, res) => {
   const { productId, deliveryMethod, paymentMethod } = req.body;
   const buyerId = req.userId;
 
@@ -495,15 +482,33 @@ app.post("/api/checkout", authenticate, async (req, res) => {
       return res.status(404).json({ message: "Producto no encontrado" });
     }
 
+    // Generar ID de chat único
+    const chatId = uuidv4();
+    console.log('Generated chatId:', chatId);
     // Crear la compra
     const purchase = new Purchase({
-      buyerId,
       productId,
+      buyerId,
+      sellerId: product.userId,
+      deliveryMethod,
+      paymentMethod,
+      chatId, // Asegúrate de incluir el chatId en la compra
       price: product.price,
       datePurchased: new Date(),
     });
+
     await purchase.save();
 
+    // Crear el chat
+    const chat = new Chat({
+      chatId,
+      productId,
+      buyerId,
+      sellerId: product.userId
+    });
+
+    await chat.save();
+    console.log('Saved chat:', chat);
     // Pausar el producto
     product.status = "paused";
     await product.save();
@@ -517,7 +522,7 @@ app.post("/api/checkout", authenticate, async (req, res) => {
     await notification.save();
     emitNotification(product.userId._id, notification); // Emitir notificación
 
-    res.status(200).json({ success: true, message: "Compra procesada exitosamente." });
+    res.status(200).json({ success: true, message: "Compra procesada exitosamente", chatId });
   } catch (error) {
     console.error("❌ Error al procesar la compra:", error);
     res.status(500).json({ message: "Error interno del servidor" });
@@ -678,33 +683,65 @@ app.post("/api/product/:productId/comments/:commentId/reply", authenticate, asyn
 // Ruta para dar "Me gusta" a un comentario
 app.post("/api/product/:productId/comments/:commentId/like", authenticate, async (req, res) => {
   const { productId, commentId } = req.params;
-  const userId = req.userId; // Obtén el userId del middleware de autenticación
+  const userId = req.userId;
 
   try {
-    // Verificar si el ID del producto es válido
-    if (!mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(400).json({ message: "ID de producto no válido" });
-    }
-
-    // Buscar el producto en la base de datos
     const product = await Product.findById(productId);
     if (!product) {
+      return res.status(404).json({ message: "Producto no encontrado" });
     }
 
-    // Buscar el comentario específico
     const comment = product.comments.id(commentId);
     if (!comment) {
       return res.status(404).json({ message: "Comentario no encontrado" });
     }
 
-    // Incrementar el contador de "Me gusta"
-    comment.likes = (comment.likes || 0) + 1;
+    // Verificar si el usuario ya dio "Me gusta"
+    const likeIndex = comment.likes.indexOf(userId);
+    if (likeIndex > -1) {
+      // Si ya dio "Me gusta", lo quitamos
+      comment.likes.splice(likeIndex, 1);
+    } else {
+      // Si no ha dado "Me gusta", lo agregamos
+      comment.likes.push(userId);
+    }
     await product.save();
 
-    // Respuesta exitosa
-    res.status(200).json({ message: "Me gusta agregado", likes: comment.likes });
+    res.status(200).json({ likes: comment.likes.length });
   } catch (error) {
-    console.error("❌ Error al dar me gusta:", error);
+    console.error("❌ Error al procesar el 'Me gusta':", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+});
+
+app.post("/api/product/:productId/comments/:commentId/reply", authenticate, async (req, res) => {
+  const { productId, commentId } = req.params;
+  const { text } = req.body;
+  const userId = req.userId;
+
+  try {
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: "Producto no encontrado" });
+    }
+
+    const comment = product.comments.id(commentId);
+    if (!comment) {
+      return res.status(404).json({ message: "Comentario no encontrado" });
+    }
+
+    const reply = {
+      userId: userId,
+      text: text,
+      date: new Date(),
+    };
+
+    comment.replies.push(reply);
+    await product.save();
+
+    res.status(201).json({ message: "Respuesta agregada", reply });
+  } catch (error) {
+    console.error("❌ Error al agregar la respuesta:", error);
     res.status(500).json({ message: "Error interno del servidor" });
   }
 });

@@ -290,7 +290,7 @@
 
             try {
                 console.log(`Fetching product data for ID: ${productId}`);
-                const response = await fetch(`http://localhost:3000/api/product/${productId}`);
+                const response = await fetch(`https://tu-tti.vercel.app/api/product/${productId}`);
                 if (!response.ok) {
                     throw new Error('Error al cargar el producto.');
                 }
@@ -416,7 +416,7 @@
 
             try {
                 // Enviar la solicitud al servidor
-                const response = await fetch(`http://localhost:3000/api/products/${productId}`, {
+                const response = await fetch(`https://tu-tti.vercel.app/api/products/${productId}`, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`, // Incluir el token aquí
@@ -435,6 +435,35 @@
                 console.error('Error:', error);
                 alert('Hubo un error al editar el producto. Inténtalo de nuevo.');
             }
+            // Handle file upload in edit-producto.html
+            app.post('/api/edit-producto/:id', authenticate, upload.single('image'), async (req, res) => {
+              const { id } = req.params;
+              const userId = req.userId;
+              const file = req.file;
+            
+              if (!file) {
+                return res.status(400).json({ error: "No se proporcionó ninguna imagen." });
+              }
+            
+              try {
+                  // Guardar la imagen en la base de datos
+                  const updatedProduct = await Product.findByIdAndUpdate(id, {
+                      name: req.body.name,
+                      category: req.body.category,
+                      price: parseFloat(req.body.price),
+                      description: req.body.description,
+                      images: [
+                          "/uploads/" + file.filename
+                      ],
+                      userId: userId,
+                  });
+            
+                  res.status(200).json({ message: "Producto editado exitosamente.", product: updatedProduct });
+              } catch (error) {
+                  console.error("❌ Error al editar el producto:", error);
+                  res.status(500).json({ message: "Error interno del servidor" });
+              }
+            });
         });
 
         // Cargar datos del producto al cargar la página

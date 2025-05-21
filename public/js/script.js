@@ -63,7 +63,7 @@ async function submitForm(event) {
     }
 
     try {
-        const response = await fetch('http://localhost:3000/submit-product', {
+        const response = await fetch('https://tu-tti.vercel.app/submit-product', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`,

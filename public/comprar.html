@@ -6,6 +6,7 @@
     <title>Procesar Compra - TuTTi</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
 </head>
 <body class="bg-gray-50">
     <!-- Header -->
@@ -68,7 +69,7 @@
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-700">Total:</span>
-                        <span id="totalPrice" class="text-gray-700 font-bold">Cargando...</span>
+                        <span id="totalPrice" <p>Total: <span id="total"></span></p>
                     </div>
                 </div>
             </div>
@@ -76,6 +77,7 @@
             <!-- Información de Envío -->
             <div class="bg-white p-6 rounded-lg shadow-md">
                 <h2 class="text-xl font-bold mb-4">Elige la forma de entrega</h2>
+                <!-- Opción 1: Enviar a domicilio -->
                 <!-- Opción 1: Enviar a domicilio -->
                 <div class="mb-4 p-4 border border-gray-300 rounded-lg">
                     <label class="flex items-center cursor-pointer">
@@ -88,6 +90,7 @@
                         </div>
                     </label>
                 </div>
+
                 <!-- Opción 2: Retirar en el domicilio del vendedor -->
                 <div class="mb-4 p-4 border border-gray-300 rounded-lg">
                     <label class="flex items-center cursor-pointer">
@@ -95,7 +98,7 @@
                         <div>
                             <span class="font-medium">Retirar en el domicilio del vendedor</span>
                             <p class="text-sm text-gray-600">Gratis</p>
-                            <p class="text-sm text-gray-600">Centro, Montevideo</p>
+                            <p id="sellerAddress" class="text-sm text-gray-600">Cargando...</p>
                         </div>
                     </label>
                 </div>
@@ -147,321 +150,8 @@
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script>
-        // Función para obtener el ID del producto desde la URL
-        function getProductIdFromURL() {
-            const params = new URLSearchParams(window.location.search);
-            return params.get("id");
-        }
 
-        // Función para cargar los detalles del producto
-        async function loadProduct() {
-            const productId = getProductIdFromURL();
-            if (!productId) {
-                alert("Producto no encontrado.");
-                window.location.href = "/";
-                return;
-            }
-
-            try {
-                // Obtener el producto desde la API
-                const productResponse = await fetch(`http://localhost:3000/api/product/${productId}`);
-                if (!productResponse.ok) throw new Error("Error al cargar el producto.");
-                const product = await productResponse.json();
-
-                // Verificar si el producto existe
-                if (!product) {
-                    alert("El producto no existe o ha sido eliminado.");
-                    window.location.href = "/";
-                    return;
-                }
-
-                // Mostrar los detalles del producto
-                const formattedPrice = formatCurrency(product.price, product.currency);
-                document.getElementById("productName").textContent = product.name;
-                document.getElementById("productPrice").textContent = `${formattedPrice}`;
-                document.getElementById("totalPrice").textContent = `${formattedPrice}`;
-                document.getElementById("productNameSummary").textContent = product.name;
-                document.getElementById("totalPriceSummary").textContent = `${formattedPrice}`;
-
-                // Mostrar la imagen de portada del producto
-                if (product.images && product.images.length > 0) {
-                    document.querySelector(".w-full.h-64 img").src = product.images[0];
-                }
-            } catch (error) {
-                console.error("Error al cargar el producto:", error);
-                alert("Hubo un error al cargar el producto.");
-            }
-        }
-
-        // Función para verificar la sesión del usuario
-        function checkUserSession() {
-            const isLoggedIn = JSON.parse(localStorage.getItem('userLoggedIn')) || false;
-            const usernameElement = document.getElementById('username');
-            const logoutButton = document.getElementById('logoutButton');
-
-            if (isLoggedIn) {
-                const userName = localStorage.getItem('userName') || "Usuario Anonimo";
-                usernameElement.textContent = userName;
-                logoutButton.classList.remove('hidden');
-            } else {
-                usernameElement.textContent = "Iniciar Sesión";
-                logoutButton.classList.add('hidden');
-                alert("Debes iniciar sesión para acceder a esta página.");
-                window.location.href = "/login.html";
-            }
-        }
-
-        // Función para cerrar sesión
-        function logout() {
-            localStorage.removeItem('userLoggedIn');
-            localStorage.removeItem('userName');
-            localStorage.removeItem('authToken'); // Eliminar el token
-            window.location.href = "/login.html";
-        }
-
-        // Función para cargar la dirección del usuario
-        async function loadUserAddress() {
-            const token = localStorage.getItem('authToken');
-            if (!token) {
-                alert('Por favor, inicia sesión para continuar.');
-                window.location.href = '/login.html';
-                return;
-            }
-
-            try {
-                const response = await fetch('http://localhost:3000/api/user', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Error ${response.status}: ${response.statusText}`);
-                }
-
-                const userData = await response.json();
-                const userAddress = `${userData.address}, ${userData.city}, ${userData.postalCode}, ${userData.country}`;
-                document.getElementById('userAddress').textContent = userAddress;
-                localStorage.setItem('userAddress', userAddress); // Guardar en localStorage
-            } catch (error) {
-                console.error('Error al cargar la dirección del usuario:', error);
-                alert('Hubo un error al cargar la dirección. Inténtalo de nuevo.');
-            }
-        }
-
-        // Función para editar la dirección del usuario
-        function editUserAddress() {
-            const newAddress = prompt("Introduce tu nueva dirección:");
-            if (newAddress) {
-                document.getElementById('userAddress').textContent = newAddress;
-                localStorage.setItem('userAddress', newAddress); // Guardar en localStorage
-                // Guardar la nueva dirección en el servidor
-                const token = localStorage.getItem('authToken');
-                fetch('http://localhost:3000/api/user/address', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({ address: newAddress }),
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Error al actualizar la dirección.');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    alert('Dirección actualizada exitosamente.');
-                })
-                .catch(error => {
-                    console.error('Error al actualizar la dirección:', error);
-                    alert('Hubo un error al actualizar la dirección. Inténtalo de nuevo.');
-                });
-            }
-        }
-
-        // Función para procesar la compra
-        async function processPurchase() {
-            const productId = getProductIdFromURL();
-            const token = localStorage.getItem('authToken');
-            const deliveryMethod = document.querySelector('input[name="deliveryMethod"]:checked').value;
-            const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-
-            if (!token) {
-                alert("Debes iniciar sesión para continuar con la compra.");
-                window.location.href = "/login.html";
-                return;
-            }
-
-            const orderData = {
-                productId,
-                deliveryMethod,
-                paymentMethod,
-            };
-
-            try {
-                const response = await fetch("http://localhost:3000/api/checkout", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`,
-                    },
-                    body: JSON.stringify(orderData),
-                });
-
-                if (!response.ok) throw new Error("Error al procesar la compra.");
-                const data = await response.json();
-
-                if (data.success) {
-                    alert("Compra procesada exitosamente.");
-                    window.location.href = "/pedidos.html";
-                } else {
-                    alert("Hubo un problema al procesar la compra.");
-                }
-            } catch (error) {
-                console.error("Error al procesar la compra:", error);
-                alert("Hubo un error al procesar la compra. Por favor, intenta nuevamente.");
-            }
-        }
-
-        // Función para formatear valores de moneda
-        function formatCurrency(amount, currency) {
-            const formatter = new Intl.NumberFormat('es-UY', {
-                style: 'currency',
-                currency: currency,
-                minimumFractionDigits: 0,
-            });
-            return formatter.format(amount);
-        }
-
-        // Inicializar al cargar la página
-        document.addEventListener("DOMContentLoaded", () => {
-            checkUserSession();
-            loadProduct();
-            loadUserAddress();
-
-            document.getElementById('editAddressLink').addEventListener('click', (e) => {
-                e.preventDefault();
-                editUserAddress();
-            });
-
-            const payButton = document.getElementById("payButton");
-            if (payButton) {
-                // Evento para procesar la compra
-                payButton.addEventListener("click", processPurchase);
-            } else {
-                console.error('Elemento payButton no encontrado');
-            }
-
-            const continueButton = document.getElementById("continueButton");
-            if (continueButton) {
-                // Evento para continuar con la compra
-                continueButton.addEventListener("click", async () => {
-                    const deliveryMethod = document.querySelector('input[name="deliveryMethod"]:checked').value;
-                    alert(`Has seleccionado: ${deliveryMethod === "homeDelivery" ? "Enviar a domicilio" : "Retirar en el domicilio del vendedor"}`);
-
-                    // Aquí puedes redirigir a la siguiente página o procesar la compra
-                    const productId = getProductIdFromURL();
-                    const userId = localStorage.getItem('userId');
-                    const token = localStorage.getItem('authToken'); // Añadir esta línea para definir el token
-
-                    if (!userId) {
-                        alert("Debes iniciar sesión para continuar con la compra.");
-                        window.location.href = "/login.html";
-                        return;
-                    }
-
-                    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-
-                    const orderData = {
-                        userId,
-                        productId,
-                        deliveryMethod,
-                        paymentMethod,
-                    };
-
-                    // Enviar los datos al backend para procesar la compra
-                    try {
-                        const response = await fetch("http://localhost:3000/api/checkout", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "Authorization": `Bearer ${token}`,
-                            },
-                            body: JSON.stringify(orderData),
-                        });
-
-                        if (!response.ok) {
-                            throw new Error("Error en la respuesta del servidor.");
-                        }
-
-                        const data = await response.json();
-                        if (data.success) {
-                            alert("Compra procesada exitosamente.");
-                            window.location.href = "/confirmacion.html"; // Redirigir a la página de confirmación
-                        } else {
-                            alert("Hubo un error al procesar la compra: " + data.message);
-                        }
-                    } catch (error) {
-                        console.error("Error al procesar la compra:", error);
-                        alert("Hubo un error al procesar la compra. Por favor, intenta nuevamente.");
-                    }
-                });
-            } else {
-                console.error('Elemento continueButton no encontrado');
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', async function () {
-            const token = localStorage.getItem('authToken');
-            if (!token) {
-                alert('Por favor, inicia sesión para procesar tu compra.');
-                window.location.href = '/login.html';
-                return;
-            }
-
-            const socket = io("http://localhost:3000");
-            const userId = localStorage.getItem('userId');
-            if (userId) {
-                socket.emit("joinRoom", userId);
-            }
-
-            socket.on("notification", (notification) => {
-                console.log("Nueva notificación:", notification);
-                updateNotificationCount(1);
-            });
-
-            async function updateNotificationCount(increment = 0) {
-                const notificationElement = document.querySelector('.fa-bell + span');
-                let count = parseInt(notificationElement.textContent) || 0;
-                count += increment;
-                notificationElement.textContent = count > 0 ? count : '';
-                notificationElement.classList.toggle('hidden', count === 0);
-            }
-
-            async function markAllNotificationsAsRead() {
-                try {
-                    const response = await fetch('http://localhost:3000/api/notifications/mark-all-as-read', {
-                        method: 'PUT',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                        },
-                    });
-
-                    if (response.ok) {
-                        updateNotificationCount(-parseInt(document.querySelector('.fa-bell + span').textContent || 0));
-                    }
-                } catch (error) {
-                    console.error("Error al marcar notificaciones como leídas:", error);
-                }
-            }
-
-            document.querySelector('.fa-bell').addEventListener('click', markAllNotificationsAsRead);
-        });
-    </script>
-</body>
+</body> 
+<script src="/socket.io/socket.io.js"></script>
+<script type="module" src="/js/comprar.js"></script>
 </html>
