@@ -1,242 +1,54 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Inicia sesión en Tutti Tienda para comenzar a comprar y vender productos.">
-    <title>Iniciar sesión | Tutti Tienda</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #e0dfdf, #ffffff);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .container {
-            max-width: 400px;
-            width: 100%;
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgb(0, 0, 0);
-            animation: fadeIn 1s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 2rem;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        label {
-            font-size: 1rem;
-            color: #555;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        input[type="email"],
-        input[type="password"] {
-            width: 100%;
-            padding: 12px;
-            font-size: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #fafafa;
-            transition: all 0.3s ease;
-        }
-
-        input[type="email"]:focus,
-        input[type="password"]:focus {
-            border-color: #2E8B57;
-            box-shadow: 0 0 8px rgba(255, 111, 97, 0.5);
-            outline: none;
-        }
-
-        .password-container {
-            position: relative;
-        }
-
-        .toggle-password {
-            cursor: pointer;
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.2rem;
-            color: #777;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #000000, #000000);
-            color: #fff;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .btn:hover {
-            background: linear-gradient(135deg, #000000, #bbbdbb);
-        }
-
-        .link {
-            text-align: center;
-            font-size: 0.9rem;
-            margin-top: 20px;
-        }
-
-        .link a {
-            color: #ff6f61;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .footer {
-            text-align: center;
-            font-size: 0.8rem;
-            margin-top: 30px;
-        }
-
-        .footer a {
-            color: #ff6f61;
-            text-decoration: none;
-        }
-
-        .recaptcha {
-            margin-top: 10px;
-        }
-
-        .privacy {
-            display: block;
-            margin-top: 10px;
-            font-size: 0.8rem;
-        }
-    </style>
+    <title>Iniciar Sesión - TuTTi</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-
 <body>
-
-    <div class="container">
-        <h1>Iniciar sesión</h1>
-
-        <form id="login-form">
-            <div class="form-group">
-                <label for="email">Correo electrónico</label>
-                <input type="email" id="email" name="email" placeholder="Introduce tu correo electrónico" required autocomplete="email">
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <img src="img/logo.png" aalt="TuTTi Logo" class="login-logo">
+                <h1>Iniciar Sesión</h1>
+                <p>Ingresa tus credenciales para acceder a tu cuenta</p>
             </div>
-
-            <div class="form-group password-container">
-                <label for="password">Contraseña</label>
-                <!-- Agregado autocomplete para la contraseña -->
-                <input type="password" id="password" name="password" placeholder="Introduce tu contraseña" required autocomplete="current-password">
-                <span class="toggle-password" onclick="togglePassword()">👁️</span>
+            
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="email">Correo Electrónico</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" name="password" required>
+                    <a href="/forgot-password" class="forgot-password">¿Olvidaste tu contraseña?</a>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block">Iniciar Sesión</button>
+                
+                <div class="login-footer">
+                    <p>¿No tienes una cuenta? <a href="/register">Regístrate aquí</a></p>
+                </div>
+            </form>
+            
+            <div class="social-login">
+                <p>O inicia sesión con:</p>
+                <div class="social-buttons">
+                    <button class="btn btn-social btn-google">
+                        <i class="fab fa-google"></i> Google
+                    </button>
+                    <button class="btn btn-social btn-facebook">
+                        <i class="fab fa-facebook-f"></i> Facebook
+                    </button>
+                </div>
             </div>
-
-            <button type="submit" class="btn">Iniciar sesión</button>
-        </form>
-
-        <p class="link">
-            ¿No tienes cuenta? <a href="registro.html">Crear cuenta</a>
-        </p>
-
-        <div class="footer">
-            <p>&copy; 2025 Tutti Tienda - Todos los derechos reservados</p>
-            <p>
-                <a href="#">Cómo cuidamos tu privacidad</a>
-            </p>
-            <p class="recaptcha">
-                <a href="#">Protegido por reCAPTCHA</a>
-            </p>
-            <p class="privacy">
-                <a href="#">Privacidad</a> | <a href="#">Condiciones</a>
-            </p>
         </div>
     </div>
 
-    <script>
-        // Cambia esta URL por la del backend que despliegues (ejemplo: en Heroku, Render, etc.)
-        const BACKEND_URL = "http://localhost:3000"; // URL local del servidor
-
-        // Manejo del formulario de inicio de sesión
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault(); // Evita la recarga de la página
-
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            try {
-                const response = await fetch(`${BACKEND_URL}/api/login`, { // Cambia la URL según tu backend
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ email, password }),
-                });
-
-                const data = await response.json();
-                console.log('Respuesta del backend:', data);
-
-                if (response.ok) {
-                    // Login exitoso
-                    alert(data.message);
-
-                    // Guarda el token JWT en localStorage
-                    localStorage.setItem('authToken', data.token);
-
-                    // Verifica que el token esté guardado
-                    console.log('Token guardado:', localStorage.getItem('authToken'));
-
-                    // Redirige al perfil
-                    console.log('Redirigiendo a perfil...');
-                    window.location.href = 'perfil.html';
-                } else {
-                    // Error en el inicio de sesión
-                    alert(data.message);
-                }
-            } catch (error) {
-                console.error('Error al autenticar el usuario:', error);
-                alert('Hubo un error al intentar iniciar sesión. Por favor, inténtalo nuevamente.');
-            }
-        });
-
-        // Función para alternar la visibilidad de la contraseña
-        function togglePassword() {
-            const passwordField = document.getElementById('password');
-            const passwordType = passwordField.type === "password" ? "text" : "password";
-            passwordField.type = passwordType;
-        }
-    </script>
-
+    <script src="js/auth.js"></script>
 </body>
-
 </html>

@@ -39,7 +39,7 @@
             <div class="purchase-details">
                 <p>Color: Azul acero</p>
                 <div class="buttons">
-                    <button class="btn-primary">Ver compra</button>
+                    <button class="btn-primary" onclick="contactSeller('sellerId', 'productId')">Contactar Vendedor</button>
                     <button class="btn-secondary">Volver a comprar</button>
                 </div>
             </div>
@@ -58,7 +58,7 @@
                 <p>Color: Rojo, Frecuencia: 50 Hz/60 Hz</p>
                 <p>UES entregó tu paquete a las 15:33 hs en José Lupi 381, Rivera, Rivera.</p>
                 <div class="buttons">
-                    <button class="btn-primary">Ver compra</button>
+                    <button class="btn-primary" onclick="contactSeller('${purchase.productId.userId}', '${purchase.productId._id}')">Contactar Vendedor</button>
                     <button class="btn-secondary">Volver a comprar</button>
                 </div>
             </div>
@@ -76,7 +76,7 @@
             <div class="purchase-details">
                 <p>Frecuencia: 50 Hz, Potencia: 650w</p>
                 <div class="buttons">
-                    <button class="btn-primary">Ver compra</button>
+                    <button class="btn-primary" onclick="contactSeller('${purchase.productId.userId}', '${purchase.productId._id}')">Contactar Vendedor</button>
                     <button class="btn-secondary">Volver a comprar</button>
                 </div>
             </div>
@@ -94,7 +94,7 @@
             <div class="purchase-details">
                 <p>Color: Negro</p>
                 <div class="buttons">
-                    <button class="btn-primary">Ver compra</button>
+                    <button class="btn-primary" onclick="contactSeller('${purchase.productId.userId}', '${purchase.productId._id}')">Contactar Vendedor</button>
                     <button class="btn-secondary">Volver a comprar</button>
                 </div>
             </div>
@@ -107,5 +107,10 @@
         </div>
     </footer>
 
+    <script>
+        function contactSeller(sellerId, productId) {
+            window.location.href = `/chat-comprador.html?buyerId=${sellerId}&productId=${productId}`;
+        }
+    </script>
 </body>
 </html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles del Pedido - Tutti Market</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex flex-col items-center justify-center">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+            <h1 class="text-2xl font-bold mb-4">Detalles del Pedido</h1>
+            <div id="orderDetails" class="space-y-4">
+                <!-- Los detalles del pedido se cargarán aquí dinámicamente -->
+            </div>
+            <button onclick="goBack()" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+                Volver
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            const params = new URLSearchParams(window.location.search);
+            const orderId = params.get('orderId');
+            const token = localStorage.getItem('authToken');
+
+            if (!orderId || !token) {
+                alert('Faltan datos para cargar los detalles del pedido.');
+                window.location.href = '/pedidos.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`https://tu-tti.vercel.app/api/purchases/${orderId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                }
+
+                const order = await response.json();
+                const orderDetails = document.getElementById('orderDetails');
+                orderDetails.innerHTML = `
+                    <p><strong>Producto:</strong> ${order.productId.name}</p>
+                    <p><strong>Precio:</strong> $${order.price.toFixed(2)}</p>
+                    <p><strong>Fecha de Compra:</strong> ${new Date(order.datePurchased).toLocaleDateString()}</p>
+                    <p><strong>Dirección de Entrega:</strong> ${order.deliveryAddress}</p>
+                `;
+            } catch (error) {
+                console.error('Error al cargar los detalles del pedido:', error);
+                alert('Hubo un error al cargar los detalles del pedido.');
+                window.location.href = '/pedidos.html';
+            }
+        });
+
+        function goBack() {
+            window.location.href = '/pedidos.html';
+        }
+    </script>
+</body>
+</html>

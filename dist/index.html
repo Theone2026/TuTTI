@@ -3,67 +3,283 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Tutti Tienda - Tu tienda en línea para comprar y vender productos. Encuentra lo que necesitas.">
-    <title>Tutti Tienda</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/styles.css">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>TuTTi - Tu Tienda Tecnológica</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script type="module" crossorigin src="/assets/index-DvaIYy37.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-DJffdBkj.css">
 </head>
-
-<body class="bg-gray-100 text-gray-900">
-
-    <header class="flex items-center justify-between p-4 bg-white shadow-md flex-wrap">
-        <div class="logo mr-6">
-            <a href="#"><img src="/img/logo.png" alt="Tutti Tienda" class="max-w-[150px] h-auto object-contain"></a>
+<body>
+    <!-- Barra Superior -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-links">
+                <a href="#"><i class="fas fa-phone"></i> +598 123 456</a>
+                <a href="#"><i class="fas fa-envelope"></i> contacto@tutti.com</a>
+            </div>
+            <div class="user-links">
+                <a href="/login.html"><i class="fas fa-user"></i> Mi Cuenta</a>
+                <a href="/carrito"><i class="fas fa-shopping-cart"></i> Carrito</a>
+            </div>
         </div>
-        <div class="search-bar flex items-center flex-grow mt-2 md:mt-0 ml-4 space-x-2">
-            <input type="text" placeholder="Buscar productos..." class="p-2 border border-gray-300 rounded-md flex-grow" id="searchInput">
-            <button class="p-2 bg-green-600 text-white rounded-md cursor-pointer" id="searchButton">Buscar</button>
-        </div>
-        <nav class="nav w-full md:w-auto mt-2 md:mt-0">
-            <ul class="flex space-x-5 justify-center">
-                <li class="nav-item"><a href="/index.html" class="nav-link text-black hover:text-green-600">Inicio</a></li>
-                <li class="nav-item"><a href="/comprar.html" class="nav-link text-black hover:text-green-600">Comprar</a></li>
-                <li class="nav-item"><a href="#" class="nav-link text-black hover:text-green-600">Ofertas</a></li>
-                <li class="nav-item hidden" id="sell-link"><a href="/vender.html" class="nav-link text-black hover:text-green-600">Vender</a></li>
-                <li class="nav-item"><a href="/login.html" class="nav-link text-black hover:text-green-600" id="login-link">Ingresar</a></li>
-                <li class="nav-item relative" id="user-menu">
-                    <span id="user-name"></span>
-                    <div class="dropdown-menu absolute right-0 bg-white shadow-md rounded-md p-2 w-40 hidden z-50" id="dropdownMenu">
-                        <a href="/perfil.html" class="block py-2 text-black hover:bg-gray-100">Perfil</a>
-                        <a href="/mis-ventas.html" class="block py-2 text-black hover:bg-gray-100">Mis Ventas</a>
-                        <a href="/mis-compras.html" class="block py-2 text-black hover:bg-gray-100">Mis Compras</a>
-                        <a href="/cerrar_sesion.html" class="block py-2 text-black hover:bg-gray-100">Salir</a>
+    </div>
+
+    <!-- Header Principal -->
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <a href="/">
+                    <img src="img/logo.png" alt="TuTTi Logo">
+                </a>
+            </div>
+            
+            <div class="search-bar">
+                <form action="/buscar" method="get">
+                    <input type="text" placeholder="Buscar productos..." name="q">
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                    <div class="search-categories">
+                        <select name="category">
+                            <option value="">Todas las categorías</option>
+                            <option value="celulares">Celulares</option>
+                            <option value="computadoras">Computadoras</option>
+                            <option value="audio">Audio</option>
+                            <option value="tablets">Tablets</option>
+                        </select>
                     </div>
-                </li>
-            </ul>
-        </nav>
+                </form>
+            </div>
+            
+            <div class="header-actions">
+                <div class="wishlist">
+                    <a href="/favoritos"><i class="fas fa-heart"></i></a>
+                </div>
+                <div class="cart">
+                    <a href="/carrito">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="relative w-full h-[400px] overflow-hidden mb-10">
-        <div class="hero-slide flex w-[300%] h-full transition-transform duration-1000 ease-in-out" id="heroSlide">
-            <img src="/img/product1.jpg" alt="Producto 1" class="w-full h-full object-cover">
-            <img src="/img/product2.jpg" alt="Producto 2" class="w-full h-full object-cover">
-            <img src="/img/product3.jpg" alt="Producto 3" class="w-full h-full object-cover">
+    <!-- Navegación Principal -->
+    <nav class="main-nav">
+        <div class="container">
+            <ul class="nav-links">
+                <li><a href="/">Inicio</a></li>
+                <li class="mega-menu">
+                    <a href="#">Categorías <i class="fas fa-chevron-down"></i></a>
+                    <div class="mega-menu-content">
+                        <div class="mega-menu-column">
+                            <h4>Electrónica</h4>
+                            <ul>
+                                <li><a href="/celulares">Celulares</a></li>
+                                <li><a href="/tablets">Tablets</a></li>
+                                <li><a href="/computadoras">Computadoras</a></li>
+                                <li><a href="/smartwatch">Smartwatches</a></li>
+                            </ul>
+                        </div>
+                        <div class="mega-menu-column">
+                            <h4>Audio</h4>
+                            <ul>
+                                <li><a href="/auriculares">Auriculares</a></li>
+                                <li><a href="/parlantes">Parlantes</a></li>
+                                <li><a href="/audio-profesional">Audio Profesional</a></li>
+                            </ul>
+                        </div>
+                        <div class="mega-menu-column">
+                            <h4>Accesorios</h4>
+                            <ul>
+                                <li><a href="/fundas">Fundas</a></li>
+                                <li><a href="/cargadores">Cargadores</a></li>
+                                <li><a href="/soportes">Soportes</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li><a href="/ofertas">Ofertas</a></li>
+                <li><a href="/nuevos">Nuevos</a></li>
+                <li><a href="/marcas">Marcas</a></li>
+                <li><a href="/contacto">Contacto</a></li>
+            </ul>
         </div>
-        <div class="carousel-controls absolute top-1/2 w-full flex justify-between z-10">
-            <button class="bg-black text-white rounded-full p-2 text-2xl cursor-pointer" id="prev">&#10094;</button>
-            <button class="bg-black text-white rounded-full p-2 text-2xl cursor-pointer" id="next">&#10095;</button>
+    </nav>
+
+    <!-- Slider Principal -->
+    <section class="main-slider">
+        <div class="slider-container">
+            <div class="slide active">
+                <img src="img/slider1.jpg" alt="Ofertas Especiales">
+                <div class="slide-content">
+                    <h2>Gran Liquidación de Verano</h2>
+                    <p>Hasta 40% de descuento en productos seleccionados</p>
+                    <a href="/ofertas" class="btn">Ver Ofertas</a>
+                </div>
+            </div>
+            <div class="slide">
+                <img src="img/slider2.jpg" alt="Nuevos Productos">
+                <div class="slide-content">
+                    <h2>Nuevos Ingresos</h2>
+                    <p>Descubre las últimas novedades en tecnología</p>
+                    <a href="/nuevos" class="btn">Ver Novedades</a>
+                </div>
+            </div>
+            <div class="slider-controls">
+                <button class="prev-slide"><i class="fas fa-chevron-left"></i></button>
+                <button class="next-slide"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="slider-dots"></div>
+        </div>
+    </section>
+
+    <!-- Categorías Destacadas -->
+    <section class="featured-categories">
+        <div class="container">
+            <h2 class="section-title">Categorías Destacadas</h2>
+            <div class="categories-grid">
+                <a href="/celulares" class="category-card">
+                    <img src="img/category1.jpg" alt="Celulares">
+                    <h3>Celulares</h3>
+                </a>
+                <a href="/computadoras" class="category-card">
+                    <img src="img/category2.jpg" alt="Computadoras">
+                    <h3>Computadoras</h3>
+                </a>
+                <a href="/audio" class="category-card">
+                    <img src="img/category3.jpg" alt="Audio">
+                    <h3>Audio</h3>
+                </a>
+                <a href="/tablets" class="category-card">
+                    <img src="img/category4.jpg" alt="Tablets">
+                    <h3>Tablets</h3>
+                </a>
+            </div>
         </div>
     </section>
 
     <!-- Productos Destacados -->
-    <section class="featured-products mb-10 px-5">
-        <h2 class="text-2xl mb-5">Productos Recientes</h2>
-        <div class="products-carousel flex overflow-x-auto gap-5 py-5" id="productsCarousel"></div>
+    <section class="featured-products">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Productos Destacados</h2>
+                <a href="/productos" class="view-all">Ver todos</a>
+            </div>
+            <div class="products-grid" id="featured-products">
+                <!-- Los productos se cargarán aquí dinámicamente -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Banner Promocional -->
+    <section class="promo-banner">
+        <div class="container">
+            <div class="banner-content">
+                <h2>Envío Gratis en compras mayores a $500</h2>
+                <p>Válido para todo Montevideo. Consulta condiciones.</p>
+                <a href="/envios" class="btn">Más información</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ofertas Especiales -->
+    <section class="special-offers">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Ofertas Especiales</h2>
+                <div class="offer-timer">
+                    <span>Termina en:</span>
+                    <div class="timer">23:59:59</div>
+                </div>
+            </div>
+            <div class="products-grid" id="special-offers">
+                <!-- Las ofertas se cargarán aquí dinámicamente -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Marcas Destacadas -->
+    <section class="featured-brands">
+        <div class="container">
+            <h2 class="section-title">Marcas Destacadas</h2>
+            <div class="brands-slider">
+                <div class="brand-slide">
+                    <img src="img/brand1.png" alt="Samsung">
+                </div>
+                <div class="brand-slide">
+                    <img src="img/brand2.png" alt="Apple">
+                </div>
+                <div class="brand-slide">
+                    <img src="img/brand3.png" alt="Xiaomi">
+                </div>
+                <div class="brand-slide">
+                    <img src="img/brand4.png" alt="Huawei">
+                </div>
+                <div class="brand-slide">
+                    <img src="img/brand5.png" alt="LG">
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- Footer -->
-    <footer class="footer bg-white py-5 text-center shadow-md">
-        <p>&copy; 2025 Tutti Tienda - Todos los derechos reservados</p>
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h3>Información</h3>
+                    <ul>
+                        <li><a href="/nosotros">Sobre Nosotros</a></li>
+                        <li><a href="/contacto">Contacto</a></li>
+                        <li><a href="/preguntas-frecuentes">Preguntas Frecuentes</a></li>
+                        <li><a href="/terminos">Términos y Condiciones</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Mi Cuenta</h3>
+                    <ul>
+                        <li><a href="/mi-cuenta">Mi Cuenta</a></li>
+                        <li><a href="/historial">Historial de Pedidos</a></li>
+                        <li><a href="/lista-deseos">Lista de Deseos</a></li>
+                        <li><a href="/boletin">Boletín de Noticias</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Servicio al Cliente</h3>
+                    <ul>
+                        <li><a href="/envios">Envíos y Entregas</a></li>
+                        <li><a href="/devoluciones">Devoluciones</a></li>
+                        <li><a href="/garantias">Garantías</a></li>
+                        <li><a href="/soporte">Soporte Técnico</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contacto</h3>
+                    <address>
+                        <p><i class="fas fa-map-marker-alt"></i> Av. Italia 1234, Montevideo</p>
+                        <p><i class="fas fa-phone"></i> +598 123 456</p>
+                        <p><i class="fas fa-envelope"></i> info@tutti.com</p>
+                    </address>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 TuTTi - Todos los derechos reservados</p>
+                <div class="payment-methods">
+                    <img src="img/visa.png" alt="Visa">
+                    <img src="img/mastercard.png" alt="Mastercard">
+                    <img src="img/amex.png" alt="American Express">
+                    <img src="img/paypal.png" alt="PayPal">
+                </div>
+            </div>
+        </div>
     </footer>
 
-    <script src="/js/app.js"></script>
+    <!-- Scripts -->
+
 </body>
 </html>

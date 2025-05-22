@@ -3,145 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Inicia sesión en Tutti Tienda para comenzar a comprar y vender productos.">
-    <title>Iniciar sesión | Tutti Tienda</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #ff4400;
-        }
-        body {
-            background: linear-gradient(135deg, #e0dfdf, #ffffff);
-        }
-        .btn {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        .btn:hover {
-            background-color: #e04d00;
-        }
-        .input:focus-within {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(255, 68, 0, 0.2);
-        }
-    </style>
+    <title>Iniciar Sesión - TuTTi</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="h-screen flex items-center justify-center bg-gray-100">
-    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
-        <h1 class="text-2xl font-bold text-center mb-6 text-gray-800">Iniciar sesión</h1>
-        <form id="login-form" class="space-y-4">
-            <div class="form-group">
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
-                <div class="relative">
-                    <input type="email" id="email" name="email" placeholder="Introduce tu correo electrónico" required autocomplete="email" class="w-full px-4 py-2 border rounded-lg focus:outline-none input">
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <img src="img/logo.png" aalt="TuTTi Logo" class="login-logo">
+                <h1>Iniciar Sesión</h1>
+                <p>Ingresa tus credenciales para acceder a tu cuenta</p>
+            </div>
+            
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="email">Correo Electrónico</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" name="password" required>
+                    <a href="/forgot-password" class="forgot-password">¿Olvidaste tu contraseña?</a>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block">Iniciar Sesión</button>
+                
+                <div class="login-footer">
+                    <p>¿No tienes una cuenta? <a href="/register">Regístrate aquí</a></p>
+                </div>
+            </form>
+            
+            <div class="social-login">
+                <p>O inicia sesión con:</p>
+                <div class="social-buttons">
+                    <button class="btn btn-social btn-google">
+                        <i class="fab fa-google"></i> Google
+                    </button>
+                    <button class="btn btn-social btn-facebook">
+                        <i class="fab fa-facebook-f"></i> Facebook
+                    </button>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
-                <div class="relative">
-                    <input type="password" id="password" name="password" placeholder="Introduce tu contraseña" required autocomplete="current-password" class="w-full px-4 py-2 border rounded-lg focus:outline-none input">
-                    <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer toggle-password" onclick="togglePassword()">👁️</span>
-                </div>
-            </div>
-            <button type="submit" class="btn w-full px-4 py-2 rounded-lg flex items-center justify-center">
-                <span id="button-text">Iniciar sesión</span>
-                <span id="button-spinner" class="hidden ml-2"><i class="fas fa-spinner fa-spin"></i></span>
-            </button>
-            <div id="error-message" class="text-red-500 text-sm mt-2"></div>
-        </form>
-        <div class="mt-6 text-center">
-            <a href="/registro.html" class="text-sm text-primary font-medium">¿No tienes una cuenta? Regístrate</a>
-        </div>
-        <div class="footer mt-6 text-center text-sm text-gray-600">
-            <p>Al iniciar sesión, aceptas nuestros <a href="/terminos" class="text-primary">Términos de Servicio</a> y <a href="/privacidad" class="text-primary">Política de Privacidad</a>.</p>
-        </div>
-        <div class="recaptcha mt-4 text-center">
-            <div class="g-recaptcha" data-sitekey="TU_SITE_KEY_AQUI"></div>
         </div>
     </div>
-    <script>
-        const BACKEND_URL = window.location.hostname === 'localhost' 
-            ? 'http://localhost:3000/api/login'
-            : 'https://tutti-production.up.railway.app/api/login';
 
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            if (!validateForm(email, password)) return;
-
-            const button = document.querySelector('button[type="submit"]');
-            const buttonText = document.getElementById('button-text');
-            const buttonSpinner = document.getElementById('button-spinner');
-            button.disabled = true;
-            buttonText.textContent = 'Iniciando sesión...';
-            buttonSpinner.classList.remove('hidden');
-
-            try {
-                const response = await fetch(BACKEND_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ email, password }),
-                });
-
-                const data = await response.json();
-                if (!response.ok) {
-                    throw new Error(data.message || "Error al iniciar sesión.");
-                }
-
-                console.log('Respuesta del backend:', data);
-
-                if (data.token) {
-                    localStorage.setItem('authToken', data.token);
-                    localStorage.setItem('userLoggedIn', JSON.stringify(true));
-                    localStorage.setItem('userEmail', email);
-
-                    const decodedToken = JSON.parse(atob(data.token.split('.')[1]));
-                    const userId = decodedToken.userId;
-                    const userName = decodedToken.email;
-
-                    localStorage.setItem("userId", userId);
-                    localStorage.setItem("userName", userName);
-
-                   window.location.href = '/index.html';
-                } else {
-                    throw new Error("No se recibió un token válido del servidor.");
-                }
-            } catch (error) {
-                console.error('Error al autenticar el usuario:', error);
-                document.getElementById('error-message').textContent = error.message || 'Hubo un error al intentar iniciar sesión. Por favor, inténtalo nuevamente.';
-            } finally {
-                button.disabled = false;
-                buttonText.textContent = 'Iniciar sesión';
-                buttonSpinner.classList.add('hidden');
-            }
-        });
-
-        function validateForm(email, password) {
-            if (!email || !email.includes("@")) {
-                document.getElementById('error-message').textContent = "Por favor, introduce un correo electrónico válido.";
-                return false;
-            }
-            if (!password || password.length < 6) {
-                document.getElementById('error-message').textContent = "La contraseña debe tener al menos 6 caracteres.";
-                return false;
-            }
-            return true;
-        }
-
-        function togglePassword() {
-            const passwordField = document.getElementById('password');
-            if (!passwordField) {
-                console.error("No se encontró el campo de contraseña.");
-                return;
-            }
-            passwordField.type = passwordField.type === "password" ? "text" : "password";
-        }
-    </script>
+    <script src="js/auth.js"></script>
 </body>
 </html>

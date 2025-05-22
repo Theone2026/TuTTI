@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Perfil - Tutti Market</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Animaciones sutiles */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        /* Estilo para la imagen de perfil */
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 4px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Top Bar -->
+    <div class="bg-gray-800 text-white text-sm py-2">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <div>
+                <a href="tel:+59899123456" class="mr-4">
+                    <i class="fas fa-phone mr-2"></i>099 123 456
+                </a>
+                <a href="mailto:info@tuttimarket.com">
+                    <i class="fas fa-envelope mr-2"></i>info@tuttimarket.com
+                </a>
+            </div>
+            <div>
+                <a href="/seguimiento" class="mr-4">Seguimiento de pedidos</a>
+                <a href="/ayuda">Centro de ayuda</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="w-40">
+                    <img src="/img/logo.png" alt="Tutti Market Logo" class="w-full">
+                </div>
+                <!-- Search Bar -->
+                <div class="flex-1 mx-8">
+                    <div class="relative">
+                        <input type="text"
+                               placeholder="¿Qué estás buscando?"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-primary">
+                        <button type="button" aria-label="Buscar" class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- Navigation -->
+                <nav class="flex items-center space-x-6">
+                    <a href="/cuenta" class="flex items-center" id="accountLink">
+                        <i class="fas fa-user mr-2"></i>
+                        <span id="username">Iniciar Sesión</span>
+                    </a>
+                    <a href="/favoritos" class="flex items-center">
+                        <i class="fas fa-heart mr-2"></i>
+                        Favoritos
+                    </a>
+                    <a href="/carrito" class="flex items-center" id="cartLink">
+                        <i class="fas fa-shopping-cart mr-2"></i>
+                        Carrito (0)
+                    </a>
+                    <a href="/cerrar_sesion.html" class="flex items-center bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
+                        <i class="fas fa-sign-out-alt mr-2"></i>
+                        Cerrar Sesión
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenedor del Dashboard -->
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-8 animate-fade-in">Mi Perfil</h1>
+
+        <!-- Sección de Foto de Perfil y Datos -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Columna 1: Foto de Perfil -->
+            <div class="bg-white p-6 rounded-lg shadow-md animate-fade-in">
+                <h2 class="text-xl font-bold mb-4">Foto de Perfil</h2>
+                <div class="flex flex-col items-center">
+                    <img id="profilePicture" src="/img/default-profile.png" alt="Foto de Perfil" class="profile-picture mb-4">
+                    <input type="file" id="profilePictureInput" accept="image/*" class="hidden">
+                    <button type="button" onclick="document.getElementById('profilePictureInput').click()" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                        Cambiar Foto
+                    </button>
+                </div>
+            </div>
+
+            <!-- Columna 2: Información del Usuario -->
+            <div class="col-span-2 bg-white p-6 rounded-lg shadow-md animate-fade-in">
+                <h2 class="text-xl font-bold mb-4">Información Personal</h2>
+                <form id="edit-profile-form">
+                    <!-- Nombre Completo -->
+                    <div class="mb-6">
+                        <label for="fullName" class="block text-sm font-medium text-gray-700">Nombre Completo</label>
+                        <input type="text" id="fullName" name="fullName" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                    </div>
+
+                    <!-- Correo Electrónico -->
+                    <div class="mb-6">
+                        <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
+                        <input type="email" id="email" name="email" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                    </div>
+
+                    <!-- Teléfono -->
+                    <div class="mb-6">
+                        <label for="phoneNumber" class="block text-sm font-medium text-gray-700">Teléfono</label>
+                        <input type="tel" id="phoneNumber" name="phoneNumber" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                    </div>
+
+                    <!-- Dirección -->
+                    <div class="mb-6">
+                        <label for="address" class="block text-sm font-medium text-gray-700">Dirección</label>
+                        <input type="text" id="address" name="address" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                    </div>
+
+                    <!-- Ciudad -->
+                    <div class="mb-6">
+                        <label for="city" class="block text-sm font-medium text-gray-700">Ciudad</label>
+                        <input type="text" id="city" name="city" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                    </div>
+
+                    <!-- Código Postal -->
+                    <div class="mb-6">
+                        <label for="postalCode" class="block text-sm font-medium text-gray-700">Código Postal</label>
+                        <input type="text" id="postalCode" name="postalCode" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                    </div>
+
+                    <!-- País -->
+                    <div class="mb-6">
+                        <label for="country" class="block text-sm font-medium text-gray-700">País</label>
+                        <input type="text" id="country" name="country" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                    </div>
+
+                    <!-- Botón de envío -->
+                    <button type="submit" class="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        Guardar Cambios
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script para cargar y actualizar datos del perfil -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('Por favor, inicia sesión para editar tu perfil.');
+                window.location.href = '/login.html';
+                return;
+            }
+
+            try {
+                // Decodificar el token JWT para obtener el userId
+                const user = JSON.parse(atob(token.split('.')[1])); // Decodificar el payload del token
+                const userId = user.userId; // Asegúrate de que el token incluya un campo "userId"
+
+                if (!userId) {
+                    throw new Error('No se pudo obtener el userId del token.');
+                }
+
+                // Obtener datos del usuario
+                const userResponse = await fetch(`https://tu-tti.vercel.app/api/user?userId=${userId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!userResponse.ok) {
+                    throw new Error(`Error ${userResponse.status}: ${userResponse.statusText}`);
+                }
+
+                const userData = await userResponse.json();
+
+                // Rellenar el formulario con los datos del usuario
+                document.getElementById('fullName').value = userData.fullName;
+                document.getElementById('email').value = userData.email;
+                document.getElementById('phoneNumber').value = userData.phoneNumber;
+                document.getElementById('address').value = userData.address;
+                document.getElementById('city').value = userData.city;
+                document.getElementById('postalCode').value = userData.postalCode;
+                document.getElementById('country').value = userData.country;
+
+                // Mostrar el nombre del usuario en la barra superior
+                document.getElementById('username').textContent = userData.fullName;
+
+                // Cargar la foto de perfil si existe
+                if (userData.profilePicture) {
+                    document.getElementById('profilePicture').src = userData.profilePicture;
+                }
+
+                // Manejar el envío del formulario
+                document.getElementById('edit-profile-form').addEventListener('submit', async (event) => {
+                    event.preventDefault();
+
+                    const updatedUserData = {
+                        fullName: document.getElementById('fullName').value,
+                        email: document.getElementById('email').value,
+                        phoneNumber: document.getElementById('phoneNumber').value,
+                        address: document.getElementById('address').value,
+                        city: document.getElementById('city').value,
+                        postalCode: document.getElementById('postalCode').value,
+                        country: document.getElementById('country').value,
+                    };
+
+                    try {
+                        const updateResponse = await fetch(`https://tu-tti.vercel.app/api/user/${userId}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(updatedUserData),
+                        });
+
+                        if (!updateResponse.ok) {
+                            throw new Error(`Error ${updateResponse.status}: ${updateResponse.statusText}`);
+                        }
+
+                        const result = await updateResponse.json();
+                        alert('Perfil actualizado exitosamente');
+                        window.location.reload(); // Recargar la página para reflejar los cambios
+                    } catch (error) {
+                        console.error('Error al actualizar el perfil:', error);
+                        alert('Hubo un error al actualizar el perfil. Inténtalo de nuevo.');
+                    }
+                });
+
+                // Manejar la carga de la foto de perfil
+                document.getElementById('profilePictureInput').addEventListener('change', async (event) => {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const formData = new FormData();
+                        formData.append('profilePicture', file);
+
+                        try {
+                            const uploadResponse = await fetch(`https://tu-tti.vercel.app/api/user/${userId}/profile-picture`, {
+                                method: 'POST',
+                                headers: {
+                                    'Authorization': `Bearer ${token}`,
+                                },
+                                body: formData,
+                            });
+
+                            if (!uploadResponse.ok) {
+                                throw new Error(`Error ${uploadResponse.status}: ${uploadResponse.statusText}`);
+                            }
+
+                            const result = await uploadResponse.json();
+                            document.getElementById('profilePicture').src = result.profilePictureUrl;
+                            alert('Foto de perfil actualizada exitosamente');
+                        } catch (error) {
+                            console.error('Error al subir la foto de perfil:', error);
+                            alert('Hubo un error al subir la foto de perfil. Inténtalo de nuevo.');
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Hubo un error al cargar los datos del perfil. Inténtalo de nuevo.');
+            }
+        });
+    </script>
+</body>
+</html>
