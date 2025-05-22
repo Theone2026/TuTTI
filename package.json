@@ -1,33 +1,5 @@
-{
-  "name": "tutti",
-  "version": "1.0.0",
-  "description": "Marketplace para comprar y vender productos - Tutti Tienda",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"npm run server\" \"npm run vite-dev\"",
-    "vite-dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "server": "node server.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Theone2026/TuTTI.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
-  "bugs": {
-    "url": "https://github.com/Theone2026/TuTTI/issues"
-  },
-  "homepage": "https://github.com/Theone2026/TuTTI#readme",
-  "dependencies": {
-<<<<<<< HEAD
-=======
+"dependencies": {
     "autoprefixer": "^10.4.21",
->>>>>>> 6fb3a610a10de6b9a0bc26251e722b7c59f60226
     "axios": "^1.8.4",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.1",
@@ -56,16 +28,9 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.7",
     "@vitejs/plugin-react": "^4.0.0",
-<<<<<<< HEAD
     "concurrently": "^9.1.2",
-    "vite": "^6.2.1"
-  },
-  "proxy": "http://localhost:3000"
-}
-=======
     "tailwindcss": "^4.1.7",
     "vite": "^6.2.1"
   },
   "proxy": "http://localhost:3000"
 }
->>>>>>> 6fb3a610a10de6b9a0bc26251e722b7c59f60226
