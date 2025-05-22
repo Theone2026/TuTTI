@@ -53,8 +53,7 @@ async function loadRecentProducts() {
     }
 }
 
-// Función para cargar el Hero Banner con productos recientes y ofertas
-function loadHeroBanner(recentProducts, offers) {
+function loadHeroBanner(recentProducts) {
     try {
         // Mostrar los productos en el carrusel
         const carousel = document.querySelector('.carousel');
@@ -72,26 +71,26 @@ function loadHeroBanner(recentProducts, offers) {
         // Inicializar el carrusel
         initializeCarousel();
 
-        // Mostrar las ofertas del día
+        // Mostrar las ofertas del día (usando los productos recientes)
         const ofertasDelDia = document.getElementById('ofertas-del-dia');
         ofertasDelDia.innerHTML = ""; // Limpiar el contenedor
-        offers.slice(0, 1).forEach(offer => { // Muestra solo 1 oferta
+        recentProducts.slice(0, 1).forEach(product => { // Muestra solo 1 producto
             const offerDiv = document.createElement('div');
             offerDiv.innerHTML = `
-                <img src="${offer.images[0]}" alt="${offer.name}" class="w-full h-auto rounded-lg">
-                <p class="text-sm text-gray-600 mt-2">${offer.name} - ${offer.price} ${offer.currency}</p>
+                <img src="${product.images[0]}" alt="${product.name}" class="w-full h-auto rounded-lg">
+                <p class="text-sm text-gray-600 mt-2">${product.name} - ${formatPrice(product.price, product.currency)}</p>
             `;
             ofertasDelDia.appendChild(offerDiv);
         });
 
-        // Mostrar los nuevos ingresos
+        // Mostrar los nuevos ingresos (usando los productos recientes)
         const nuevosIngresos = document.getElementById('nuevos-ingresos');
         nuevosIngresos.innerHTML = ""; // Limpiar el contenedor
-        recentProducts.slice(0, 1).forEach(product => { // Muestra solo 1 producto reciente
+        recentProducts.slice(1, 2).forEach(product => { // Muestra el segundo producto reciente
             const productDiv = document.createElement('div');
             productDiv.innerHTML = `
                 <img src="${product.images[0]}" alt="${product.name}" class="w-full h-auto rounded-lg">
-                <p class="text-sm text-gray-600 mt-2">${product.name} - ${product.price} ${product.currency}</p>
+                <p class="text-sm text-gray-600 mt-2">${product.name} - ${formatPrice(product.price, product.currency)}</p>
             `;
             nuevosIngresos.appendChild(productDiv);
         });
@@ -194,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
 async function loadRecentProducts() {
     try {
         // Obtener productos recientes desde la API
-        const response = await fetch("http://localhost:3000/api/recent-products");
+        const response = await fetch("https://tu-tti.vercel.app/api/recent-products");
         if (!response.ok) {
             throw new Error("Error al cargar los productos");
         }

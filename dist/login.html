@@ -1,201 +1,87 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Inicia sesión en Tutti Tienda para comenzar a comprar y vender productos.">
     <title>Iniciar sesión | Tutti Tienda</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #ff4400;
+        }
         body {
-            font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #e0dfdf, #ffffff);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
         }
-
-        .container {
-            max-width: 400px;
-            width: 100%;
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgb(0, 0, 0);
-            animation: fadeIn 1s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 2rem;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        label {
-            font-size: 1rem;
-            color: #555;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        input[type="email"],
-        input[type="password"] {
-            width: 100%;
-            padding: 12px;
-            font-size: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #fafafa;
-            transition: all 0.3s ease;
-        }
-
-        input[type="email"]:focus,
-        input[type="password"]:focus {
-            border-color: #2E8B57;
-            box-shadow: 0 0 8px rgba(255, 111, 97, 0.5);
-            outline: none;
-        }
-
-        .password-container {
-            position: relative;
-        }
-
-        .toggle-password {
-            cursor: pointer;
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.2rem;
-            color: #777;
-        }
-
         .btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #000000, #000000);
-            color: #fff;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s ease;
+            background-color: var(--primary-color);
+            color: white;
         }
-
         .btn:hover {
-            background: linear-gradient(135deg, #000000, #bbbdbb);
+            background-color: #e04d00;
         }
-
-        .link {
-            text-align: center;
-            font-size: 0.9rem;
-            margin-top: 20px;
-        }
-
-        .link a {
-            color: #ff6f61;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .footer {
-            text-align: center;
-            font-size: 0.8rem;
-            margin-top: 30px;
-        }
-
-        .footer a {
-            color: #ff6f61;
-            text-decoration: none;
-        }
-
-        .recaptcha {
-            margin-top: 10px;
-        }
-
-        .privacy {
-            display: block;
-            margin-top: 10px;
-            font-size: 0.8rem;
+        .input:focus-within {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(255, 68, 0, 0.2);
         }
     </style>
 </head>
-
-<body>
-
-    <div class="container">
-        <h1>Iniciar sesión</h1>
-
-        <form id="login-form">
+<body class="h-screen flex items-center justify-center bg-gray-100">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
+        <h1 class="text-2xl font-bold text-center mb-6 text-gray-800">Iniciar sesión</h1>
+        <form id="login-form" class="space-y-4">
             <div class="form-group">
-                <label for="email">Correo electrónico</label>
-                <input type="email" id="email" name="email" placeholder="Introduce tu correo electrónico" required autocomplete="email">
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
+                <div class="relative">
+                    <input type="email" id="email" name="email" placeholder="Introduce tu correo electrónico" required autocomplete="email" class="w-full px-4 py-2 border rounded-lg focus:outline-none input">
+                </div>
             </div>
-
-            <div class="form-group password-container">
-                <label for="password">Contraseña</label>
-                <!-- Agregado autocomplete para la contraseña -->
-                <input type="password" id="password" name="password" placeholder="Introduce tu contraseña" required autocomplete="current-password">
-                <span class="toggle-password" onclick="togglePassword()">👁️</span>
+            <div class="form-group">
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+                <div class="relative">
+                    <input type="password" id="password" name="password" placeholder="Introduce tu contraseña" required autocomplete="current-password" class="w-full px-4 py-2 border rounded-lg focus:outline-none input">
+                    <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer toggle-password" onclick="togglePassword()">👁️</span>
+                </div>
             </div>
-
-            <button type="submit" class="btn">Iniciar sesión</button>
+            <button type="submit" class="btn w-full px-4 py-2 rounded-lg flex items-center justify-center">
+                <span id="button-text">Iniciar sesión</span>
+                <span id="button-spinner" class="hidden ml-2"><i class="fas fa-spinner fa-spin"></i></span>
+            </button>
+            <div id="error-message" class="text-red-500 text-sm mt-2"></div>
         </form>
-
-        <p class="link">
-            ¿No tienes cuenta? <a href="registro.html">Crear cuenta</a>
-        </p>
-
-        <div class="footer">
-            <p>&copy; 2025 Tutti Tienda - Todos los derechos reservados</p>
-            <p>
-                <a href="#">Cómo cuidamos tu privacidad</a>
-            </p>
-            <p class="recaptcha">
-                <a href="#">Protegido por reCAPTCHA</a>
-            </p>
-            <p class="privacy">
-                <a href="#">Privacidad</a> | <a href="#">Condiciones</a>
-            </p>
+        <div class="mt-6 text-center">
+            <a href="/registro.html" class="text-sm text-primary font-medium">¿No tienes una cuenta? Regístrate</a>
+        </div>
+        <div class="footer mt-6 text-center text-sm text-gray-600">
+            <p>Al iniciar sesión, aceptas nuestros <a href="/terminos" class="text-primary">Términos de Servicio</a> y <a href="/privacidad" class="text-primary">Política de Privacidad</a>.</p>
+        </div>
+        <div class="recaptcha mt-4 text-center">
+            <div class="g-recaptcha" data-sitekey="TU_SITE_KEY_AQUI"></div>
         </div>
     </div>
-
     <script>
-        // Cambia esta URL por la del backend que despliegues (ejemplo: en Heroku, Render, etc.)
-        const BACKEND_URL = "http://localhost:3000"; // URL local del servidor
+        const BACKEND_URL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:3000/api/login'
+            : 'https://tu-tti.vercel.app/api/login';
 
-        // Manejo del formulario de inicio de sesión
         document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault(); // Evita la recarga de la página
+            e.preventDefault();
 
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
+            if (!validateForm(email, password)) return;
+
+            const button = document.querySelector('button[type="submit"]');
+            const buttonText = document.getElementById('button-text');
+            const buttonSpinner = document.getElementById('button-spinner');
+            button.disabled = true;
+            buttonText.textContent = 'Iniciando sesión...';
+            buttonSpinner.classList.remove('hidden');
+
             try {
-                const response = await fetch(`${BACKEND_URL}/api/login`, { // Cambia la URL según tu backend
+                const response = await fetch(BACKEND_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -204,39 +90,58 @@
                 });
 
                 const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || "Error al iniciar sesión.");
+                }
+
                 console.log('Respuesta del backend:', data);
 
-                if (response.ok) {
-                    // Login exitoso
-                    alert(data.message);
-
-                    // Guarda el token JWT en localStorage
+                if (data.token) {
                     localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('userLoggedIn', JSON.stringify(true));
+                    localStorage.setItem('userEmail', email);
 
-                    // Verifica que el token esté guardado
-                    console.log('Token guardado:', localStorage.getItem('authToken'));
+                    const decodedToken = JSON.parse(atob(data.token.split('.')[1]));
+                    const userId = decodedToken.userId;
+                    const userName = decodedToken.email;
 
-                    // Redirige al perfil
-                    console.log('Redirigiendo a perfil...');
-                    window.location.href = 'perfil.html';
+                    localStorage.setItem("userId", userId);
+                    localStorage.setItem("userName", userName);
+
+                    window.location.href = 'index.html';
                 } else {
-                    // Error en el inicio de sesión
-                    alert(data.message);
+                    throw new Error("No se recibió un token válido del servidor.");
                 }
             } catch (error) {
                 console.error('Error al autenticar el usuario:', error);
-                alert('Hubo un error al intentar iniciar sesión. Por favor, inténtalo nuevamente.');
+                document.getElementById('error-message').textContent = error.message || 'Hubo un error al intentar iniciar sesión. Por favor, inténtalo nuevamente.';
+            } finally {
+                button.disabled = false;
+                buttonText.textContent = 'Iniciar sesión';
+                buttonSpinner.classList.add('hidden');
             }
         });
 
-        // Función para alternar la visibilidad de la contraseña
+        function validateForm(email, password) {
+            if (!email || !email.includes("@")) {
+                document.getElementById('error-message').textContent = "Por favor, introduce un correo electrónico válido.";
+                return false;
+            }
+            if (!password || password.length < 6) {
+                document.getElementById('error-message').textContent = "La contraseña debe tener al menos 6 caracteres.";
+                return false;
+            }
+            return true;
+        }
+
         function togglePassword() {
             const passwordField = document.getElementById('password');
-            const passwordType = passwordField.type === "password" ? "text" : "password";
-            passwordField.type = passwordType;
+            if (!passwordField) {
+                console.error("No se encontró el campo de contraseña.");
+                return;
+            }
+            passwordField.type = passwordField.type === "password" ? "text" : "password";
         }
     </script>
-
 </body>
-
 </html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Finalizar compra - Tutti Tienda">
+    <title>Tutti Tienda - Finalizar Compra</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --color-primary: #ffffff; /* Verde */
+            --color-secondary: #ffffff; /* Teal */
+            --color-background: #f4f4f4; /* Fondo claro */
+            --color-text: #333333; /* Texto oscuro */
+            --color-button: #00695c; /* Color de botones */
+            --color-accent: #f0f0f0; /* Fondo botones */
+        }
+
+        body {
+            background-color: var(--color-background);
+            color: var(--color-text);
+        }
+
+        header {
+            background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+        }
+
+        header a,
+        header button {
+            color: white;
+        }
+
+        header button:hover {
+            background-color: var(--color-button);
+        }
+
+        .form-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+        }
+
+        .form-button {
+            background-color: var(--color-secondary);
+            color: var(--color-text);
+        }
+
+        .form-button:hover {
+            background-color: var(--color-button);
+        }
+
+        .order-summary {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-input {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            width: 100%;
+        }
+
+        .form-input:focus {
+            border-color: #00695c;
+            outline: none;
+        }
+
+        .form-title {
+            font-size: 1.875rem; /* 30px */
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-label {
+            font-weight: 500;
+        }
+        
+        .form-description {
+            margin-bottom: 1.5rem;
+        }
+        
+        .order-summary-item {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .order-summary-price {
+            font-size: 1.125rem; /* 18px */
+            font-weight: 700;
+        }
+
+        .order-summary-total {
+            font-size: 1.25rem; /* 20px */
+            font-weight: 700;
+            color: #00695c;
+        }
+    </style>
+</head>
+<body class="font-poppins">
+
+    <!-- Header -->
+    <header class="py-4 shadow-md">
+        <div class="max-w-screen-xl mx-auto flex justify-between items-center px-6">
+            <a href="/" class="flex items-center space-x-4">
+                <img src="/img/logo.png" alt="Tutti Tienda" class="max-w-[200px] h-auto object-contain">
+            </a>
+            <nav class="flex items-center space-x-6">
+                <a href="/login.html" class="text-white">Iniciar sesión</a>
+                <a href="/comprar.html" class="text-white">Comprar</a>
+                <a href="/vender.html" class="text-white">Vender</a>
+                <a href="/cart.html" class="text-white">Carrito (3)</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Finalizar compra -->
+    <section class="py-12 px-6">
+        <h2 class="form-title text-center mb-8">Finalizar Compra</h2>
+
+        <div class="max-w-4xl mx-auto">
+
+            <!-- Información de Envío -->
+            <div class="form-section">
+                <h3 class="form-title mb-4">Dirección de Envío</h3>
+                <form>
+                    <div class="mb-4">
+                        <label for="name" class="form-label">Nombre Completo</label>
+                        <input type="text" id="name" name="name" required class="form-input" placeholder="Ej. Juan Pérez">
+                    </div>
+                    <div class="mb-4">
+                        <label for="address" class="form-label">Dirección de Envío</label>
+                        <input type="text" id="address" name="address" required class="form-input" placeholder="Ej. Calle Falsa 123">
+                    </div>
+                    <div class="mb-4">
+                        <label for="city" class="form-label">Ciudad</label>
+                        <input type="text" id="city" name="city" required class="form-input" placeholder="Ej. Ciudad de México">
+                    </div>
+                    <div class="mb-4">
+                        <label for="zip" class="form-label">Código Postal</label>
+                        <input type="text" id="zip" name="zip" required class="form-input" placeholder="Ej. 12345">
+                    </div>
+                    <div class="mb-4">
+                        <label for="phone" class="form-label">Teléfono</label>
+                        <input type="tel" id="phone" name="phone" required class="form-input" placeholder="Ej. +52 123 456 7890">
+                    </div>
+                </form>
+            </div>
+
+            <!-- Información de Pago -->
+            <div class="form-section">
+                <h3 class="form-title mb-4">Método de Pago</h3>
+                <form>
+                    <div class="mb-4">
+                        <label for="card-number" class="form-label">Número de Tarjeta</label>
+                        <input type="text" id="card-number" name="card-number" required class="form-input" placeholder="Ej. 1234 5678 9876 5432">
+                    </div>
+                    <div class="mb-4 flex space-x-4">
+                        <div class="w-1/2">
+                            <label for="expiry" class="form-label">Fecha de Expiración</label>
+                            <input type="text" id="expiry" name="expiry" required class="form-input" placeholder="MM/AA">
+                        </div>
+                        <div class="w-1/2">
+                            <label for="cvv" class="form-label">CVV</label>
+                            <input type="text" id="cvv" name="cvv" required class="form-input" placeholder="Ej. 123">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Resumen del Pedido -->
+            <div class="order-summary">
+                <h3 class="form-title mb-4">Resumen del Pedido</h3>
+                <div class="flex justify-between mb-4">
+                    <p class="order-summary-item">Total de productos</p>
+                    <p class="order-summary-price">$709.96</p>
+                </div>
+                <div class="flex justify-between mb-4">
+                    <p class="order-summary-item">Envío</p>
+                    <p class="order-summary-price">$10.00</p>
+                </div>
+                <div class="flex justify-between mb-4">
+                    <p class="order-summary-total">Total a pagar</p>
+                    <p class="order-summary-total">$719.96</p>
+                </div>
+
+                <div class="text-center">
+                    <a href="/confirmation.html">
+                        <button class="form-button text-lg font-semibold py-3 px-8 rounded-full w-full md:w-auto">Confirmar y Pagar</button>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+</body>
+</html>

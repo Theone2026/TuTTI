@@ -4,17 +4,32 @@
     {
       "src": "server.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "public/**/*.html",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "/uploads/(.*)",
+      "dest": "/uploads/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "/(.*\\.html)",  
+      "dest": "/public/$1"
+    },
+    {
+      "src": "/(.*)",          
       "dest": "server.js"
     }
   ],
   "env": {
-    "JWT_SECRET": "@jwt_secret",
-    "MONGO_URI": "@mongo_uri",
-    "BASE_URL": "@base_url"
+    "JWT_SECRET": "mi_super_secreto",
+    "MONGO_URI": "mongodb+srv://Tutti:Maikelfox@cluster0.uw1mo.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+    "BASE_URL": "https://tu-tti.vercel.app"
   }
 }

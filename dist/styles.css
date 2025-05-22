@@ -15,7 +15,7 @@ body {
 
 /* Header */
 .header {
-    background-color: #ffffffb3; /* Coral */
+    background-color: #ff7f50; /* Coral sólido */
     padding: 20px 0;
 }
 
@@ -50,6 +50,12 @@ body {
     background-color: #4CAF50; /* Verde */
     color: white;
     border: none;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.search-button:hover {
+    background-color: #45a049; /* Verde ligeramente más oscuro */
+    transform: scale(1.05);
 }
 
 /* Hero Section */
@@ -57,6 +63,7 @@ body {
     background-image: url('img/hero-bg.jpg');
     background-size: cover;
     background-position: center;
+    height: 400px; /* Ajusta la altura según sea necesario */
     color: white;
     text-align: center;
     padding: 80px 0;
@@ -76,11 +83,17 @@ body {
     font-size: 1.2rem;
     cursor: pointer;
     border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.hero-button:hover {
+    background-color: #45a049; /* Verde ligeramente más oscuro */
+    transform: scale(1.05);
 }
 
 /* Categories */
 .categories {
-    padding: 50px 0;
+    padding: 60px 0; /* Aumenta el espaciado */
     background-color: #ffffff;
 }
 
@@ -109,7 +122,7 @@ body {
 
 /* Featured Products */
 .featured-products {
-    padding: 50px 0;
+    padding: 60px 0; /* Aumenta el espaciado */
     background-color: #f9f9f9;
 }
 
@@ -124,7 +137,12 @@ body {
     background-color: white;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transition: box-shadow 0.3s ease;
+}
+
+.product-item:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
 .product-img {
@@ -152,4 +170,16 @@ body {
     color: white;
     text-align: center;
     padding: 20px 0;
+}
+
+.footer a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+    font-weight: 500;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+    color: #ff7f50; /* Coral */
 }

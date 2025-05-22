@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cerrar Sesión - Tutti Market</title>
+    <title>Cerrando Sesión - TuTTi</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
@@ -13,13 +13,37 @@
     </div>
 
     <script>
-        // Eliminar el token JWT del localStorage
-        localStorage.removeItem('authToken');
+        async function logout() {
+            // Eliminar todos los datos de sesión del localStorage
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userLoggedIn');
 
-        // Redirigir al usuario a la página de inicio de sesión
-        setTimeout(() => {
-            window.location.href = '/login.html';
-        }, 2000); // Redirigir después de 2 segundos
+            try {
+                // Hacer una petición al servidor para invalidar la sesión
+                const response = await fetch('/api/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error al cerrar sesión en el servidor');
+                }
+            } catch (error) {
+                console.error('Error durante el cierre de sesión:', error);
+            } finally {
+                // Redirigir al usuario a la página principal
+                window.location.href = '/';
+            }
+        }
+
+        // Ejecutar la función de cierre de sesión inmediatamente
+        logout();
     </script>
 </body>
 </html>

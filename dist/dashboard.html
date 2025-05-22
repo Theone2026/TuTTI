@@ -3,107 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Panel de usuario de Mercado Libre. Accede a tus compras, ventas, configuraciones, mensajes y notificaciones.">
-    <title>Mi Cuenta | Mercado Libre</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f8f8;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            max-width: 500px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 2rem;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .btn-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .btn {
-            padding: 15px;
-            background-color: #2E8B57; /* Verde */
-            color: white;
-            font-size: 1.1rem;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 100%;
-            text-align: left;
-        }
-
-        .btn:hover {
-            background-color: #007d3c;
-        }
-
-        .footer {
-            text-align: center;
-            font-size: 0.9rem;
-            margin-top: 40px;
-        }
-
-        .footer a {
-            color: #2E8B57;
-            text-decoration: none;
-        }
-
-        .privacy {
-            display: block;
-            margin-top: 10px;
-            font-size: 0.9rem;
-        }
-    </style>
+    <title>Dashboard - Tutti Market</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body>
+<body class="bg-gray-100">
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <!-- Menú lateral -->
+        <aside class="bg-white w-full md:w-64 p-6 shadow-lg md:static fixed z-10 md:z-auto transform md:translate-x-0 -translate-x-full transition-transform duration-300 ease-in-out" id="sidebar">
+            <div class="flex justify-between items-center mb-8 md:block">
+                <img src="/img/logo.png" alt="Tutti Market Logo" class="w-24">
+                <button class="md:hidden text-gray-700" id="closeSidebar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <nav class="space-y-2">
+                <a href="dashboard.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                    <i class="fas fa-tachometer-alt mr-2"></i>
+                    Dashboard
+                </a>
+                <a href="Pedidos.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                    <i class="fas fa-shopping-cart mr-2"></i>
+                    Pedidos
+                </a>
+                <a href="pagos.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                    <i class="fas fa-dollar-sign mr-2"></i>
+                    Pagos
+                </a>
+                <a href="publicaciones.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                    <i class="fas fa-box-open mr-2"></i>
+                    Publicaciones
+                </a>
+                <a href="mensajes.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                    <i class="fas fa-comments mr-2"></i>
+                    Mensajes
+                </a>
+                <a href="configuracion.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                    <i class="fas fa-cog mr-2"></i>
+                    Configuración
+                </a>
+            </nav>
+        </aside>
 
-<div class="container">
-    <h1>Mi Cuenta</h1>
+        <!-- Botón para abrir el menú (sin cambios) -->
+        <button class="fixed bg-blue-500 text-white p-2 rounded-full shadow-lg md:hidden" id="openSidebar" style="top: 1rem; right: 1rem;">
+            <i class="fas fa-bars"></i>
+        </button>
 
-    <div class="btn-container">
-        <a href="mis_compras.html">
-            <button class="btn">Mis Compras</button>
-        </a>
-        <a href="mis_ventas.html">
-            <button class="btn">Mis Ventas</button>
-        </a>
-        <a href="configuracion.html">
-            <button class="btn">Configuración</button>
-        </a>
-        <a href="mensajes.html">
-            <button class="btn">Mensajes</button>
-        </a>
-        <a href="notificaciones.html">
-            <button class="btn">Notificaciones</button>
-        </a>
+        <!-- Contenido principal -->
+        <main class="flex-1 p-4 md:p-8">
+            <!-- Barra superior -->
+            <header class="flex flex-col md:flex-row justify-between items-center mb-8">
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4 md:mb-0">Panel de Control</h1>
+                <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
+
+                    <div class="flex items-center space-x-4">
+                        <a href="nueva-publicacion.html" class="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-600 transition-colors duration-300">+ Nueva Publicación</a>
+
+                        <div class="flex items-center space-x-2">
+                            <!-- Botón de notificaciones -->
+                            <div class="relative">
+                                <button id="notificationIcon" class="relative">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                                    </svg>
+                                    <span id="notificationCount" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center hidden"></span>
+                                </button>
+                                <div id="notificationPanel" class="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden">
+                                    <div class="py-2">
+                                        <h3 class="text-lg font-semibold px-4 py-2 border-b">Notificaciones</h3>
+                                        <ul id="notificationList" class="max-h-64 overflow-y-auto">
+                                            <!-- Las notificaciones se insertarán aquí -->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Botón de mensajes -->
+                            <div class="relative">
+                                <button id="messageIcon" class="relative">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                                    </svg>
+                                    <span id="messageCount" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center hidden"></span>
+                                </button>
+                                <div id="messagePanel" class="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden">
+                                    <div class="py-2">
+                                        <h3 class="text-lg font-semibold px-4 py-2 border-b">Mensajes Recientes</h3>
+                                        <ul id="messageList" class="max-h-64 overflow-y-auto">
+                                            <!-- Los mensajes se insertarán aquí -->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <img id="profile-picture" src="/img/default-avatar.png" alt="Avatar" class="w-8 h-8 rounded-full">
+                            <span id="username" class="ml-2 text-gray-700 font-semibold">Cargando...</span>
+                        </div>
+                        <button onclick="cerrarSesion()" class="text-sm text-gray-600 hover:text-gray-800">Cerrar Sesión</button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Estadísticas -->
+            <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-xl">
+                    <h3 class="font-bold mb-2 text-gray-700">Total de Ventas</h3>
+                    <p id="totalVentas" class="text-3xl font-bold text-blue-500">$0.00</p>
+                    <p id="countVentas" class="text-sm text-gray-500 mt-1">0 ventas</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-xl">
+                    <h3 class="font-bold mb-2 text-gray-700">Total de Compras</h3>
+                    <p id="totalCompras" class="text-3xl font-bold text-green-500">$0.00</p>
+                    <p id="countCompras" class="text-sm text-gray-500 mt-1">0 compras</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-xl">
+                    <h3 class="font-bold mb-2 text-gray-700">Productos en Venta</h3>
+                    <p id="productosEnVenta" class="text-3xl font-bold text-purple-500">0</p>
+                </div>
+            </section>
+
+            <!-- Ventas Recientes -->
+            <section class="mb-8">
+                <h2 class="text-xl font-bold mb-4 text-gray-800">Ventas Recientes</h2>
+                <div id="ventasRecientes" class="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Producto</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200" id="ventasRecientesBody">
+                            <!-- Las ventas recientes se cargarán aquí dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Compras Recientes -->
+            <section>
+                <h2 class="text-xl font-bold mb-4 text-gray-800">Compras Recientes</h2>
+                <div id="comprasRecientes" class="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Producto</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200" id="comprasRecientesBody">
+                            <!-- Las compras recientes se cargarán aquí dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
     </div>
-
-    <div class="footer">
-        <p>&copy; 1999-2025 <a href="https://www.deremate.com.uy" target="_blank">DeRemate.com de Uruguay S.R.L.</a></p>
-        <p>
-            <a href="#" target="_blank">Cómo cuidamos tu privacidad</a>
-        </p>
-        <p class="privacy">
-            <a href="#" target="_blank">Privacidad</a> | <a href="#" target="_blank">Condiciones</a>
-        </p>
+</section>
+        </main>
     </div>
-</div>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script type="module" src="js/dashboard.js"></script>
 
 </body>
 </html>

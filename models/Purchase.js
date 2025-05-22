@@ -1,16 +1,13 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // Definir el esquema de la compra
 const purchaseSchema = new mongoose.Schema({
-  buyerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
-  quantity: { type: Number, required: true },
-  totalPrice: { type: Number, required: true },
-  purchaseDate: { type: Date, default: Date.now },
-  status: { type: String, enum: ['pending', 'completed', 'canceled'], default: 'pending' }
+  buyerId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
+  price: { type: Number, required: true },
+  datePurchased: { type: Date, default: Date.now },
 });
 
-// Crear el modelo
-const Purchase = mongoose.model('Purchase', purchaseSchema);
+const Purchase = mongoose.model("Purchase", purchaseSchema);
 
-module.exports = Purchase;
+export default Purchase;
