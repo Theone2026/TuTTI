@@ -1,6 +1,6 @@
 module.exports = async (req, res) => {
   // Agregar los encabezados CORS
-  res.setHeader('Access-Control-Allow-Origin', 'https://tutti-tienda.vercel.app'); // Permite solo solicitudes desde tu dominio de frontend en Vercel
+  res.setHeader('Access-Control-Allow-Origin', 'https://tutti-production.up.railway.app'); // Permite solo solicitudes desde tu dominio de frontend en Vercel
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 

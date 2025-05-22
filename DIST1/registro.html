@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<<<<<<< HEAD
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Usuario - Tutti Tienda</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Estilos personalizados */
+    :root {
+      --primary-color: #ff9900; /* Color principal similar a Amazon */
+      --accent-color: #fbbf24; /* Color de acento */
+    }
+    .amazon-button {
+      background-color: var(--primary-color);
+      color: white;
+      border: 1px solid #a88734;
+      border-radius: 3px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .amazon-button:hover {
+      background-color: #e68a00;
+    }
+  </style>
+=======
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Cuenta - Tutti Market</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Estilos personalizados adicionales para el formulario de registro */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Gris claro de Tailwind */
+        }
+        .register-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            max-width: 550px; /* Más ancho para más campos */
+            width: 95%;
+        }
+        .register-logo {
+            max-width: 80px;
+            margin-bottom: 1.5rem;
+        }
+        .input-field {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db; /* border-gray-300 */
+            border-radius: 0.5rem; /* rounded-lg */
+            transition: all 0.2s ease-in-out;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #3b82f6; /* ring-blue-500 */
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); /* ring-blue-500/30 */
+        }
+        .btn-primary {
+            background-color: #2563eb; /* blue-600 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .btn-primary:hover {
+            background-color: #1d4ed8; /* blue-700 */
+        }
+        .message {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            text-align: center;
+        }
+        .message.success {
+            background-color: #d1fae5; /* green-100 */
+            color: #065f46; /* green-800 */
+            border: 1px solid #34d399; /* green-400 */
+        }
+        .message.error {
+            background-color: #fee2e2; /* red-100 */
+            color: #991b1b; /* red-800 */
+            border: 1px solid #ef4444; /* red-400 */
+        }
+    </style>
+>>>>>>> 6fb3a610a10de6b9a0bc26251e722b7c59f60226
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100 py-10">
+    <div class="register-card">
+        <div class="text-center">
+            <img src="img/logo.png" alt="Tutti Market Logo" class="register-logo mx-auto">
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Crea tu cuenta en Tutti</h2>
+            <p class="text-gray-600 mb-6">Completa tus datos para empezar</p>
+        </div>
+
+<<<<<<< HEAD
+  <!-- Header -->
+  <header class="bg-white shadow-lg p-1">
+    <div class="flex items-center justify-center">
+      <div class="w-10">
+        <img src="img/logo.png" alt="Tutti Market Logo" class="w-full">
+      </div>
+      <h1 class="text-center text-lg font-semibold text-gray-800 ml-1">Crea tu cuenta en Tutti Tienda</h1>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="p-4 max-w-md mx-auto bg-white shadow-lg rounded-lg mt-8">
+    <form id="buyerRegistrationForm" class="space-y-4">
+      <!-- Sección de Introducción -->
+      <div class="text-center">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">¡Únete a la comunidad de compradores y vendedores!</h2>
+      </div>
+
+      <!-- Información de contacto -->
+      <div>
+        <label for="email" class="block text-gray-700 font-semibold mb-2">Correo Electrónico:</label>
+        <input type="email" id="email" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-color" placeholder="Ej. usuario@ejemplo.com" required>
+      </div>
+
+      <div>
+        <label for="password" class="block text-gray-700 font-semibold mb-2">Contraseña:</label>
+        <input type="password" id="password" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-color" placeholder="Crea una contraseña segura" required>
+        <p id="passwordHelp" class="text-sm text-gray-500 mt-1">La contraseña debe tener al menos 8 caracteres, incluyendo una letra y un número.</p>
+      </div>
+
+      <!-- Datos personales -->
+      <div>
+        <label for="fullName" class="block text-gray-700 font-semibold mb-2">Nombre Completo:</label>
+        <input type="text" id="fullName" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-color" placeholder="Ej. Juan Pérez" required>
+      </div>
+
+      <div>
+        <label for="phoneNumber" class="block text-gray-700 font-semibold mb-2">Teléfono:</label>
+        <input type="tel" id="phoneNumber" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-color" placeholder="Ej. +598 123 4567" required>
+      </div>
+
+      <div>
+        <label for="cedula" class="block text-gray-700 font-semibold mb-2">Cédula:</label>
+        <input type="text" id="cedula" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-color" placeholder="Ej. 4.123.456-7" required>
+      </div>
+
+      <!-- Dirección -->
+      <div>
+        <label for="address" class="block text-gray-700 font-semibold mb-2">Dirección:</label>
+        <input type="text" id="address" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-color" placeholder="Ej. Calle Falsa 123" required>
+        <button type="button" id="editAddressButton" class="text-primary-color mt-2">Editar o elegir otro domicilio</button>
+      </div>
+
+      <div>
+        <label for="city" class="block text-gray-700 font-semibold mb-2">Ciudad:</label>
+        <input type="text" id="city" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-color" placeholder="Ej. Montevideo" required>
+      </div>
+
+      <div>
+        <label for="postalCode" class="block text-gray-700 font-semibold mb-2">Código Postal:</label>
+        <input type="text" id="postalCode" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-color" placeholder="Ej. 12345" required>
+      </div>
+
+      <div>
+        <label for="country" class="block text-gray-700 font-semibold mb-2">País:</label>
+        <select id="country" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-color" required>
+          <option value="Uruguay">Uruguay</option>
+        </select>
+      </div>
+
+      <!-- Aceptación de términos -->
+      <div class="flex items-center space-x-2">
+        <input type="checkbox" id="terms" required class="focus:ring-2 focus:ring-primary-color">
+        <label for="terms" class="text-sm text-gray-600">Acepto los <a href="/terminos" class="text-primary-color">Términos de Servicio</a> y <a href="/privacidad" class="text-primary-color">Política de Privacidad</a>.</label>
+      </div>
+
+      <!-- Botón de registro -->
+      <button type="submit" class="amazon-button w-full">Registrar Usuario</button>
+
+      <div class="mt-4 text-center">
+        <p class="text-sm text-gray-600">¿Ya tienes una cuenta? <a href="login.html" class="text-primary-color">Inicia sesión</a></p>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    // Actualiza BACKEND_URL a la URL pública de tu backend en Vercel
+    const BACKEND_URL = "http://localhost:3000"; // Cambiar a localhost si estás en desarrollo
+
+    document.getElementById('buyerRegistrationForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const fullName = document.getElementById('fullName').value.trim();
+      const phoneNumber = document.getElementById('phoneNumber').value.trim();
+      const cedula = document.getElementById('cedula').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const city = document.getElementById('city').value.trim();
+      const postalCode = document.getElementById('postalCode').value.trim();
+      const country = document.getElementById('country').value;
+
+      // Validaciones
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(email)) {
+        alert('Por favor, introduce un correo electrónico válido.');
+        return;
+      }
+
+      const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+      if (!passwordPattern.test(password)) {
+        alert('La contraseña debe tener al menos 8 caracteres, incluyendo una letra y un número.');
+        return;
+      }
+
+      const phonePattern = /^\+?\d{7,15}$/;
+      if (!phonePattern.test(phoneNumber)) {
+        alert('Por favor, introduce un número de teléfono válido.');
+        return;
+      }
+
+      // Enviar los datos al servidor
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/register`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email, password, fullName, phoneNumber, cedula, address, city, postalCode, country
+          })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          alert('Registro exitoso. ¡Bienvenido a Tutti Tienda!');
+          // Redirige al inicio de sesión o inicia sesión automáticamente
+          window.location.href = 'login.html'; // Redirige al login
+        } else {
+          alert(data.message);
+        }
+      } catch (error) {
+        console.error('Error al registrar el usuario:', error);
+        alert('Hubo un error al registrar tu cuenta. Por favor, inténtalo de nuevo.');
+      }
+    });
+
+    // Cargar dirección automáticamente
+    window.addEventListener('load', function() {
+      const savedAddress = localStorage.getItem('address');
+      if (savedAddress) {
+        document.getElementById('address').value = savedAddress;
+      }
+    });
+
+    // Guardar dirección al editar
+    document.getElementById('editAddressButton').addEventListener('click', function() {
+      const newAddress = prompt("Introduce tu nueva dirección:");
+      if (newAddress) {
+        document.getElementById('address').value = newAddress;
+        localStorage.setItem('address', newAddress);
+        alert('Dirección guardada.');
+      } else {
+        alert('Por favor, introduce una dirección válida.');
+      }
+    });
+  </script>
+=======
+        <div id="registrationMessage" class="message hidden" role="alert"></div>
+        
+        <form id="registrationForm" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">Nombre Completo</label>
+                    <input type="text" id="fullName" name="fullName" required autocomplete="name"
+                           class="input-field placeholder-gray-400">
+                </div>
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                    <input type="email" id="email" name="email" required autocomplete="email"
+                           class="input-field placeholder-gray-400">
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+                    <input type="password" id="password" name="password" required autocomplete="new-password"
+                           class="input-field placeholder-gray-400">
+                </div>
+                <div>
+                    <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-1">Número de Teléfono</label>
+                    <input type="tel" id="phoneNumber" name="phoneNumber" autocomplete="tel"
+                           class="input-field placeholder-gray-400">
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+                    <input type="text" id="address" name="address" required autocomplete="street-address"
+                           class="input-field placeholder-gray-400">
+                    <button type="button" id="editAddressButton" class="text-sm text-blue-600 hover:underline mt-2">
+                        <i class="fas fa-edit"></i> Editar Dirección
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label for="city" class="block text-sm font-medium text-gray-700 mb-1">Ciudad</label>
+                        <input type="text" id="city" name="city" required autocomplete="address-level2"
+                               class="input-field placeholder-gray-400">
+                    </div>
+                    <div>
+                        <label for="postalCode" class="block text-sm font-medium text-gray-700 mb-1">Código Postal</label>
+                        <input type="text" id="postalCode" name="postalCode" required autocomplete="postal-code"
+                               class="input-field placeholder-gray-400">
+                    </div>
+                    <div>
+                        <label for="country" class="block text-sm font-medium text-gray-700 mb-1">País</label>
+                        <input type="text" id="country" name="country" required autocomplete="country-name"
+                               class="input-field placeholder-gray-400">
+                    </div>
+                </div>
+                <div>
+                    <label for="cedula" class="block text-sm font-medium text-gray-700 mb-1">Cédula (Opcional)</label>
+                    <input type="text" id="cedula" name="cedula"
+                           class="input-field placeholder-gray-400">
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-primary w-full text-lg font-semibold py-3 mt-6">
+                Registrarse
+            </button>
+        </form>
+        
+        <p class="mt-8 text-center text-sm text-gray-600">
+            ¿Ya tienes una cuenta? 
+            <a href="/login" class="text-blue-600 hover:underline font-medium">
+                Inicia sesión aquí
+            </a>
+        </p>
+    </div>
+>>>>>>> 6fb3a610a10de6b9a0bc26251e722b7c59f60226
+
+    <script src="js/register.js"></script>
+</body>
+</html>

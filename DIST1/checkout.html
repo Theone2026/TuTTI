@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutti Market | Finalizar Compra</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="css/styles.css" /> 
+</head>
+<body class="font-inter bg-gray-100 text-gray-800 antialiased">
+
+  <div class="bg-blue-800 text-white py-2 text-sm hidden md:block shadow-md">
+    <div class="container mx-auto px-4 flex justify-between items-center">
+      <div class="flex items-center space-x-6">
+        <span class="flex items-center"><i class="fas fa-truck mr-2"></i> Envío gratis en miles de productos</span>
+        <span class="flex items-center"><i class="fas fa-shield-alt mr-2"></i> Compra Protegida</span>
+      </div>
+      <div class="flex items-center space-x-6">
+        <a href="#" class="hover:text-blue-200 transition-colors duration-200">Ayuda</a>
+        <a href="#" class="hover:text-blue-200 transition-colors duration-200">Vender</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="bg-white shadow-lg py-4 sticky top-0 z-40">
+    <div class="container mx-auto px-4 flex items-center justify-between lg:justify-start">
+      <div class="flex-shrink-0 mr-6">
+        <a href="/">
+          <img src="img/logo.png" alt="Tutti Market Logo" class="h-12 md:h-14">
+        </a>
+      </div>
+      
+      <div class="search-bar flex-grow mx-2 lg:mx-8 max-w-2xl">
+        <form action="/search" method="get" class="flex rounded-lg overflow-hidden border border-gray-300 focus-within:ring-2 focus-within:ring-blue-400 transition-all duration-200">
+          <input type="text" placeholder="Buscar productos, marcas, tiendas..." name="q"
+                 class="flex-grow p-3 focus:outline-none placeholder-gray-400 text-gray-800 text-base">
+          <button type="submit" class="bg-blue-600 text-white p-3 px-5 hover:bg-blue-700 active:bg-blue-800 transition-colors duration-200">
+            <i class="fas fa-search text-lg"></i>
+          </button>
+        </form>
+      </div>
+
+      <div class="header-actions flex items-center space-x-4 md:space-x-6 ml-auto">
+        <a href="#" id="openModalBtn" class="flex flex-col items-center text-gray-700 hover:text-blue-600 transition-colors duration-200 group">
+          <i class="fas fa-user text-xl md:text-2xl group-hover:scale-110 transition-transform duration-200"></i>
+          <span class="text-xs font-medium mt-1 hidden md:block">Mi Cuenta</span>
+        </a>
+        <a href="/favoritos" class="flex flex-col items-center text-gray-700 hover:text-blue-600 transition-colors duration-200 group">
+          <i class="fas fa-heart text-xl md:text-2xl group-hover:scale-110 transition-transform duration-200"></i>
+          <span class="text-xs font-medium mt-1 hidden md:block">Favoritos</span>
+        </a>
+        <a href="#" id="openCartBtn" class="flex flex-col items-center text-gray-700 hover:text-blue-600 transition-colors duration-200 relative group">
+          <i class="fas fa-shopping-cart text-xl md:text-2xl group-hover:scale-110 transition-transform duration-200"></i>
+          <span class="cart-count absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center font-bold border-2 border-white shadow-sm">0</span>
+          <span class="text-xs font-medium mt-1 hidden md:block">Carrito</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <nav class="bg-gray-800 text-white py-3 shadow-md">
+    <div class="container mx-auto px-4 flex items-center justify-between">
+      <div class="relative group mr-6 hidden lg:block">
+        <button class="flex items-center bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors duration-200 font-poppins text-lg font-semibold">
+          <i class="fas fa-bars mr-3"></i> Categorías
+        </button>
+        <div class="category-menu absolute left-0 top-full mt-2 bg-white rounded-lg shadow-xl w-64 border border-gray-200 hidden group-hover:block z-50">
+          <ul class="py-2 text-gray-800">
+            <li><a href="/categoria.html?cat=Celulares" class="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"><i class="fas fa-mobile-alt mr-3 text-blue-500"></i> Celulares y Smartphones</a></li>
+            <li><a href="/categoria.html?cat=Computadoras" class="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"><i class="fas fa-laptop mr-3 text-green-500"></i> Laptops y PCs</a></li>
+            <li><a href="/categoria.html?cat=Audio" class="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"><i class="fas fa-headphones mr-3 text-purple-500"></i> Audio y Sonido</a></li>
+            <li><a href="/categoria.html?cat=Gaming" class="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"><i class="fas fa-gamepad mr-3 text-red-500"></i> Gaming</a></li>
+            <li><a href="/categoria.html?cat=Accesorios" class="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"><i class="fas fa-charging-station mr-3 text-yellow-500"></i> Accesorios</a></li>
+            <li><a href="/categoria.html?cat=Smartwatch" class="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"><i class="fas fa-watch mr-3 text-indigo-500"></i> Smartwatches</a></li>
+            <li><a href="/categoria.html?cat=Camaras" class="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"><i class="fas fa-camera mr-3 text-teal-500"></i> Cámaras</a></li>
+            <li class="border-t border-gray-200 mt-2 pt-2"><a href="/categorias" class="flex items-center px-4 py-2 text-blue-600 font-medium hover:bg-gray-100 transition-colors">Ver Todas las Categorías <i class="fas fa-arrow-right ml-2 text-sm"></i></a></li>
+          </ul>
+        </div>
+      </div>
+
+      <ul class="flex flex-grow justify-start space-x-6 md:space-x-8 font-poppins text-base font-medium overflow-x-auto whitespace-nowrap lg:overflow-visible lg:justify-start">
+        <li><a href="/" class="py-2 hover:text-blue-300 transition-colors duration-200">Inicio</a></li>
+        <li><a href="/ofertas" class="py-2 hover:text-blue-300 transition-colors duration-200">Ofertas del Día</a></li>
+        <li><a href="/nuevos" class="py-2 hover:text-blue-300 transition-colors duration-200">Nuevos Productos</a></li>
+        <li><a href="/contacto" class="py-2 hover:text-blue-300 transition-colors duration-200">Contacto</a></li>
+        <li><a href="/nosotros" class="py-2 hover:text-blue-300 transition-colors duration-200">Sobre Nosotros</a></li>
+      </ul>
+
+      <a href="/vender.html" class="lg:hidden ml-auto px-4 py-2 rounded-lg transition-all duration-200 font-semibold bg-green-500 hover:bg-green-600 text-white shadow-md flex items-center text-sm">
+        <i class="fas fa-store mr-2"></i> Vender
+      </a>
+    </div>
+  </nav>
+
+  <main class="container mx-auto px-4 my-8">
+    <h1 class="section-title text-center mb-8">Finalizar Compra</h1>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="lg:col-span-2 space-y-8">
+        <section class="bg-white p-6 rounded-xl shadow-lg">
+          <h2 class="text-2xl font-poppins font-semibold text-gray-900 mb-6">
+            <i class="fas fa-shipping-fast text-blue-600 mr-3"></i> Dirección de Envío
+          </h2>
+          <form id="shipping-form" class="space-y-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">Nombre Completo</label>
+                <input type="text" id="fullName" name="fullName" required class="form-input">
+              </div>
+              <div>
+                <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                <input type="tel" id="phone" name="phone" required class="form-input">
+              </div>
+            </div>
+            <div>
+              <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+              <input type="text" id="address" name="address" required class="form-input">
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label for="city" class="block text-sm font-medium text-gray-700 mb-1">Ciudad</label>
+                <input type="text" id="city" name="city" required class="form-input">
+              </div>
+              <div>
+                <label for="state" class="block text-sm font-medium text-gray-700 mb-1">Departamento/Estado</label>
+                <input type="text" id="state" name="state" required class="form-input">
+              </div>
+              <div>
+                <label for="zipCode" class="block text-sm font-medium text-gray-700 mb-1">Código Postal</label>
+                <input type="text" id="zipCode" name="zipCode" required class="form-input">
+              </div>
+            </div>
+            <div>
+              <label for="country" class="block text-sm font-medium text-gray-700 mb-1">País</label>
+              <input type="text" id="country" name="country" required class="form-input">
+            </div>
+          </form>
+        </section>
+
+        <section class="bg-white p-6 rounded-xl shadow-lg">
+          <h2 class="text-2xl font-poppins font-semibold text-gray-900 mb-6">
+            <i class="fas fa-credit-card text-blue-600 mr-3"></i> Método de Pago
+          </h2>
+          <form id="payment-form" class="space-y-5">
+            <div class="flex items-center space-x-4 mb-4">
+              <label class="inline-flex items-center">
+                <input type="radio" name="paymentMethod" value="creditCard" checked class="form-radio text-blue-600">
+                <span class="ml-2 text-gray-800 font-medium">Tarjeta de Crédito/Débito</span>
+              </label>
+              <label class="inline-flex items-center">
+                <input type="radio" name="paymentMethod" value="paypal" class="form-radio text-blue-600">
+                <span class="ml-2 text-gray-800 font-medium">PayPal</span>
+              </label>
+            </div>
+
+            <div id="creditCardFields" class="space-y-4">
+              <div>
+                <label for="cardNumber" class="block text-sm font-medium text-gray-700 mb-1">Número de Tarjeta</label>
+                <input type="text" id="cardNumber" name="cardNumber" placeholder="XXXX XXXX XXXX XXXX" required class="form-input">
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label for="cardName" class="block text-sm font-medium text-gray-700 mb-1">Nombre en la Tarjeta</label>
+                  <input type="text" id="cardName" name="cardName" required class="form-input">
+                </div>
+                <div>
+                  <label for="expiryDate" class="block text-sm font-medium text-gray-700 mb-1">Fecha de Vencimiento (MM/AA)</label>
+                  <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/AA" required class="form-input">
+                </div>
+                <div>
+                  <label for="cvv" class="block text-sm font-medium text-gray-700 mb-1">CVV</label>
+                  <input type="text" id="cvv" name="cvv" placeholder="XXX" required class="form-input">
+                </div>
+              </div>
+            </div>
+
+            <div id="paypalMessage" class="hidden bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-lg">
+              Serás redirigido a PayPal para completar tu pago de forma segura.
+            </div>
+          </form>
+        </section>
+      </div>
+
+      <div class="lg:col-span-1">
+        <section class="bg-white p-6 rounded-xl shadow-lg">
+          <h2 class="text-2xl font-poppins font-semibold text-gray-900 mb-6">
+            <i class="fas fa-receipt text-blue-600 mr-3"></i> Resumen del Pedido
+          </h2>
+          <div id="checkout-items-container" class="space-y-4 border-b border-gray-200 pb-4 mb-4">
+            <div class="flex items-center justify-between text-gray-600">
+              <span>Producto 1 (x1)</span>
+              <span>S/. 799.99</span>
+            </div>
+            <div class="flex items-center justify-between text-gray-600">
+              <span>Producto 2 (x1)</span>
+              <span>S/. 1299.99</span>
+            </div>
+            <div id="checkoutEmptyCartMessage" class="text-center text-gray-500 py-4 hidden">Tu carrito está vacío.</div>
+          </div>
+          
+          <div class="space-y-3 font-medium text-gray-800">
+            <div class="flex justify-between">
+              <span>Subtotal:</span>
+              <span id="checkoutSubtotal">S/. 0.00</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Envío:</span>
+              <span id="checkoutShipping">S/. 15.00</span>
+            </div>
+            <div class="flex justify-between text-xl font-bold text-gray-900 border-t border-gray-300 pt-3 mt-3">
+              <span>Total:</span>
+              <span id="checkoutTotal">S/. 0.00</span>
+            </div>
+          </div>
+
+          <button id="placeOrderBtn" class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-bold text-lg hover:bg-blue-700 transition-colors duration-200 mt-8 shadow-md">
+            Confirmar Pedido
+          </button>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="main-footer bg-gray-900 text-gray-200 py-12">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div>
+          <h3 class="text-xl font-poppins font-bold mb-4 text-blue-400">Tutti Market</h3>
+          <p class="text-gray-400 text-sm mb-4">Tu marketplace confiable para comprar y vender tecnología. Conectamos compradores con los mejores productos y vendedores.</p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors"><i class="fab fa-facebook-f text-lg"></i></a>
+            <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors"><i class="fab fa-instagram text-lg"></i></a>
+            <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors"><i class="fab fa-twitter text-lg"></i></a>
+            <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors"><i class="fab fa-linkedin-in text-lg"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-xl font-poppins font-bold mb-4 text-blue-400">Información Útil</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="/nosotros" class="text-gray-400 hover:text-blue-400 transition-colors">Sobre Nosotros</a></li>
+            <li><a href="/contacto" class="text-gray-400 hover:text-blue-400 transition-colors">Contacto</a></li>
+            <li><a href="/preguntas-frecuentes" class="text-gray-400 hover:text-blue-400 transition-colors">Preguntas Frecuentes</a></li>
+            <li><a href="/terminos" class="text-gray-400 hover:text-blue-400 transition-colors">Términos y Condiciones</a></li>
+            <li><a href="/privacidad" class="text-gray-400 hover:text-blue-400 transition-colors">Política de Privacidad</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-xl font-poppins font-bold mb-4 text-blue-400">Mi Cuenta</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" id="openModalBtnFooter" class="text-gray-400 hover:text-blue-400 transition-colors">Iniciar Sesión</a></li>
+            <li><a href="/registro.html" class="text-gray-400 hover:text-blue-400 transition-colors">Crear Cuenta</a></li>
+            <li><a href="/mis-compras" class="text-gray-400 hover:text-blue-400 transition-colors">Mis Compras</a></li>
+            <li><a href="/mis-ventas" class="text-gray-400 hover:text-blue-400 transition-colors">Mis Ventas</a></li>
+            <li><a href="/lista-deseos" class="text-gray-400 hover:text-blue-400 transition-colors">Lista de Deseos</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-xl font-poppins font-bold mb-4 text-blue-400">Contáctanos</h3>
+          <address class="not-italic text-gray-400 text-sm space-y-2">
+            <p class="flex items-start"><i class="fas fa-map-marker-alt mr-3 mt-1 text-blue-300"></i> Av. Principal 123, Ciudad, País</p>
+            <p class="flex items-center"><i class="fas fa-phone mr-3 text-blue-300"></i> +123 456 7890</p>
+            <p class="flex items-center"><i class="fas fa-envelope mr-3 text-blue-300"></i> info@tuttimarket.com</p>
+          </address>
+          <div class="mt-6">
+            <h4 class="font-semibold text-gray-300 mb-2">Métodos de Pago</h4>
+            <div class="flex flex-wrap gap-3">
+              <img src="img/icon-visa.png" alt="Visa" class="h-6 opacity-80 hover:opacity-100 transition-opacity">
+              <img src="img/icon-mastercard.png" alt="Mastercard" class="h-6 opacity-80 hover:opacity-100 transition-opacity">
+              <img src="img/icon-paypal.png" alt="PayPal" class="h-6 opacity-80 hover:opacity-100 transition-opacity">
+              <img src="img/icon-mercado-pago.png" alt="Mercado Pago" class="h-6 opacity-80 hover:opacity-100 transition-opacity">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-gray-700 mt-8 pt-6 text-center text-xs text-gray-500">
+        &copy; 2023 Tutti Market. Todos los derechos reservados.
+      </div>
+    </div>
+  </footer>
+
+  <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden opacity-0 transition-opacity duration-300">
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md relative transform scale-90 transition-all duration-300 modal-login-content">
+      <span class="close-modal absolute top-3 right-3 text-gray-500 text-3xl cursor-pointer hover:text-gray-800 transition-colors">&times;</span>
+      <h2 class="text-2xl font-poppins font-bold mb-6 text-center text-gray-900">Bienvenido a Tutti Market</h2>
+      <form id="modalLoginForm" class="space-y-5">
+        <div>
+          <label for="modalEmail" class="block text-sm font-semibold text-gray-700 mb-1">Correo Electrónico</label>
+          <input type="email" id="modalEmail" required class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 placeholder-gray-400 text-sm transition-all duration-200">
+        </div>
+        <div>
+          <label for="modalPassword" class="block text-sm font-semibold text-gray-700 mb-1">Contraseña</label>
+          <input type="password" id="modalPassword" required class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 placeholder-gray-400 text-sm transition-all duration-200">
+        </div>
+        <div id="modalLoginMessage" class="text-center text-sm p-2 rounded-lg hidden font-medium"></div>
+        <button type="submit" class="w-full bg-blue-600 text-white p-2.5 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-semibold text-base shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+          Iniciar Sesión
+        </button>
+      </form>
+      <p class="text-center text-sm text-gray-600 mt-5">
+        ¿No tienes una cuenta? <a href="/registro.html" class="text-blue-600 hover:underline font-bold">Regístrate aquí</a>
+      </p>
+    </div>
+  </div>
+
+  <div id="miniCart" class="fixed right-0 top-0 h-full w-full max-w-sm bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+    <div class="flex justify-between items-center p-5 border-b border-gray-200">
+      <h2 class="text-2xl font-poppins font-bold text-gray-900 flex items-center">
+        <i class="fas fa-shopping-cart mr-3 text-blue-600"></i> Tu Carrito
+      </h2>
+      <button id="closeCartBtn" class="text-gray-500 hover:text-gray-800 transition-colors text-3xl">&times;</button>
+    </div>
+    <div id="cartItemsContainer" class="flex-grow overflow-y-auto p-5 space-y-4">
+      <div class="text-center text-gray-500 py-10" id="emptyCartMessage">Tu carrito está vacío.</div>
+    </div>
+    <div class="p-5 border-t border-gray-200">
+      <div class="flex justify-between items-center text-xl font-bold text-gray-900 mb-4">
+        <span>Total:</span>
+        <span id="cartTotal">$0.00</span>
+      </div>
+      <a href="/cart.html" class="w-full bg-blue-600 text-white px-4 py-3 rounded-lg text-center font-bold text-lg block mb-3 hover:bg-blue-700 transition-colors duration-200">
+        Ver Carrito Completo
+      </a>
+      <button class="w-full bg-green-600 text-white px-4 py-3 rounded-lg text-center font-bold text-lg hover:bg-green-700 transition-colors duration-200">
+        Proceder al Pago
+      </button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  
+  <script src="js/main.js"></script>
+
+  <script src="js/checkout.js"></script>
+</body>
+</html>

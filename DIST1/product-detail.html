@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="product-title">Cargando Producto...</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/product-detail.css" /> 
+</head>
+<body class="font-inter bg-gray-100 text-gray-800 antialiased">
+
+  <div class="bg-blue-800 text-white py-2 text-sm hidden md:block shadow-md">
+    <div class="container mx-auto px-4 flex justify-between items-center">
+      <div class="flex items-center space-x-6">
+        <span class="flex items-center"><i class="fas fa-truck mr-2"></i> Envío gratis en miles de productos</span>
+        <span class="flex items-center"><i class="fas fa-shield-alt mr-2"></i> Compra Protegida</span>
+      </div>
+      <div class="flex items-center space-x-6">
+        <a href="#" class="hover:text-blue-200 transition-colors duration-200">Ayuda</a>
+        <a href="#" class="hover:text-blue-200 transition-colors duration-200">Vender</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="bg-white shadow-lg py-4 sticky top-0 z-40">
+    <div class="container mx-auto px-4 flex items-center justify-between lg:justify-start">
+      <div class="flex-shrink-0 mr-6">
+        <a href="/">
+          <img src="img/logo.png" alt="Tutti Market Logo" class="h-12 md:h-14">
+        </a>
+      </div>
+      
+      <div class="search-bar flex-grow mx-2 lg:mx-8 max-w-2xl">
+        <form action="/search" method="get" class="flex rounded-lg overflow-hidden border border-gray-300 focus-within:ring-2 focus-within:ring-blue-400 transition-all duration-200">
+          <input type="text" placeholder="Buscar productos, marcas, tiendas..." name="q"
+                 class="flex-grow p-3 focus:outline-none placeholder-gray-400 text-gray-800 text-base">
+          <button type="submit" class="bg-blue-600 text-white p-3 px-5 hover:bg-blue-700 active:bg-blue-800 transition-colors duration-200">
+            <i class="fas fa-search text-lg"></i>
+          </button>
+        </form>
+      </div>
+
+      <div class="header-actions flex items-center space-x-4 md:space-x-6 ml-auto">
+        <a href="#" id="openModalBtn" class="flex flex-col items-center text-gray-700 hover:text-blue-600 transition-colors duration-200 group">
+          <i class="fas fa-user text-xl md:text-2xl group-hover:scale-110 transition-transform duration-200"></i>
+          <span class="text-xs font-medium mt-1 hidden md:block">Mi Cuenta</span>
+        </a>
+        <a href="/favoritos" class="flex flex-col items-center text-gray-700 hover:text-blue-600 transition-colors duration-200 group">
+          <i class="fas fa-heart text-xl md:text-2xl group-hover:scale-110 transition-transform duration-200"></i>
+          <span class="text-xs font-medium mt-1 hidden md:block">Favoritos</span>
+        </a>
+        <a href="#" id="openCartBtn" class="flex flex-col items-center text-gray-700 hover:text-blue-600 transition-colors duration-200 relative group">
+          <i class="fas fa-shopping-cart text-xl md:text-2xl group-hover:scale-110 transition-transform duration-200"></i>
+          <span class="cart-count absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center font-bold border-2 border-white shadow-sm">0</span>
+          <span class="text-xs font-medium mt-1 hidden md:block">Carrito</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <nav class="bg-gray-800 text-white py-3 shadow-md">
+    <div class="container mx-auto px-4 flex items-center justify-between">
+      <div class="relative group mr-6 hidden lg:block">
+        <button class="flex items-center bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors duration-200 font-poppins text-lg font-semibold">
+          <i class="fas fa-bars mr-3"></i> Categorías
+        </button>
+        <div class="category-menu absolute left-0 top-full mt-2 bg-white rounded-lg shadow-xl w-64 border border-gray-200 hidden group-hover:block z-50">
+          <ul class="py-2 text-gray-800">
+            <li><a href="/celulares" class="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"><i class="fas fa-mobile-alt mr-3 text-blue-500"></i> Celulares y Smartphones</a></li>
+            <li><a href="/computadoras" class="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"><i class="fas fa-laptop mr-3 text-green-500"></i> Laptops y PCs</a></li>
+            <li><a href="/audio" class="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"><i class="fas fa-headphones mr-3 text-purple-500"></i> Audio y Sonido</a></li>
+            <li><a href="/gaming" class="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"><i class="fas fa-gamepad mr-3 text-red-500"></i> Gaming</a></li>
+            <li><a href="/accesorios" class="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"><i class="fas fa-charging-station mr-3 text-yellow-500"></i> Accesorios</a></li>
+            <li><a href="/smartwatch" class="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"><i class="fas fa-watch mr-3 text-indigo-500"></i> Smartwatches</a></li>
+            <li><a href="/camaras" class="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"><i class="fas fa-camera mr-3 text-teal-500"></i> Cámaras</a></li>
+            <li class="border-t border-gray-200 mt-2 pt-2"><a href="/categorias" class="flex items-center px-4 py-2 text-blue-600 font-medium hover:bg-gray-100 transition-colors">Ver Todas las Categorías <i class="fas fa-arrow-right ml-2 text-sm"></i></a></li>
+          </ul>
+        </div>
+      </div>
+
+      <ul class="flex flex-grow justify-start space-x-6 md:space-x-8 font-poppins text-base font-medium overflow-x-auto whitespace-nowrap lg:overflow-visible lg:justify-start">
+        <li><a href="/" class="py-2 hover:text-blue-300 transition-colors duration-200">Inicio</a></li>
+        <li><a href="/ofertas" class="py-2 hover:text-blue-300 transition-colors duration-200">Ofertas del Día</a></li>
+        <li><a href="/nuevos" class="py-2 hover:text-blue-300 transition-colors duration-200">Nuevos Productos</a></li>
+        <li><a href="/contacto" class="py-2 hover:text-blue-300 transition-colors duration-200">Contacto</a></li>
+        <li><a href="/nosotros" class="py-2 hover:text-blue-300 transition-colors duration-200">Sobre Nosotros</a></li>
+      </ul>
+
+      <a href="/vender.html" class="lg:hidden ml-auto px-4 py-2 rounded-lg transition-all duration-200 font-semibold bg-green-500 hover:bg-green-600 text-white shadow-md flex items-center text-sm">
+        <i class="fas fa-store mr-2"></i> Vender
+      </a>
+    </div>
+  </nav>
+
+  <main class="container mx-auto px-4 my-8">
+
+    <nav class="text-sm text-gray-600 mb-6">
+      <ol class="list-none p-0 inline-flex">
+        <li class="flex items-center"><a href="/" class="text-blue-600 hover:text-blue-800">Inicio</a><span class="mx-2">/</span></li>
+        <li class="flex items-center"><a href="/categoria.html" id="breadcrumb-category" class="text-blue-600 hover:text-blue-800">Categoría</a><span class="mx-2">/</span></li>
+        <li class="flex items-center"><span id="breadcrumb-product-name" class="text-gray-800 font-medium line-clamp-1">Nombre del Producto</span></li>
+      </ol>
+    </nav>
+
+    <section class="product-detail-grid grid grid-cols-1 lg:grid-cols-3 gap-8 bg-white p-6 rounded-xl shadow-lg">
+      <div class="lg:col-span-2">
+        <div class="main-image-container relative bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center h-[300px] md:h-[500px]">
+          <img id="main-product-image" src="img/placeholder.jpg" alt="Imagen principal del producto" class="max-h-full max-w-full object-contain cursor-zoom-in">
+        </div>
+        <div id="thumbnail-gallery" class="thumbnail-gallery flex overflow-x-auto mt-4 pb-2 space-x-3 hide-scrollbar">
+          </div>
+      </div>
+
+      <div class="lg:col-span-1">
+        <h1 id="product-name" class="font-poppins text-3xl md:text-4xl font-extrabold text-gray-900 mb-3 leading-tight">Cargando Nombre del Producto...</h1>
+        <p class="text-sm text-gray-500 mb-4">SKU: <span id="product-sku">N/A</span> | Estado: <span id="product-condition" class="font-semibold text-green-600">Nuevo</span></p>
+        
+        <div class="price-section mb-6">
+          <span id="product-price" class="text-blue-700 font-poppins text-5xl font-extrabold">--.--</span>
+          <span class="text-gray-600 text-2xl ml-2">USD</span>
+          </div>
+
+        <div class="mb-6">
+          <p class="text-gray-700 font-semibold mb-2">Cantidad:</p>
+          <div class="flex items-center space-x-2">
+            <button id="quantity-minus" class="quantity-btn">-</button>
+            <input type="number" id="product-quantity" value="1" min="1" max="100" class="w-16 text-center border border-gray-300 rounded-lg p-2 text-gray-800">
+            <button id="quantity-plus" class="quantity-btn">+</button>
+          </div>
+        </div>
+
+        <div class="actions-section space-y-4 mb-8">
+          <button id="add-to-cart-btn" class="btn-primary w-full py-3 text-lg flex items-center justify-center">
+            <i class="fas fa-cart-plus mr-3"></i> Agregar al Carrito
+          </button>
+          <button id="buy-now-btn" class="btn-checkout w-full py-3 text-lg flex items-center justify-center">
+            <i class="fas fa-bolt mr-3"></i> Comprar Ahora
+          </button>
+          <button class="w-full bg-gray-200 text-gray-800 py-3 rounded-lg hover:bg-gray-300 transition-colors duration-200 font-semibold text-lg flex items-center justify-center">
+            <i class="fas fa-heart mr-3"></i> Añadir a Favoritos
+          </button>
+        </div>
+
+        <div class="info-boxes space-y-4">
+          <div class="info-box bg-white border border-gray-200 rounded-lg p-4 flex items-center space-x-4 shadow-sm">
+            <i class="fas fa-shipping-fast text-2xl text-blue-600"></i>
+            <div>
+              <h4 class="font-semibold text-gray-900">Envío Gratis a Todo el País</h4>
+              <p class="text-sm text-gray-600">Recíbelo entre 2 y 5 días hábiles.</p>
+            </div>
+          </div>
+          <div class="info-box bg-white border border-gray-200 rounded-lg p-4 flex items-center space-x-4 shadow-sm">
+            <i class="fas fa-store text-2xl text-green-600"></i>
+            <div>
+              <h4 class="font-semibold text-gray-900">Vendido por <span id="seller-name">Cargando Vendedor...</span></h4>
+              <p class="text-sm text-gray-600">Más de 1000 ventas, 99% de satisfacción.</p>
+              <a href="#" id="view-seller-profile" class="text-blue-600 text-sm font-medium hover:underline">Ver perfil del vendedor</a>
+            </div>
+          </div>
+          <div class="info-box bg-white border border-gray-200 rounded-lg p-4 flex items-center space-x-4 shadow-sm">
+            <i class="fas fa-shield-alt text-2xl text-purple-600"></i>
+            <div>
+              <h4 class="font-semibold text-gray-900">Compra Protegida</h4>
+              <p class="text-sm text-gray-600">Te devolvemos el dinero si no recibes lo que esperabas.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="product-tabs mt-12 bg-white rounded-xl shadow-lg p-6">
+      <div class="border-b border-gray-200">
+        <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+          <button class="tab-button tab-active" data-tab="description">Descripción</button>
+          <button class="tab-button" data-tab="specs">Especificaciones</button>
+          <button class="tab-button" data-tab="questions">Preguntas y Respuestas</button>
+        </nav>
+      </div>
+
+      <div id="tab-description" class="tab-content mt-6 active-tab">
+        <h3 class="font-poppins text-2xl font-bold text-gray-900 mb-4">Detalles del Producto</h3>
+        <div id="product-full-description" class="prose max-w-none text-gray-700 leading-relaxed">
+          <p>Cargando descripción completa...</p>
+        </div>
+      </div>
+
+      <div id="tab-specs" class="tab-content mt-6 hidden">
+        <h3 class="font-poppins text-2xl font-bold text-gray-900 mb-4">Especificaciones Técnicas</h3>
+        <table class="w-full text-left text-gray-700 border-collapse">
+          <tbody id="product-specs">
+            <tr><td class="py-2 px-4 border-b border-gray-200 font-semibold w-1/3">Marca</td><td class="py-2 px-4 border-b border-gray-200">Cargando...</td></tr>
+            <tr><td class="py-2 px-4 border-b border-gray-200 font-semibold">Modelo</td><td class="py-2 px-4 border-b border-gray-200">Cargando...</td></tr>
+            <tr><td class="py-2 px-4 border-b border-gray-200 font-semibold">Categoría</td><td class="py-2 px-4 border-b border-gray-200">Cargando...</td></tr>
+            <tr><td class="py-2 px-4 border-b border-gray-200 font-semibold">Peso</td><td class="py-2 px-4 border-b border-gray-200">Cargando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="tab-questions" class="tab-content mt-6 hidden">
+        <h3 class="font-poppins text-2xl font-bold text-gray-900 mb-4">Preguntas y Respuestas</h3>
+        <div class="mb-6 bg-gray-50 p-5 rounded-lg border border-gray-200">
+          <h4 class="font-semibold text-lg text-gray-800 mb-3">Haz una pregunta al vendedor</h4>
+          <textarea id="question-input" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" rows="3" placeholder="Escribe tu pregunta aquí..."></textarea>
+          <button id="send-question-btn" class="btn-primary mt-3 px-6 py-2">Enviar Pregunta</button>
+        </div>
+
+        <div id="questions-list" class="space-y-6">
+          <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <p class="font-semibold text-blue-600 mb-2">Pregunta de un usuario:</p>
+            <p class="text-gray-700">¿Este producto es compatible con X?</p>
+            <p class="text-sm text-gray-500 mt-2">Hace 2 días</p>
+            <div class="response mt-3 pl-4 border-l-4 border-gray-200">
+              <p class="font-semibold text-green-600 mb-1">Respuesta del vendedor:</p>
+              <p class="text-gray-700">Sí, es totalmente compatible con el modelo X.</p>
+              <p class="text-sm text-gray-500 mt-1">Hace 1 día</p>
+            </div>
+          </div>
+          <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <p class="font-semibold text-blue-600 mb-2">Pregunta de un usuario:</p>
+            <p class="text-gray-700">¿Hacen envíos internacionales?</p>
+            <p class="text-sm text-gray-500 mt-2">Hace 5 días</p>
+            <div class="response mt-3 pl-4 border-l-4 border-gray-200">
+              <p class="font-semibold text-green-600 mb-1">Respuesta del vendedor:</p>
+              <p class="text-gray-700">Por el momento solo envíos dentro del país.</p>
+              <p class="text-sm text-gray-500 mt-1">Hace 4 días</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="products-section mt-12 mb-8">
+      <h2 class="section-title text-center">Productos Relacionados</h2>
+      <div class="products-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="related-products">
+        </div>
+      <div class="text-center mt-8">
+        <a href="/products" class="btn-link">Ver más productos similares <i class="fas fa-chevron-right ml-2 text-xs"></i></a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="main-footer bg-gray-900 text-gray-200 py-12">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div>
+          <h3 class="text-xl font-poppins font-bold mb-4 text-blue-400">Tutti Market</h3>
+          <p class="text-gray-400 text-sm mb-4">Tu marketplace confiable para comprar y vender tecnología. Conectamos compradores con los mejores productos y vendedores.</p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors"><i class="fab fa-facebook-f text-lg"></i></a>
+            <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors"><i class="fab fa-instagram text-lg"></i></a>
+            <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors"><i class="fab fa-twitter text-lg"></i></a>
+            <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors"><i class="fab fa-linkedin-in text-lg"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-xl font-poppins font-bold mb-4 text-blue-400">Información Útil</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="/nosotros" class="text-gray-400 hover:text-blue-400 transition-colors">Sobre Nosotros</a></li>
+            <li><a href="/contacto" class="text-gray-400 hover:text-blue-400 transition-colors">Contacto</a></li>
+            <li><a href="/preguntas-frecuentes" class="text-gray-400 hover:text-blue-400 transition-colors">Preguntas Frecuentes</a></li>
+            <li><a href="/terminos" class="text-gray-400 hover:text-blue-400 transition-colors">Términos y Condiciones</a></li>
+            <li><a href="/privacidad" class="text-gray-400 hover:text-blue-400 transition-colors">Política de Privacidad</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-xl font-poppins font-bold mb-4 text-blue-400">Mi Cuenta</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" id="openModalBtnFooter" class="text-gray-400 hover:text-blue-400 transition-colors">Iniciar Sesión</a></li>
+            <li><a href="/registro.html" class="text-gray-400 hover:text-blue-400 transition-colors">Crear Cuenta</a></li>
+            <li><a href="/mis-compras" class="text-gray-400 hover:text-blue-400 transition-colors">Mis Compras</a></li>
+            <li><a href="/mis-ventas" class="text-gray-400 hover:text-blue-400 transition-colors">Mis Ventas</a></li>
+            <li><a href="/lista-deseos" class="text-gray-400 hover:text-blue-400 transition-colors">Lista de Deseos</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-xl font-poppins font-bold mb-4 text-blue-400">Contáctanos</h3>
+          <address class="not-italic text-gray-400 text-sm space-y-2">
+            <p class="flex items-start"><i class="fas fa-map-marker-alt mr-3 mt-1 text-blue-300"></i> Av. Principal 123, Ciudad, País</p>
+            <p class="flex items-center"><i class="fas fa-phone mr-3 text-blue-300"></i> +123 456 7890</p>
+            <p class="flex items-center"><i class="fas fa-envelope mr-3 text-blue-300"></i> info@tuttimarket.com</p>
+          </address>
+          <div class="mt-6">
+            <h4 class="font-semibold text-gray-300 mb-2">Métodos de Pago</h4>
+            <div class="flex flex-wrap gap-3">
+              <img src="img/icon-visa.png" alt="Visa" class="h-6 opacity-80 hover:opacity-100 transition-opacity">
+              <img src="img/icon-mastercard.png" alt="Mastercard" class="h-6 opacity-80 hover:opacity-100 transition-opacity">
+              <img src="img/icon-paypal.png" alt="PayPal" class="h-6 opacity-80 hover:opacity-100 transition-opacity">
+              <img src="img/icon-mercado-pago.png" alt="Mercado Pago" class="h-6 opacity-80 hover:opacity-100 transition-opacity">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-gray-700 mt-8 pt-6 text-center text-xs text-gray-500">
+        &copy; 2023 Tutti Market. Todos los derechos reservados.
+      </div>
+    </div>
+  </footer>
+
+  <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden opacity-0 transition-opacity duration-300">
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md relative transform scale-90 transition-all duration-300">
+      <span class="close-modal absolute top-3 right-3 text-gray-500 text-3xl cursor-pointer hover:text-gray-800 transition-colors">&times;</span>
+      <h2 class="text-2xl font-poppins font-bold mb-6 text-center text-gray-900">Bienvenido a Tutti Market</h2>
+      <form id="modalLoginForm" class="space-y-5">
+        <div>
+          <label for="modalEmail" class="block text-sm font-semibold text-gray-700 mb-1">Correo Electrónico</label>
+          <input type="email" id="modalEmail" required class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 placeholder-gray-400 text-sm transition-all duration-200">
+        </div>
+        <div>
+          <label for="modalPassword" class="block text-sm font-semibold text-gray-700 mb-1">Contraseña</label>
+          <input type="password" id="modalPassword" required class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 placeholder-gray-400 text-sm transition-all duration-200">
+        </div>
+        <div id="modalLoginMessage" class="text-center text-sm p-2 rounded-lg hidden font-medium"></div>
+        <button type="submit" class="w-full bg-blue-600 text-white p-2.5 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-semibold text-base shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+          Iniciar Sesión
+        </button>
+      </form>
+      <p class="text-center text-sm text-gray-600 mt-5">
+        ¿No tienes una cuenta? <a href="/registro.html" class="text-blue-600 hover:underline font-bold">Regístrate aquí</a>
+      </p>
+    </div>
+  </div>
+
+  <div id="miniCart" class="fixed right-0 top-0 h-full w-full max-w-sm bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+    <div class="flex justify-between items-center p-5 border-b border-gray-200">
+      <h2 class="text-2xl font-poppins font-bold text-gray-900 flex items-center">
+        <i class="fas fa-shopping-cart mr-3 text-blue-600"></i> Tu Carrito
+      </h2>
+      <button id="closeCartBtn" class="text-gray-500 hover:text-gray-800 transition-colors text-3xl">&times;</button>
+    </div>
+    <div id="cartItemsContainer" class="flex-grow overflow-y-auto p-5 space-y-4">
+      <div class="text-center text-gray-500 py-10" id="emptyCartMessage">Tu carrito está vacío.</div>
+    </div>
+    <div class="p-5 border-t border-gray-200">
+      <div class="flex justify-between items-center text-xl font-bold text-gray-900 mb-4">
+        <span>Total:</span>
+        <span id="cartTotal">$0.00</span>
+      </div>
+      <a href="/cart.html" class="w-full btn-primary px-4 py-3 rounded-lg text-center font-bold text-lg block mb-3">
+        Ver Carrito Completo
+      </a>
+      <button class="w-full btn-checkout bg-green-600 text-white px-4 py-3 rounded-lg text-center font-bold text-lg hover:bg-green-700 transition-colors duration-200">
+        Proceder al Pago
+      </button>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script> <script src="js/product-detail.js"></script>
+</body>
+</html>

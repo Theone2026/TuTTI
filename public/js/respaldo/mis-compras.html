@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Compras - Tutti Market</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- Contenedor principal -->
+    <div class="flex min-h-screen">
+        <!-- Menú lateral -->
+        <aside class="bg-white w-64 p-6 shadow-lg flex flex-col justify-between">
+            <!-- Logo y Menú -->
+            <div>
+                <!-- Logo -->
+                <div class="mb-8">
+                    <img src="/img/logo.png" alt="Tutti Market Logo" class="w-24">
+                </div>
+                <!-- Menú -->
+                <nav class="space-y-2">
+                    <!-- Inicio -->
+                    <a href="index.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                        <i class="fas fa-home mr-2"></i>
+                        Inicio
+                    </a>
+                    <a href="dashboard.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                        <i class="fas fa-tachometer-alt mr-2"></i>
+                        Dashboard
+                    </a>
+                    <a href="Pedidos.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                        <i class="fas fa-shopping-cart mr-2"></i>
+                        Pedidos
+                    </a>
+                    <a href="pagos.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                        <i class="fas fa-dollar-sign mr-2"></i>
+                        Pagos
+                    </a>
+                    <a href="publicaciones.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                        <i class="fas fa-box-open mr-2"></i>
+                        Publicaciones
+                    </a>
+                    <a href="mensajes.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                        <i class="fas fa-comments mr-2"></i>
+                        Mensajes
+                    </a>
+                    <a href="configuracion.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                        <i class="fas fa-cog mr-2"></i>
+                        Configuración
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Cerrar Sesión -->
+            <div>
+                <a href="/cerrar_sesion.html" class="flex items-center text-gray-700 hover:bg-blue-50 p-2 rounded-lg">
+                    <i class="fas fa-sign-out-alt mr-2"></i>
+                    Cerrar Sesión
+                </a>
+            </div>
+        </aside>
+
+        <!-- Contenido principal -->
+        <main class="flex-1 p-8">
+            <!-- Barra superior -->
+            <header class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold">Mis Compras</h1>
+                <div class="flex items-center space-x-4">
+                    <!-- Notificaciones -->
+                    <div class="relative">
+                        <i class="fas fa-bell text-gray-700 cursor-pointer" id="notificationBell"></i>
+                        <span id="notificationCount" class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1 hidden">0</span>
+                        <div id="notificationDropdown" class="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg hidden">
+                            <ul id="notificationList" class="divide-y divide-gray-200">
+                                <!-- Notifications will be dynamically added here -->
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Avatar y Nombre -->
+                    <div class="flex items-center">
+                        <img id="profile-picture" src="/img/default-avatar.png" alt="Avatar" class="w-8 h-8 rounded-full">
+                        <span id="username" class="ml-2 text-gray-700"></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Sección de Mis Compras -->
+            <section class="mb-8">
+                <h2 class="text-xl font-bold mb-4">Mis Compras</h2>
+                <div id="purchasesContainer" class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="mb-4 p-4 border border-gray-200 rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold truncate break-words" title="Televisor Aiwa 43&quot; LED AW43B4. Smart TV, Android TV, Full HD">
+                                Televisor Aiwa 43" LED AW43B4. Smart TV, Android TV, Full HD
+                            </h3>
+                            <p class="text-sm text-gray-600">Comprado el 19/3/2025</p>
+                        </div>
+                        <div>
+                            <a href="#" class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm w-full text-center block">
+                                Contactar Vendedor
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mb-4 p-4 border border-gray-200 rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold truncate break-words" title="IPhone 16 Pro 500GB">
+                                IPhone 16 Pro 500GB
+                            </h3>
+                            <p class="text-sm text-gray-600">Comprado el 19/3/2025</p>
+                        </div>
+                        <div>
+                            <a href="#" class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm w-full text-center block">
+                                Contactar Vendedor
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('Por favor, inicia sesión para ver tus compras.');
+                window.location.href = '/login.html';
+                return;
+            }
+
+            try {
+                // Obtener los datos del usuario
+                const userResponse = await fetch('https://tu-tti.vercel.app/api/user', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!userResponse.ok) {
+                    throw new Error(`Error ${userResponse.status}: ${userResponse.statusText}`);
+                }
+
+                const userData = await userResponse.json();
+                const profilePictureUrl = userData.profilePicture || '/img/default-avatar.png';
+                document.getElementById('profile-picture').src = profilePictureUrl;
+                document.getElementById('username').textContent = userData.fullName || 'Usuario Anonimo';
+
+                // Obtener las compras del usuario
+                const purchasesResponse = await fetch('https://tu-tti.vercel.app/api/purchases', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!purchasesResponse.ok) {
+                    throw new Error(`Error ${purchasesResponse.status}: ${purchasesResponse.statusText}`);
+                }
+
+                const purchases = await purchasesResponse.json();
+                const purchasesContainer = document.getElementById('purchasesContainer');
+                purchasesContainer.innerHTML = '';
+
+                if (purchases.length === 0) {
+                    purchasesContainer.innerHTML = '<p class="text-center text-gray-600">No has realizado ninguna compra aún.</p>';
+                } else {
+                    purchases.forEach(purchase => {
+                        const purchaseElement = document.createElement('div');
+                        purchaseElement.className = 'mb-4 p-4 border border-gray-200 rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4';
+                        purchaseElement.innerHTML = `
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold truncate break-words" title="${purchase.productId.name}">
+                                    ${purchase.productId.name}
+                                </h3>
+                                <p class="text-sm text-gray-600">Comprado el ${new Date(purchase.datePurchased).toLocaleDateString()}</p>
+                            </div>
+                            <div>
+                                <a href="/chat-comprador.html?buyerId=${purchase.buyerId._id}&productId=${purchase.productId._id}" 
+                                   class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm w-full text-center block">
+                                    Contactar Vendedor
+                                </a>
+                            </div>
+                        `;
+                        purchasesContainer.appendChild(purchaseElement);
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Hubo un error al cargar los datos del usuario. Inténtalo de nuevo.');
+            }
+
+            const ws = new WebSocket("ws://localhost:3000");("https://tu-tti-backend.vercel.app"); // Conectar al servidor de WebSocket
+            const userId = localStorage.getItem('userId');
+            if (userId) {
+                socket.emit("joinRoom", userId); // Unirse a la sala del usuario
+            }
+
+            socket.on("notification", (notification) => {
+                console.log("Nueva notificación:", notification);
+                updateNotificationCount(1); // Incrementar el contador
+            });
+
+            async function updateNotificationCount(increment = 0) {
+                const notificationElement = document.querySelector('.fa-bell + span');
+                let count = parseInt(notificationElement.textContent) || 0;
+                count += increment;
+                notificationElement.textContent = count > 0 ? count : '';
+                notificationElement.classList.toggle('hidden', count === 0);
+            }
+
+            async function markAllNotificationsAsRead() {
+                try {
+                    const notificationElement = document.getElementById('notificationCount'); // Define notificationElement
+                    const response = await fetch('https://tu-tti.vercel.app/api/notifications/mark-all-as-read', {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                        },
+                    });
+
+                    if (response.ok) {
+                        updateNotificationCount(-parseInt(notificationElement.textContent || 0));
+                    }
+                } catch (error) {
+                    console.error("Error al marcar notificaciones como leídas:", error);
+                }
+            }
+
+            document.querySelector('.fa-bell').addEventListener('click', markAllNotificationsAsRead);
+        });
+
+        function contactBuyer(buyerId, productId) {
+            window.location.href = `/chat-comprador.html?buyerId=${buyerId}&productId=${productId}`;
+        }
+
+        function redirectToChat(productId, buyerId) {
+            if (!productId || productId === 'unknown') {
+                alert('No se pudo obtener el ID del producto.');
+                return;
+            }
+            if (!buyerId) {
+                alert('No se pudo obtener el ID del comprador.');
+                return;
+            }
+            window.location.href = `/chat-comprador.html?buyerId=${buyerId}&productId=${productId}`;
+        }
+
+        function redirectToComment(productId) {
+            if (!productId || productId === 'unknown') {
+                alert('No se pudo obtener el ID del producto.');
+                return;
+            }
+            window.location.href = `/producto.html?id=${productId}#comments`;
+        }
+
+        async function loadNotifications() {
+            const token = localStorage.getItem('authToken');
+            if (!token) return;
+
+            try {
+                const response = await fetch('https://tu-tti.vercel.app/api/notifications', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) throw new Error('Error al cargar las notificaciones.');
+
+                const notifications = await response.json();
+                const notificationCount = notifications.length;
+                const notificationElement = document.getElementById('notificationCount');
+                const notificationList = document.getElementById('notificationList');
+
+                if (notificationCount > 0) {
+                    notificationElement.textContent = notificationCount;
+                    notificationElement.classList.remove('hidden');
+                    notificationList.innerHTML = notifications.map(notification => {
+                        const productId = notification.productId ? notification.productId._id : 'unknown';
+                        const productName = notification.productId ? notification.productId.name : 'Producto desconocido';
+                        const buyerId = notification.buyerId ? notification.buyerId : 'unknown'; // Ensure buyerId is included
+                        return `
+                            <li class="p-2 hover:bg-gray-100 cursor-pointer flex items-center" onclick="redirectToChat('${productId}', '${buyerId}')">
+                                <div class="flex-shrink-0 w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center">
+                                    <i class="fas fa-comment"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-gray-700">Nuevo mensaje en el chat del producto: ${productName}</p>
+                                    <p class="text-xs text-gray-500">${new Date(notification.date).toLocaleString()}</p>
+                                </div>
+                            </li>
+                        `;
+                    }).join('');
+                } else {
+                    notificationElement.classList.add('hidden');
+                    notificationList.innerHTML = '<li class="p-2 text-gray-500">No hay notificaciones</li>';
+                }
+            } catch (error) {
+                console.error('Error al cargar las notificaciones:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadNotifications);
+
+        document.getElementById('notificationBell').addEventListener('click', () => {
+            const dropdown = document.getElementById('notificationDropdown');
+            dropdown.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>

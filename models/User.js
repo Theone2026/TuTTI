@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
   city: { type: String, required: true },
   postalCode: { type: String, required: true },
   country: { type: String, required: true },
+<<<<<<< HEAD
   role: { type: String, enum: ['customer', 'admin', 'seller'], default: 'customer' }, // Añadido rol
   profilePicture: {
     data: Buffer,
@@ -21,6 +22,12 @@ const userSchema = new mongoose.Schema({
     productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
     quantity: { type: Number, required: true, default: 1, min: 1 }
   }]
+=======
+  profilePicture: {
+    data: Buffer,
+    contentType: String
+  }
+>>>>>>> 6fb3a610a10de6b9a0bc26251e722b7c59f60226
 });
 
 const User = mongoose.model("User", userSchema);

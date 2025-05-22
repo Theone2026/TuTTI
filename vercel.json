@@ -30,6 +30,10 @@
   "env": {
     "JWT_SECRET": "mi_super_secreto",
     "MONGO_URI": "mongodb+srv://Tutti:Maikelfox@cluster0.uw1mo.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+<<<<<<< HEAD
     "BASE_URL": "https://tu-tti.vercel.app"
+=======
+    "BASE_URL": "https://tutti-production.up.railway.app"
+>>>>>>> 6fb3a610a10de6b9a0bc26251e722b7c59f60226
   }
 }

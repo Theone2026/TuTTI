@@ -3,63 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Inicia sesión en Tutti Tienda para comenzar a comprar y vender productos.">
-    <title>Iniciar sesión | Tutti Tienda</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>Iniciar Sesión - Tutti Market</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary-color: #ff4400;
-        }
+        /* Estilos personalizados adicionales para el login form */
         body {
-            background: linear-gradient(135deg, #e0dfdf, #ffffff);
+            font-family: 'Inter', sans-serif; /* Puedes usar Google Fonts si quieres */
+            background-color: #f3f4f6; /* Gris claro de Tailwind */
         }
-        .btn {
-            background-color: var(--primary-color);
+        .login-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            max-width: 400px;
+            width: 90%;
+        }
+        .login-logo {
+            max-width: 80px;
+            margin-bottom: 1.5rem;
+        }
+        .input-field {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db; /* border-gray-300 */
+            border-radius: 0.5rem; /* rounded-lg */
+            transition: all 0.2s ease-in-out;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #3b82f6; /* ring-blue-500 */
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); /* ring-blue-500/30 */
+        }
+        .btn-primary {
+            background-color: #2563eb; /* blue-600 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .btn-primary:hover {
+            background-color: #1d4ed8; /* blue-700 */
+        }
+        .btn-social {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .btn-google {
+            background-color: #ea4335; /* Google Red */
             color: white;
         }
-        .btn:hover {
-            background-color: #e04d00;
+        .btn-google:hover {
+            background-color: #c5342a;
         }
-        .input:focus-within {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(255, 68, 0, 0.2);
+        .btn-facebook {
+            background-color: #1877f2; /* Facebook Blue */
+            color: white;
+        }
+        .btn-facebook:hover {
+            background-color: #145cb3;
+        }
+        .message {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            text-align: center;
+        }
+        .message.success {
+            background-color: #d1fae5; /* green-100 */
+            color: #065f46; /* green-800 */
+            border: 1px solid #34d399; /* green-400 */
+        }
+        .message.error {
+            background-color: #fee2e2; /* red-100 */
+            color: #991b1b; /* red-800 */
+            border: 1px solid #ef4444; /* red-400 */
         }
     </style>
 </head>
-<body class="h-screen flex items-center justify-center bg-gray-100">
-    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
-        <h1 class="text-2xl font-bold text-center mb-6 text-gray-800">Iniciar sesión</h1>
-        <form id="login-form" class="space-y-4">
-            <div class="form-group">
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
-                <div class="relative">
-                    <input type="email" id="email" name="email" placeholder="Introduce tu correo electrónico" required autocomplete="email" class="w-full px-4 py-2 border rounded-lg focus:outline-none input">
-                </div>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="login-card">
+        <div class="text-center">
+            <img src="img/logo.png" alt="Tutti Market Logo" class="login-logo mx-auto">
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Bienvenido de vuelta</h2>
+            <p class="text-gray-600 mb-6">Inicia sesión para continuar</p>
+        </div>
+
+        <div id="loginMessage" class="message hidden" role="alert"></div>
+        
+        <form id="loginForm" class="space-y-5">
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                <input type="email" id="email" name="email" required autocomplete="email"
+                       class="input-field placeholder-gray-400">
             </div>
-            <div class="form-group">
+            
+            <div>
                 <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
-                <div class="relative">
-                    <input type="password" id="password" name="password" placeholder="Introduce tu contraseña" required autocomplete="current-password" class="w-full px-4 py-2 border rounded-lg focus:outline-none input">
-                    <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer toggle-password" onclick="togglePassword()">👁️</span>
-                </div>
+                <input type="password" id="password" name="password" required autocomplete="current-password"
+                       class="input-field placeholder-gray-400">
+                <a href="/forgot-password" class="text-sm text-blue-600 hover:underline mt-2 block text-right">
+                    ¿Olvidaste tu contraseña?
+                </a>
             </div>
-            <button type="submit" class="btn w-full px-4 py-2 rounded-lg flex items-center justify-center">
-                <span id="button-text">Iniciar sesión</span>
-                <span id="button-spinner" class="hidden ml-2"><i class="fas fa-spinner fa-spin"></i></span>
+            
+            <button type="submit" class="btn-primary w-full text-lg font-semibold py-3">
+                Iniciar Sesión
             </button>
-            <div id="error-message" class="text-red-500 text-sm mt-2"></div>
         </form>
-        <div class="mt-6 text-center">
-            <a href="/registro.html" class="text-sm text-primary font-medium">¿No tienes una cuenta? Regístrate</a>
+        
+        <div class="relative flex py-5 items-center">
+            <div class="flex-grow border-t border-gray-300"></div>
+            <span class="flex-shrink mx-4 text-gray-500 text-sm">O</span>
+            <div class="flex-grow border-t border-gray-300"></div>
         </div>
-        <div class="footer mt-6 text-center text-sm text-gray-600">
-            <p>Al iniciar sesión, aceptas nuestros <a href="/terminos" class="text-primary">Términos de Servicio</a> y <a href="/privacidad" class="text-primary">Política de Privacidad</a>.</p>
+
+        <div class="space-y-3">
+            <button class="btn-social btn-google w-full">
+                <i class="fab fa-google"></i> Continuar con Google
+            </button>
+            <button class="btn-social btn-facebook w-full">
+                <i class="fab fa-facebook-f"></i> Continuar con Facebook
+            </button>
         </div>
-        <div class="recaptcha mt-4 text-center">
-            <div class="g-recaptcha" data-sitekey="TU_SITE_KEY_AQUI"></div>
-        </div>
+
+        <p class="mt-8 text-center text-sm text-gray-600">
+            ¿No tienes una cuenta? 
+            <a href="/registro.html" class="text-blue-600 hover:underline font-medium">
+                Regístrate aquí
+            </a>
+        </p>
     </div>
+<<<<<<< HEAD
     <script>
         const BACKEND_URL = window.location.hostname === 'localhost' 
             ? 'http://localhost:3000/api/login'
@@ -143,5 +227,9 @@
             passwordField.type = passwordField.type === "password" ? "text" : "password";
         }
     </script>
+=======
+
+    <script src="js/login.js"></script>
+>>>>>>> 6fb3a610a10de6b9a0bc26251e722b7c59f60226
 </body>
 </html>

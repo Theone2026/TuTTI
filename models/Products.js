@@ -37,4 +37,10 @@ productSchema.pre('save', function(next) {
 
 const Product = mongoose.model('Product', productSchema);
 
+<<<<<<< HEAD
 export default Product; // Exportar con ES Modules
+=======
+module.exports = Product;
+
+
+>>>>>>> 6fb3a610a10de6b9a0bc26251e722b7c59f60226
