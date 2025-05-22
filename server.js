@@ -45,7 +45,7 @@ mongoose.connect(mongoURI, {
 });
 
 // Configuración de CORS
-const allowedOrigins = ['http://localhost:3000', https:'//tutti-production.up.railway.app'];
+const allowedOrigins = ['http://localhost:3000', 'https://tutti-production.up.railway.app'];
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -1088,16 +1088,16 @@ io.on("connection", (socket) => {
   });
 });
 
-// Servir archivos estáticos
-app.use(express.static(path.join(__dirname, "public")));
-app.use("/uploads", express.static(path.join(__dirname, "public", "uploads")));
+// Servir archivos estáticos desde la carpeta /public
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 
-// Ruta catch-all para SPA
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// Ruta específica para servir index.html desde la raíz
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Iniciar el servidor
-server.listen(PORT, () => {
+// Iniciar el servidor normalmente con Express
+app.listen(PORT, () => {
   console.log(`🚀 Servidor backend corriendo en http://localhost:${PORT}`);
 });
