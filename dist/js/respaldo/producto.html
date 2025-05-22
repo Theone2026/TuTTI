@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Producto - TuTTi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-50">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-1">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="w-16">
+                    <img src="img/logo.png" alt="Tutti Market Logo" class="w-full">
+                </div>
+                <!-- Search Bar -->
+                <div class="flex-1 mx-2">
+                    <div class="relative">
+                        <input type="text"
+                               id="searchInput"
+                               placeholder="¿Qué estás buscando?"
+                               class="w-full px-2 py-1 border border-gray-300 rounded-full focus:outline-none focus:border-primary">
+                        <button id="searchButton" class="absolute right-2 top-1/2 transform -translate-y-1/2">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- Navigation -->
+                <nav class="flex items-center space-x-2 relative">
+                    <a href="/login.html" class="flex items-center" id="accountLink">
+                        <i class="fas fa-user mr-1"></i>
+                        <span id="username">Iniciar Sesión</span>
+                    </a>
+                    <a href="/carrito" class="flex items-center" id="cartLink">
+                        <i class="fas fa-shopping-cart mr-1"></i>
+                        Carrito (0)
+                    </a>
+                    <!-- Botón de Cerrar Sesión (solo visible cuando el usuario está loggeado) -->
+                    <a href="#" onclick="logout()" class="flex items-center hidden" id="logoutButton">
+                        <i class="fas fa-sign-out-alt mr-1"></i>
+                        Cerrar Sesión
+                    </a>
+                    <!-- Botón de Notificaciones -->
+                    <div class="relative">
+                        <div id="notificationIcon" class="cursor-pointer">
+                            <i class="fas fa-bell text-gray-600 hover:text-gray-800 text-xl"></i>
+                            <span id="notificationCount" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                        </div>
+                        <div id="notificationPanel" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl hidden overflow-hidden z-50">
+                            <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                                <h3 class="text-sm font-semibold text-gray-700">Notificaciones</h3>
+                            </div>
+                            <ul id="notificationList" class="max-h-96 overflow-y-auto divide-y divide-gray-200">
+                                <!-- Las notificaciones se insertarán aquí -->
+                            </ul>
+                            <div class="bg-gray-100 px-4 py-3 border-t border-gray-200">
+                                <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium">Ver todas</a>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <div class="container mx-auto px-4 py-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Galería de Fotos -->
+            <div>
+                <!-- Imagen Principal -->
+                <div class="w-full h-96 overflow-hidden rounded-lg shadow-lg">
+                    <img id="mainImage" class="w-full h-full object-cover" src="https://via.placeholder.com/600x400" alt="Producto" loading="lazy">
+                </div>
+                <!-- Miniaturas -->
+                <div class="flex gap-2 mt-4 overflow-x-auto" id="thumbnail-container">
+                    <!-- Las miniaturas se cargarán dinámicamente aquí -->
+                </div>
+            </div>
+
+            <!-- Información del Producto -->
+            <div>
+                <h1 id="productName" class="text-3xl font-bold">Cargando...</h1>
+                <div id="productPrice" class="text-2xl text-red-600 font-bold mt-2">Cargando...</div>
+                <p id="productCondition" class="text-gray-600 mt-2">Cargando...</p>
+                <p id="productDescription" class="text-gray-700 mt-4">Cargando...</p>
+
+                <!-- Botón de Comprar (solo visible para compradores) -->
+                <button id="buyButton" class="w-full bg-red-600 text-white py-3 rounded-lg mt-6 hover:bg-red-700 transition-colors hidden">
+                    <i class="fas fa-credit-card"></i> Comprar Ahora
+                </button>
+
+                <!-- Información del Vendedor -->
+                <div class="bg-white p-6 rounded-lg mt-6 shadow-sm">
+                    <h5 class="text-xl font-semibold">Información del vendedor</h5>
+                    <p class="mt-2"><strong>Nombre:</strong> <span id="sellerName">Cargando...</span></p>
+                    <p class="mt-2"><strong>Reputación:</strong> <span class="text-yellow-400">★★★★☆</span> (4.5/5)</p>
+                    <p class="mt-2"><strong>Ventas realizadas:</strong> <span id="sellerSales">Cargando...</span></p>
+                    <p class="mt-2"><strong>Stock disponible:</strong> <span id="productStock">Cargando...</span></p>
+                    <p class="mt-2"><strong>Disponibilidad:</strong> <span id="productAvailability">Cargando...</span></p>
+                    <!-- Botón de Ir a Publicaciones (solo visible para el vendedor) -->
+                    <div class="flex justify-end">
+                        <a id="publicationsButton" href="/publicaciones.html" class="bg-blue-600 text-white py-3 px-4 rounded-lg mt-6 hover:bg-blue-700 transition-colors text-center hidden">
+                            <i class="fas fa-tachometer-alt"></i> Ir a Publicaciones
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comentarios y Calificaciones -->
+    <div class="container mx-auto px-4 py-6">
+        <h3 class="text-2xl font-bold">Pregúntale al vendedor</h3>
+        <form id="commentForm" class="mt-6">
+            <div class="mb-4">
+                <textarea id="commentText" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Escribe tu pregunta..." rows="3"></textarea>
+            </div>
+            <button type="submit" id="submitCommentButton" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">Preguntar</button>
+            <p id="commentMessage" class="text-gray-600 mt-2 hidden">
+                <a href="login.html" class="text-blue-600 hover:underline">Inicia sesión</a> o <a href="registro.html" class="text-blue-600 hover:underline">crea una cuenta</a> para comentar.
+            </p>
+        </form>
+        <h3 class="text-2xl font-bold mt-8">Últimas realizadas</h3>
+        <div id="commentsContainer" class="mt-6 space-y-4">
+            <!-- Los comentarios se cargarán dinámicamente aquí -->
+        </div>
+    </div>
+    </main>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="module" src="/js/producto.js"></script>
+</body>
+</html>

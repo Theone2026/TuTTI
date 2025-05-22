@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title id="product-page-title">Cargando Producto...</title>
+  <title>Tutti Market | Finalizar Compra</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="css/styles.css" /> 
 </head>
 <body class="font-inter bg-gray-100 text-gray-800 antialiased">
 
@@ -32,7 +32,7 @@
           <img src="img/logo.png" alt="Tutti Market Logo" class="h-12 md:h-14">
         </a>
       </div>
-
+      
       <div class="search-bar flex-grow mx-2 lg:mx-8 max-w-2xl">
         <form action="/search" method="get" class="flex rounded-lg overflow-hidden border border-gray-300 focus-within:ring-2 focus-within:ring-blue-400 transition-all duration-200">
           <input type="text" placeholder="Buscar productos, marcas, tiendas..." name="q"
@@ -95,84 +95,133 @@
     </div>
   </nav>
 
-  <main class="container mx-auto px-4 my-8 min-h-screen">
-    <div id="product-detail-container" class="bg-white p-6 md:p-8 rounded-lg shadow-lg flex flex-col lg:flex-row gap-8">
-      <div id="loading-spinner" class="flex justify-center items-center h-96 w-full hidden">
-        <div class="animate-spin rounded-full h-24 w-24 border-t-4 border-b-4 border-blue-500"></div>
-      </div>
-      <div id="error-message" class="text-center text-red-600 text-xl font-bold py-20 hidden w-full">
-        Producto no encontrado.
-      </div>
+  <main class="container mx-auto px-4 my-8">
+    <h1 class="section-title text-center mb-8">Finalizar Compra</h1>
 
-      <div class="lg:w-2/5 flex flex-col items-center">
-        <img id="product-image" src="" alt="Imagen del Producto" class="w-full max-w-md h-auto object-contain rounded-lg border border-gray-200 p-4 mb-4 product-image-main">
-        <div class="flex space-x-2 overflow-x-auto">
-          </div>
-      </div>
-
-      <div class="lg:w-3/5">
-        <h1 id="product-name" class="text-3xl md:text-4xl font-poppins font-bold text-gray-900 mb-2"></h1>
-        <p class="text-gray-600 text-sm mb-4">Categoría: <span id="product-category" class="font-medium text-blue-600"></span></p>
-
-        <div class="flex items-center mb-4">
-          <div class="text-yellow-500">
-            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-          </div>
-          <span class="text-gray-500 text-sm ml-2">(4.5 / 120 reseñas)</span>
-        </div>
-
-        <p id="product-description" class="text-gray-700 leading-relaxed mb-6"></p>
-
-        <div class="flex items-baseline mb-6">
-          <span class="text-gray-500 text-xl line-through mr-3 hidden" id="product-old-price">$0.00</span>
-          <span id="product-price" class="text-blue-700 font-poppins text-4xl font-extrabold mr-4">$0.00</span>
-          <span class="bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full hidden" id="product-discount">¡Ahorra 15%!</span>
-        </div>
-
-        <div class="flex items-center space-x-4 mb-8">
-          <label for="quantity" class="font-semibold text-gray-700">Cantidad:</label>
-          <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden">
-            <button id="decrease-quantity" class="p-2 bg-gray-200 hover:bg-gray-300 transition-colors text-lg font-bold w-10 h-10 flex items-center justify-center">-</button>
-            <input type="number" id="quantity" value="1" min="1" class="w-16 text-center border-l border-r border-gray-300 text-lg font-semibold focus:outline-none py-1">
-            <button id="increase-quantity" class="p-2 bg-gray-200 hover:bg-gray-300 transition-colors text-lg font-bold w-10 h-10 flex items-center justify-center">+</button>
-          </div>
-          <button id="add-to-cart-btn" class="btn-primary flex-grow px-6 py-3 rounded-lg text-lg font-bold shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
-            <i class="fas fa-cart-plus mr-3"></i> Añadir al Carrito
-          </button>
-        </div>
-
-        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-8">
-          <h3 class="text-xl font-poppins font-bold text-gray-900 mb-4">Información del Vendedor</h3>
-          <div class="flex items-center mb-3">
-            <i class="fas fa-store text-blue-600 text-2xl mr-3"></i>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="lg:col-span-2 space-y-8">
+        <section class="bg-white p-6 rounded-xl shadow-lg">
+          <h2 class="text-2xl font-poppins font-semibold text-gray-900 mb-6">
+            <i class="fas fa-shipping-fast text-blue-600 mr-3"></i> Dirección de Envío
+          </h2>
+          <form id="shipping-form" class="space-y-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">Nombre Completo</label>
+                <input type="text" id="fullName" name="fullName" required class="form-input">
+              </div>
+              <div>
+                <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                <input type="tel" id="phone" name="phone" required class="form-input">
+              </div>
+            </div>
             <div>
-              <p class="font-semibold text-gray-800" id="seller-name">Cargando...</p>
-              <span class="text-sm text-gray-500 flex items-center">
-                <i class="fas fa-star text-yellow-500 mr-1"></i> 4.8 (250 ventas)
-              </span>
+              <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+              <input type="text" id="address" name="address" required class="form-input">
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label for="city" class="block text-sm font-medium text-gray-700 mb-1">Ciudad</label>
+                <input type="text" id="city" name="city" required class="form-input">
+              </div>
+              <div>
+                <label for="state" class="block text-sm font-medium text-gray-700 mb-1">Departamento/Estado</label>
+                <input type="text" id="state" name="state" required class="form-input">
+              </div>
+              <div>
+                <label for="zipCode" class="block text-sm font-medium text-gray-700 mb-1">Código Postal</label>
+                <input type="text" id="zipCode" name="zipCode" required class="form-input">
+              </div>
+            </div>
+            <div>
+              <label for="country" class="block text-sm font-medium text-gray-700 mb-1">País</label>
+              <input type="text" id="country" name="country" required class="form-input">
+            </div>
+          </form>
+        </section>
+
+        <section class="bg-white p-6 rounded-xl shadow-lg">
+          <h2 class="text-2xl font-poppins font-semibold text-gray-900 mb-6">
+            <i class="fas fa-credit-card text-blue-600 mr-3"></i> Método de Pago
+          </h2>
+          <form id="payment-form" class="space-y-5">
+            <div class="flex items-center space-x-4 mb-4">
+              <label class="inline-flex items-center">
+                <input type="radio" name="paymentMethod" value="creditCard" checked class="form-radio text-blue-600">
+                <span class="ml-2 text-gray-800 font-medium">Tarjeta de Crédito/Débito</span>
+              </label>
+              <label class="inline-flex items-center">
+                <input type="radio" name="paymentMethod" value="paypal" class="form-radio text-blue-600">
+                <span class="ml-2 text-gray-800 font-medium">PayPal</span>
+              </label>
+            </div>
+
+            <div id="creditCardFields" class="space-y-4">
+              <div>
+                <label for="cardNumber" class="block text-sm font-medium text-gray-700 mb-1">Número de Tarjeta</label>
+                <input type="text" id="cardNumber" name="cardNumber" placeholder="XXXX XXXX XXXX XXXX" required class="form-input">
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label for="cardName" class="block text-sm font-medium text-gray-700 mb-1">Nombre en la Tarjeta</label>
+                  <input type="text" id="cardName" name="cardName" required class="form-input">
+                </div>
+                <div>
+                  <label for="expiryDate" class="block text-sm font-medium text-gray-700 mb-1">Fecha de Vencimiento (MM/AA)</label>
+                  <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/AA" required class="form-input">
+                </div>
+                <div>
+                  <label for="cvv" class="block text-sm font-medium text-gray-700 mb-1">CVV</label>
+                  <input type="text" id="cvv" name="cvv" placeholder="XXX" required class="form-input">
+                </div>
+              </div>
+            </div>
+
+            <div id="paypalMessage" class="hidden bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-lg">
+              Serás redirigido a PayPal para completar tu pago de forma segura.
+            </div>
+          </form>
+        </section>
+      </div>
+
+      <div class="lg:col-span-1">
+        <section class="bg-white p-6 rounded-xl shadow-lg">
+          <h2 class="text-2xl font-poppins font-semibold text-gray-900 mb-6">
+            <i class="fas fa-receipt text-blue-600 mr-3"></i> Resumen del Pedido
+          </h2>
+          <div id="checkout-items-container" class="space-y-4 border-b border-gray-200 pb-4 mb-4">
+            <div class="flex items-center justify-between text-gray-600">
+              <span>Producto 1 (x1)</span>
+              <span>S/. 799.99</span>
+            </div>
+            <div class="flex items-center justify-between text-gray-600">
+              <span>Producto 2 (x1)</span>
+              <span>S/. 1299.99</span>
+            </div>
+            <div id="checkoutEmptyCartMessage" class="text-center text-gray-500 py-4 hidden">Tu carrito está vacío.</div>
+          </div>
+          
+          <div class="space-y-3 font-medium text-gray-800">
+            <div class="flex justify-between">
+              <span>Subtotal:</span>
+              <span id="checkoutSubtotal">S/. 0.00</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Envío:</span>
+              <span id="checkoutShipping">S/. 15.00</span>
+            </div>
+            <div class="flex justify-between text-xl font-bold text-gray-900 border-t border-gray-300 pt-3 mt-3">
+              <span>Total:</span>
+              <span id="checkoutTotal">S/. 0.00</span>
             </div>
           </div>
-          <button class="btn-link mt-2"><i class="fas fa-comments mr-2"></i> Contactar al Vendedor</button>
-        </div>
 
-        <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-          <h3 class="text-xl font-poppins font-bold text-gray-900 mb-4">Opciones de Compra</h3>
-          <ul class="space-y-3 text-gray-700">
-            <li class="flex items-center"><i class="fas fa-truck text-blue-600 mr-3"></i> Envío rápido a todo el país</li>
-            <li class="flex items-center"><i class="fas fa-credit-card text-blue-600 mr-3"></i> Múltiples métodos de pago</li>
-            <li class="flex items-center"><i class="fas fa-exchange-alt text-blue-600 mr-3"></i> Devoluciones fáciles</li>
-            <li class="flex items-center"><i class="fas fa-shield-alt text-blue-600 mr-3"></i> Compra protegida por Tutti Market</li>
-          </ul>
-        </div>
+          <button id="placeOrderBtn" class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-bold text-lg hover:bg-blue-700 transition-colors duration-200 mt-8 shadow-md">
+            Confirmar Pedido
+          </button>
+        </section>
       </div>
     </div>
-
-    <section class="products-section my-12">
-      <h2 class="section-title text-center">Productos Relacionados</h2>
-      <div class="products-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="related-products">
-        </div>
-    </section>
-
   </main>
 
   <footer class="main-footer bg-gray-900 text-gray-200 py-12">
@@ -236,7 +285,7 @@
   </footer>
 
   <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden opacity-0 transition-opacity duration-300">
-    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md relative transform scale-90 transition-all duration-300">
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md relative transform scale-90 transition-all duration-300 modal-login-content">
       <span class="close-modal absolute top-3 right-3 text-gray-500 text-3xl cursor-pointer hover:text-gray-800 transition-colors">&times;</span>
       <h2 class="text-2xl font-poppins font-bold mb-6 text-center text-gray-900">Bienvenido a Tutti Market</h2>
       <form id="modalLoginForm" class="space-y-5">
@@ -274,16 +323,19 @@
         <span>Total:</span>
         <span id="cartTotal">$0.00</span>
       </div>
-      <a href="/cart.html" class="w-full btn-primary px-4 py-3 rounded-lg text-center font-bold text-lg block mb-3">
+      <a href="/cart.html" class="w-full bg-blue-600 text-white px-4 py-3 rounded-lg text-center font-bold text-lg block mb-3 hover:bg-blue-700 transition-colors duration-200">
         Ver Carrito Completo
       </a>
-      <button class="w-full btn-checkout bg-green-600 text-white px-4 py-3 rounded-lg text-center font-bold text-lg hover:bg-green-700 transition-colors duration-200">
+      <button class="w-full bg-green-600 text-white px-4 py-3 rounded-lg text-center font-bold text-lg hover:bg-green-700 transition-colors duration-200">
         Proceder al Pago
       </button>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  
   <script src="js/main.js"></script>
+
+  <script src="js/checkout.js"></script>
 </body>
 </html>

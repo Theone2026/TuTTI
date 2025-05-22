@@ -1,4 +1,4 @@
-import { loadNotifications, setupNotificationPanel, handleNewNotification } from './notifications.js';
+import { loadNotifications, setupNotificationPanel, handleNewNotification } from '../notifications.js';
 // ==================== INICIALIZACIÓN Y CONFIGURACIÓN ====================
 let setupComplete = false;
 
