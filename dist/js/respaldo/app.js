@@ -27,14 +27,10 @@ document.addEventListener("DOMContentLoaded", () => {
         sellLink.style.display = "block";
         loginLink.style.display = "none";
         userMenu.style.display = "block";
-<<<<<<< HEAD:dist/app.js
-        userNameElement.textContent = `Hola, ${userName}`;
-=======
 
         // Eliminar el dominio del correo electrónico para mostrar solo el nombre
         const displayName = userName.split('@')[0]; // Divide el correo en dos partes por '@' y toma la primera parte
         userNameElement.textContent = `Hola, ${displayName}`;
->>>>>>> 6fb3a610a10de6b9a0bc26251e722b7c59f60226:dist/js/respaldo/app.js
     } else {
         sellLink.style.display = "none";
         loginLink.style.display = "block";

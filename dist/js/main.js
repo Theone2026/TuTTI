@@ -1,8 +1,5 @@
 <<<<<<< HEAD
-// frontend/src/main.js
-
-// --- Funciones de Autenticación y Utilidades (existentes en tu main.js) ---
-const API_URL = 'http://localhost:3000'; // Ya existente
+const API_URL = 'http://localhost:3000';
 
 async function fetchData(url) {
     try {
@@ -12,15 +9,11 @@ async function fetchData(url) {
         }
         const contentType = response.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
-            // Si no es JSON, intentar leer como texto para depuración
-            const textResponse = await response.text();
-            console.error("Respuesta no JSON:", textResponse);
-            throw new Error("Oops, the server did not return valid JSON!");
+            throw new Error("Oops, we haven't got JSON!");
         }
         return await response.json();
     } catch (error) {
-        console.error("Error en fetchData:", error);
-        throw error; // Propagar el error para que las funciones que llaman puedan manejarlo
+        console.error("Error:", error);
     }
 }
 
@@ -33,47 +26,56 @@ async function loadProducts() {
         const products = await response.json();
         return products.filter(product => product.status !== 'archived' && product.status !== 'out_of_stock');
     } catch (error) {
-        console.error("Error en loadProducts:", error);
+        console.error("Error:", error);
         return [];
-    }
-}
+=======
+// public/js/main.js
 
+document.addEventListener('DOMContentLoaded', () => {
+    // MODAL DE LOGIN
+    const loginModal = document.getElementById('loginModal');
+    const openModalBtn = document.getElementById('openModalBtn');
+    const openModalBtnFooter = document.getElementById('openModalBtnFooter'); // Nuevo botón en el footer
+    const closeModalBtn = loginModal.querySelector('.close-modal');
+    const modalLoginForm = document.getElementById('modalLoginForm');
+    const modalLoginMessage = document.getElementById('modalLoginMessage');
+
+    // Función para abrir el modal
+    function openLoginModal() {
+        loginModal.classList.remove('hidden');
+        // Forzar reflow para que la transición CSS funcione
+        void loginModal.offsetWidth; 
+        loginModal.classList.add('open');
+        document.body.classList.add('overflow-hidden'); // Evita scroll en el body
+>>>>>>> 6fb3a610a10de6b9a0bc26251e722b7c59f60226
+    }
+
+<<<<<<< HEAD
 function formatPrice(price, currency = "USD") {
     const numericPrice = parseFloat(price);
     const currencySymbol = currency === "USD" ? "US$" : "$";
-    // Asegúrate de que el locale sea el adecuado para el formato decimal y el símbolo de la moneda
-    const formattedPrice = new Intl.NumberFormat('es-ES', { // Cambiado a 'es-ES' para el formato de miles y decimales
+    const formattedPrice = new Intl.NumberFormat('en-US', {
         style: 'decimal',
-        minimumFractionDigits: 2, // Asegura 2 decimales
-        maximumFractionDigits: 2
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
     }).format(numericPrice);
     return `${currencySymbol} ${formattedPrice}`;
 }
 
 function displayProducts(products) {
     const productsContainer = document.getElementById("recent-products");
-    if (!productsContainer) {
-        console.warn("Contenedor de productos recientes no encontrado.");
-        return;
-    }
     productsContainer.innerHTML = "";
 
-    const filteredProducts = products.filter(product =>
+    const filteredProducts = products.filter(product => 
         !/EJEMPLO/i.test(product.name) && product.stock > 0
     );
 
     if (filteredProducts.length > 0) {
         filteredProducts.forEach((product) => {
-            // Verificar si el producto tiene propiedades necesarias antes de renderizar
-            if (!product.name || !product.description || !product.price) {
-                console.warn("Producto incompleto, saltando:", product);
-                return;
-            }
-
             const formattedPrice = formatPrice(product.price, product.currency || 'USD');
 
-            const productImage = product.images && product.images.length > 0
-                ? product.images[0]
+            const productImage = product.images && product.images.length > 0 
+                ? product.images[0] 
                 : '/img/default-product.jpg';
             const productCard = `
                 <div class="product-card bg-white rounded-lg overflow-hidden shadow-md flex flex-col h-full">
@@ -86,7 +88,7 @@ function displayProducts(products) {
                         <p class="text-xl font-bold text-primary">${formattedPrice}</p>
                     </div>
                     <div class="p-4 bg-gray-50">
-                        <button class="add-to-cart-btn w-full bg-primary text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors" data-product-id="${product._id}">
+                        <button onclick="addToCart('${product._id}')" class="w-full bg-primary text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors">
                             Agregar al carrito
                         </button>
                     </div>
@@ -101,7 +103,6 @@ function displayProducts(products) {
 
 function calculateDeliveryTime() {
     const now = new Date();
-    // Suma 10 horas y 0 minutos (en milisegundos)
     const deadline = new Date(now.getTime() + 10 * 60 * 60 * 1000);
     const hoursLeft = deadline.getHours();
     const minutesLeft = deadline.getMinutes();
@@ -117,43 +118,32 @@ async function loadOfertasDelDia() {
             },
         });
         if (!response.ok) {
-            // Intenta leer el texto crudo para depuración si no es OK
-            const text = await response.text();
-            console.error("Raw response for ofertas del día (not OK):", text);
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const contentType = response.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
             const text = await response.text();
-            console.error("Raw response for ofertas del día (not JSON):", text);
-            throw new Error("La respuesta del servidor para ofertas del día no es JSON válido");
+            console.log("Raw response for ofertas del día:", text);
+            throw new Error("La respuesta del servidor no es JSON válido");
         }
         const ofertas = await response.json();
         const ofertasContainer = document.getElementById("ofertas-del-dia");
         if (!ofertasContainer) {
-            console.warn("Element with ID 'ofertas-del-dia' not found, cannot display offers.");
+            console.error("Element with ID 'ofertas-del-dia' not found");
             return;
         }
         ofertasContainer.innerHTML = "";
-        if (ofertas.length > 0) {
-            ofertas.slice(0, 3).forEach(oferta => {
-                if (!oferta.image || !oferta.name || !oferta.price) {
-                    console.warn("Oferta incompleta, saltando:", oferta);
-                    return;
-                }
-                ofertasContainer.innerHTML += `
-                    <div class="flex items-center space-x-2">
-                        <img src="${oferta.image}" alt="${oferta.name}" class="w-12 h-12 object-cover rounded">
-                        <div>
-                            <p class="text-sm font-semibold">${oferta.name}</p>
-                            <p class="text-xs text-red-600">${formatPrice(oferta.price, oferta.currency)}</p>
-                        </div>
+        ofertas.slice(0, 3).forEach(oferta => {
+            ofertasContainer.innerHTML += `
+                <div class="flex items-center space-x-2">
+                    <img src="${oferta.image}" alt="${oferta.name}" class="w-12 h-12 object-cover rounded">
+                    <div>
+                        <p class="text-sm font-semibold">${oferta.name}</p>
+                        <p class="text-xs text-red-600">${formatPrice(oferta.price, oferta.currency)}</p>
                     </div>
-                `;
-            });
-        } else {
-            ofertasContainer.innerHTML = "<p>No hay ofertas del día disponibles.</p>";
-        }
+                </div>
+            `;
+        });
     } catch (error) {
         console.error("Error al cargar ofertas del día:", error);
         const ofertasContainer = document.getElementById("ofertas-del-dia");
@@ -171,43 +161,32 @@ async function loadNuevosIngresos() {
             },
         });
         if (!response.ok) {
-            // Intenta leer el texto crudo para depuración si no es OK
-            const text = await response.text();
-            console.error("Raw response for nuevos ingresos (not OK):", text);
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const contentType = response.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
             const text = await response.text();
-            console.error("Raw response for nuevos ingresos (not JSON):", text);
-            throw new Error("La respuesta del servidor para nuevos ingresos no es JSON válido");
+            console.log("Raw response for nuevos ingresos:", text);
+            throw new Error("La respuesta del servidor no es JSON válido");
         }
         const nuevosIngresos = await response.json();
         const nuevosIngresosContainer = document.getElementById("nuevos-ingresos");
         if (!nuevosIngresosContainer) {
-            console.warn("Element with ID 'nuevos-ingresos' not found, cannot display new arrivals.");
+            console.error("Element with ID 'nuevos-ingresos' not found");
             return;
         }
         nuevosIngresosContainer.innerHTML = "";
-        if (nuevosIngresos.length > 0) {
-            nuevosIngresos.slice(0, 3).forEach(producto => {
-                if (!producto.image || !producto.name || !producto.price) {
-                    console.warn("Nuevo ingreso incompleto, saltando:", producto);
-                    return;
-                }
-                nuevosIngresosContainer.innerHTML += `
-                    <div class="flex items-center space-x-2">
-                        <img src="${producto.image}" alt="${producto.name}" class="w-12 h-12 object-cover rounded">
-                        <div>
-                            <p class="text-sm font-semibold">${producto.name}</p>
-                            <p class="text-xs text-gray-600">${formatPrice(producto.price, producto.currency)}</p>
-                        </div>
+        nuevosIngresos.slice(0, 3).forEach(producto => {
+            nuevosIngresosContainer.innerHTML += `
+                <div class="flex items-center space-x-2">
+                    <img src="${producto.image}" alt="${producto.name}" class="w-12 h-12 object-cover rounded">
+                    <div>
+                        <p class="text-sm font-semibold">${producto.name}</p>
+                        <p class="text-xs text-gray-600">${formatPrice(producto.price, producto.currency)}</p>
                     </div>
-                `;
-            });
-        } else {
-            nuevosIngresosContainer.innerHTML = "<p>No hay nuevos ingresos disponibles.</p>";
-        }
+                </div>
+            `;
+        });
     } catch (error) {
         console.error("Error al cargar nuevos ingresos:", error);
         const nuevosIngresosContainer = document.getElementById("nuevos-ingresos");
@@ -216,7 +195,6 @@ async function loadNuevosIngresos() {
         }
     }
 }
-
 
 function filterProductsByCategory(products, category) {
     return products.filter((product) => product.category === category);
@@ -229,105 +207,6 @@ function filterProductsBySearch(products, searchText) {
     );
 }
 
-// --- Lógica del Mini-Carrito (NUEVA INTEGRACIÓN) ---
-let cart = []; // Array para almacenar los ítems del carrito en el frontend
-
-// --- Elementos del DOM del Mini-Carrito (Asegúrate de que estos IDs existan en tu HTML) ---
-const cartIcon = document.getElementById('cartIcon');
-const cartItemCountSpan = document.getElementById('cartItemCount');
-const miniCartDropdown = document.getElementById('miniCartDropdown');
-const miniCartItemsContainer = document.getElementById('miniCartItems');
-const miniCartTotalSpan = document.getElementById('miniCartTotal');
-const emptyCartMessage = document.getElementById('emptyCartMessage');
-const checkoutButton = document.getElementById('checkoutButton');
-
-// Cargar el carrito del usuario desde el backend
-async function loadCart() {
-    const token = localStorage.getItem('authToken'); // Usa 'authToken' como en tu código
-    if (!token) {
-        cart = []; // Si no hay token, el usuario no está logueado, carrito vacío
-        if (cartItemCountSpan) cartItemCountSpan.textContent = '0';
-        updateMiniCartUI(); // Llama a esto para asegurar que el mini-carrito se renderiza vacío
-        return;
-    }
-
-    try {
-        const response = await fetch(`${API_URL}/api/cart`, { // Usa API_URL
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        if (response.ok) {
-            cart = await response.json();
-            updateMiniCartUI();
-        } else {
-            console.error('Error al cargar el carrito:', response.statusText);
-            cart = []; // Limpiar carrito local en caso de error
-            updateMiniCartUI();
-        }
-    } catch (error) {
-        console.error('Error de conexión al cargar el carrito:', error);
-        cart = []; // Limpiar carrito local en caso de error
-        updateMiniCartUI();
-    }
-}
-
-// Actualizar la interfaz de usuario del mini-carrito
-function updateMiniCartUI() {
-    if (miniCartItemsContainer) miniCartItemsContainer.innerHTML = ''; // Limpiar ítems existentes
-    let total = 0;
-    let itemCount = 0;
-
-    if (cart.length === 0) {
-        if (emptyCartMessage) emptyCartMessage.classList.remove('hidden');
-    } else {
-        if (emptyCartMessage) emptyCartMessage.classList.add('hidden');
-        cart.forEach(item => {
-            const product = item.productId; // El producto populado desde el backend
-            if (!product) return; // Salta si el producto es nulo (ej. fue eliminado del catálogo)
-
-            const itemTotal = product.price * item.quantity;
-            total += itemTotal;
-            itemCount += item.quantity;
-
-            const itemElement = document.createElement('div');
-            itemElement.classList.add('flex', 'items-center', 'justify-between', 'py-2', 'border-b', 'border-gray-100');
-            itemElement.innerHTML = `
-                <div class="flex items-center">
-                    <img src="${product.images && product.images.length > 0 ? product.images[0] : '/img/default-product.jpg'}" alt="${product.name}" class="w-12 h-12 object-cover rounded-md mr-3">
-                    <div>
-                        <p class="font-semibold text-sm">${product.name}</p>
-                        <p class="text-gray-600 text-xs">${item.quantity} x ${product.currency}${product.price.toFixed(2)}</p>
-                    </div>
-                </div>
-                <div class="flex items-center">
-                    <button data-product-id="${product._id}" data-action="decrement" class="quantity-btn px-2 py-1 bg-gray-200 rounded-l hover:bg-gray-300">-</button>
-                    <span class="px-2 text-sm">${item.quantity}</span>
-                    <button data-product-id="${product._id}" data-action="increment" class="quantity-btn px-2 py-1 bg-gray-200 rounded-r hover:bg-gray-300">+</button>
-                    <button data-product-id="${product._id}" data-action="remove" class="ml-3 text-red-500 hover:text-red-700 text-sm">X</button>
-                </div>
-            `;
-            if (miniCartItemsContainer) miniCartItemsContainer.appendChild(itemElement);
-        });
-    }
-
-    if (cartItemCountSpan) cartItemCountSpan.textContent = itemCount;
-    // Asegúrate de que la moneda sea consistente o la tomas del primer producto, o un valor por defecto.
-    if (miniCartTotalSpan) miniCartTotalSpan.textContent = `${cart.length > 0 && cart[0].productId ? cart[0].productId.currency : '€'}${total.toFixed(2)}`;
-
-    // Añadir event listeners a los botones de cantidad/eliminar
-    if (miniCartItemsContainer) {
-        miniCartItemsContainer.querySelectorAll('.quantity-btn').forEach(button => {
-            button.addEventListener('click', handleQuantityChange);
-        });
-        miniCartItemsContainer.querySelectorAll('button[data-action="remove"]').forEach(button => {
-            button.addEventListener('click', handleRemoveItem);
-        });
-    }
-}
-
-// *** MODIFICACIÓN DE TU FUNCIÓN addToCart EXISTENTE ***
-// EXPUESTA GLOBALMENTE para que los onclick inline funcionen
 async function addToCart(productId) {
     const token = localStorage.getItem("authToken");
 
@@ -338,7 +217,7 @@ async function addToCart(productId) {
     }
 
     try {
-        const response = await fetch(`${API_URL}/api/cart/add`, {
+        const response = await fetch("/api/cart/add", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -347,108 +226,249 @@ async function addToCart(productId) {
             body: JSON.stringify({ productId }),
         });
 
-        const data = await response.json();
-
-        if (response.ok) {
-            console.log(data.message);
-            // Actualizar el carrito localmente con el ítem completo devuelto por el backend
-            const existingItemIndex = cart.findIndex(item => item.productId && item.productId._id === data.cartItem.productId._id);
-            if (existingItemIndex > -1) {
-                cart[existingItemIndex].quantity = data.cartItem.quantity;
-            } else {
-                cart.push(data.cartItem);
-            }
-            updateMiniCartUI(); // Actualiza la UI del mini-carrito
-            alert(data.message);
-        } else {
-            console.error('Error al agregar al carrito:', data.message);
-            alert(`Error: ${data.message}`);
+        if (!response.ok) {
+            throw new Error("Error al agregar el producto al carrito");
         }
+
+        const data = await response.json();
+        alert("Producto agregado al carrito");
+        console.log("Producto agregado:", data);
     } catch (error) {
-        console.error("Error al agregar al carrito (conexión):", error);
-        alert("Hubo un error al agregar el producto al carrito.");
+        console.error("Error:", error);
+        alert("Hubo un error al agregar el producto al carrito");
     }
 }
 
-// Manejar cambio de cantidad o eliminación desde el mini-carrito
-async function handleQuantityChange(event) {
-    const productId = event.target.dataset.productId;
-    const action = event.target.dataset.action;
+async function checkUserSession() {
     const token = localStorage.getItem('authToken');
+    const userDisplayElement = document.getElementById('userDisplay');
+    const accountLinkElement = document.getElementById('accountLink');
+    const sessionButtonContainer = document.getElementById('sessionButtonContainer');
 
-    const currentItem = cart.find(item => item.productId && item.productId._id === productId);
-    if (!currentItem) return;
-
-    let newQuantity = currentItem.quantity;
-    if (action === 'increment') {
-        newQuantity += 1;
-    } else if (action === 'decrement') {
-        newQuantity -= 1;
-    }
-
-    // Si la cantidad llega a 0, eliminar el ítem
-    if (newQuantity <= 0) {
-        handleRemoveItem({ target: { dataset: { productId: productId } } });
+    if (!token) {
+        updateUIForLoggedOutUser(userDisplayElement, accountLinkElement, sessionButtonContainer);
         return;
     }
 
     try {
-        const response = await fetch(`${API_URL}/api/cart/update-quantity/${productId}`, {
-            method: 'PUT',
+        const response = await fetch(`${API_URL}/api/user`, {
+            method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify({ quantity: newQuantity })
         });
 
-        const data = await response.json();
-        if (response.ok) {
-            console.log(data.message);
-            currentItem.quantity = newQuantity; // Actualiza la cantidad localmente
-            updateMiniCartUI();
-        } else {
-            console.error('Error al actualizar cantidad:', data.message);
-            alert(`Error: ${data.message}`);
+        if (!response.ok) {
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
         }
+
+        const userData = await response.json();
+        updateUIForLoggedInUser(userData, userDisplayElement, accountLinkElement, sessionButtonContainer);
     } catch (error) {
-        console.error('Error de conexión al actualizar cantidad:', error);
-        alert('Hubo un error de conexión al actualizar la cantidad.');
+        console.error('Error:', error);
+        updateUIForLoggedOutUser(userDisplayElement, accountLinkElement, sessionButtonContainer);
+        localStorage.removeItem('authToken');
     }
 }
 
-async function handleRemoveItem(event) {
-    const productId = event.target.dataset.productId;
-    const token = localStorage.getItem('authToken');
+function updateUIForLoggedInUser(userData, userDisplayElement, accountLinkElement, sessionButtonContainer) {
+    let userName = localStorage.getItem('userName') || userData.fullName || userData.email.split('@')[0] || 'Usuario';
+    userName = userName.replace(/@.*$/, '');
+    const greeting = `¡Hola, ${userName}!`;
 
-    if (!confirm('¿Estás seguro de que quieres eliminar este producto del carrito?')) {
-        return;
+    if (userDisplayElement) userDisplayElement.textContent = greeting;
+    if (accountLinkElement) {
+        accountLinkElement.innerHTML = `<i class="fas fa-user mr-1"></i><span>${greeting}</span>`;
+        accountLinkElement.href = "/dashboard.html";
     }
+    if (sessionButtonContainer) {
+        sessionButtonContainer.innerHTML = `
+            <a href="/cerrar_sesion.html" class="text-sm text-gray-600 hover:text-gray-800">Cerrar Sesión</a>
+        `;
+        const logoutButton = sessionButtonContainer.querySelector('a[href="/cerrar_sesion.html"]');
+        if (logoutButton) {
+            logoutButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                logout();
+            });
+        }
+    }
+}
 
+function updateUIForLoggedOutUser(userDisplayElement, accountLinkElement, sessionButtonContainer) {
+    if (userDisplayElement) userDisplayElement.textContent = "";
+    if (accountLinkElement) {
+        accountLinkElement.innerHTML = '<i class="fas fa-user mr-1"></i><span>Iniciar Sesión</span>';
+        accountLinkElement.href = "/login.html";
+    }
+    if (sessionButtonContainer) {
+        sessionButtonContainer.innerHTML = '';
+    }
+}
+
+function loadHeroBanner(recentProducts) {
     try {
-        const response = await fetch(`${API_URL}/api/cart/remove/${productId}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
+        const carousel = document.querySelector('.carousel');
+        if (carousel && recentProducts.length > 0) {
+            carousel.innerHTML = "";
+            carousel.classList.add('relative', 'w-full', 'h-64', 'md:h-80', 'lg:h-96', 'overflow-hidden', 'rounded-lg', 'shadow-md');
 
-        const data = await response.json();
-        if (response.ok) {
-            console.log(data.message);
-            cart = cart.filter(item => item.productId && item.productId._id !== productId); // Eliminar del carrito local
-            updateMiniCartUI();
-        } else {
-            console.error('Error al eliminar del carrito:', data.message);
-            alert(`Error: ${data.message}`);
+            recentProducts.slice(0, 3).forEach((product, index) => {
+                const slide = document.createElement('div');
+                slide.classList.add('absolute', 'inset-0', 'w-full', 'h-full', 'transition-opacity', 'duration-500');
+                slide.style.opacity = index === 0 ? '1' : '0';
+
+                const imgContainer = document.createElement('div');
+                imgContainer.classList.add('relative', 'w-full', 'h-full');
+                const img = document.createElement('img');
+                img.src = product.images[0] || '/img/default-product.jpg';
+                img.alt = product.name;
+                img.classList.add('w-full', 'h-full', 'object-contain');
+
+                const textOverlay = document.createElement('div');
+                textOverlay.classList.add('absolute', 'bottom-0', 'left-0', 'right-0', 'bg-black', 'bg-opacity-50', 'text-white', 'p-4');
+                textOverlay.innerHTML = `
+                    <h3 class="text-xl font-semibold mb-2">${product.name}</h3>
+                    <p class="text-2xl font-bold">${formatPrice(product.price, product.currency)}</p>
+                `;
+
+                imgContainer.appendChild(img);
+                imgContainer.appendChild(textOverlay);
+                slide.appendChild(imgContainer);
+                carousel.appendChild(slide);
+            });
+
+            const prevButton = document.createElement('button');
+            prevButton.innerHTML = '&#10094;';
+            prevButton.classList.add('absolute', 'top-1/2', 'left-4', 'transform', '-translate-y-1/2', 'bg-white', 'bg-opacity-50', 'rounded-full', 'p-2', 'text-gray-800', 'hover:bg-opacity-75', 'text-2xl', 'z-10');
+
+            const nextButton = document.createElement('button');
+            nextButton.innerHTML = '&#10095;';
+            nextButton.classList.add('absolute', 'top-1/2', 'right-4', 'transform', '-translate-y-1/2', 'bg-white', 'bg-opacity-50', 'rounded-full', 'p-2', 'text-gray-800', 'hover:bg-opacity-75', 'text-2xl', 'z-10');
+
+            carousel.appendChild(prevButton);
+            carousel.appendChild(nextButton);
+
+            let currentSlide = 0;
+            const slides = carousel.querySelectorAll('div[class^="absolute"]');
+
+            const showSlide = (index) => {
+                slides[currentSlide].style.opacity = '0';
+                slides[index].style.opacity = '1';
+                currentSlide = index;
+            };
+
+            prevButton.addEventListener('click', () => {
+                let index = currentSlide - 1;
+                if (index < 0) index = slides.length - 1;
+                showSlide(index);
+            });
+
+            nextButton.addEventListener('click', () => {
+                let index = currentSlide + 1;
+                if (index >= slides.length) index = 0;
+                showSlide(index);
+            });
+
+            setInterval(() => {
+                let index = currentSlide + 1;
+                if (index >= slides.length) index = 0;
+                showSlide(index);
+            }, 5000);
+        }
+
+        const ofertasDelDia = document.querySelector('.ofertas-del-dia');
+        const nuevosIngresos = document.querySelector('.nuevos-ingresos');
+        if (ofertasDelDia && nuevosIngresos && recentProducts.length > 1) {
+            ofertasDelDia.innerHTML = `
+                <h3 class="text-sm font-semibold mb-2">Ofertas del Día</h3>
+                <div class="bg-white p-2 rounded-lg shadow-sm">
+                    <div class="w-full h-32 overflow-hidden">
+                        <img src="${recentProducts[0].images[0] || '/img/default-product.jpg'}" alt="${recentProducts[0].name}" class="w-full h-full object-contain">
+                    </div>
+                    <p class="text-sm font-semibold mt-2 truncate">${recentProducts[0].name}</p>
+                    <p class="text-base text-red-600 font-bold">${formatPrice(recentProducts[0].price, recentProducts[0].currency)}</p>
+                </div>
+            `;
+
+            nuevosIngresos.innerHTML = `
+                <h3 class="text-sm font-semibold mb-2">Nuevos Ingresos</h3>
+                <div class="bg-white p-2 rounded-lg shadow-sm">
+                    <div class="w-full h-32 overflow-hidden">
+                        <img src="${recentProducts[1].images[0] || '/img/default-product.jpg'}" alt="${recentProducts[1].name}" class="w-full h-full object-contain">
+                    </div>
+                    <p class="text-sm font-semibold mt-2 truncate">${recentProducts[1].name}</p>
+                    <p class="text-base text-gray-600">${formatPrice(recentProducts[1].price, recentProducts[1].currency)}</p>
+                </div>
+            `;
         }
     } catch (error) {
-        console.error('Error de conexión al eliminar del carrito:', error);
-        alert('Hubo un error de conexión al eliminar el producto del carrito.');
+        console.error('Error al cargar el Hero Banner:', error);
     }
 }
 
-// --- Lógica de Sesión de Usuario (existente) ---
+import { setupNotificationPanel, loadNotifications, handleNewNotification } from './notifications.js';
+
+document.addEventListener('DOMContentLoaded', async () => {
+    setupNotificationPanel();
+    await loadNotifications();
+
+    // Configurar WebSocket para notificaciones en tiempo real
+    const userId = localStorage.getItem('userId');
+    const ws = new WebSocket("ws://localhost:3000");
+
+    ws.onopen = () => {
+        if (userId) {
+            ws.send(JSON.stringify({ type: "joinRoom", userId: userId }));
+        }
+    };
+
+    ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type === "notification") {
+            console.log("Nueva notificación:", data.notification);
+            handleNewNotification(data.notification);
+        }
+    };
+
+    // Aquí puedes agregar más código para manejar otras funcionalidades de la página principal
+});
+
+// Asegúrate de que handleNotificationClick esté disponible globalmente
+window.handleNotificationClick = handleNotificationClick;
+document.addEventListener("DOMContentLoaded", async () => {
+    const products = await loadProducts();
+    loadHeroBanner(products);
+    displayProducts(products);
+    checkUserSession();
+    loadOfertasDelDia();
+    loadNuevosIngresos();
+
+    const categoryButtons = document.querySelectorAll("[data-category]");
+    categoryButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            const category = button.getAttribute("data-category");
+            const filteredProducts = filterProductsByCategory(products, category);
+            displayProducts(filteredProducts);
+        });
+    });
+
+    const searchInput = document.getElementById("searchInput");
+    const searchButton = document.getElementById("searchButton");
+    searchButton.addEventListener("click", () => {
+        const searchText = searchInput.value.trim();
+        const filteredProducts = filterProductsBySearch(products, searchText);
+        displayProducts(filteredProducts);
+    });
+
+    searchInput.addEventListener("keyup", (event) => {
+        if (event.key === "Enter") {
+            const searchText = searchInput.value.trim();
+            const filteredProducts = filterProductsBySearch(products, searchText);
+            displayProducts(filteredProducts);
+        }
+    });
+});
 function logout() {
     localStorage.removeItem('authToken');
     localStorage.removeItem('userId');
@@ -460,8 +480,8 @@ function loadTopBar() {
     const topBar = document.querySelector('header');
     if (!topBar) return;
 
-    // Aquí deberías tener una función isUserLoggedIn() y getCurrentUser() si las usas.
-    // Asumo que tu checkUserSession() ya se encarga de esto.
+    const isLoggedIn = isUserLoggedIn();
+    const currentUser = getCurrentUser();
 
     topBar.innerHTML = `
         <div class="container mx-auto px-4 py-4">
@@ -471,23 +491,22 @@ function loadTopBar() {
                         <img src="/img/logo.png" alt="Tutti Market Logo" class="w-full">
                     </a>
                 </div>
-                <div class="flex-1 mx-8 max-w-md">
+                <div class="flex-1 mx-8 max-w-md"> <!-- Añadido max-w-md para limitar el ancho -->
                     <div class="relative">
                         <input type="text" id="searchInput"
                                placeholder="¿Qué estás buscando?"
-                               class="w-full px-3 py-1 border border-gray-300 rounded-full focus:outline-none focus:border-primary text-sm">
+                               class="w-full px-3 py-1 border border-gray-300 rounded-full focus:outline-none focus:border-primary text-sm"> <!-- Reducido padding y tamaño de texto -->
                         <button type="button" id="searchButton" aria-label="Buscar" class="absolute right-2 top-1/2 transform -translate-y-1/2">
-                            <i class="fas fa-search text-gray-400 text-sm"></i>
+                            <i class="fas fa-search text-gray-400 text-sm"></i> <!-- Reducido tamaño del icono -->
                         </button>
                     </div>
                 </div>
-                </div>
+                <!-- ... resto del código ... -->
+            </div>
         </div>
     `;
 
-    // No incluyo el resto de tu loadTopBar ya que parece generar HTML directamente.
-    // Si tu mini-carrito está dentro de esta función, debe ser integrado aquí.
-    // Lo ideal es que el mini-carrito esté en tu index.html y no sea parte de una función que re-renderiza el header.
+    // ... resto de la función ...
 }
 
 function getProductIdFromURL() {
@@ -511,125 +530,46 @@ async function loadProductDetails() {
 
         const product = await response.json();
 
-        // Verificaciones para evitar errores de 'null'
-        const productName = document.getElementById("productName");
-        const productPrice = document.getElementById("productPrice");
-        const productDescription = document.getElementById("productDescription");
-        const sellerInfo = document.getElementById("sellerInfo");
+        document.getElementById("productName").textContent = product.name;
+        document.getElementById("productPrice").textContent = formatPrice(product.price, product.currency);
+        document.getElementById("productDescription").textContent = product.description;
+        document.getElementById("sellerInfo").innerHTML = `Publicado por: <strong>${product.userId?.fullName || "Vendedor desconocido"}</strong>`;
+
         const mainImage = document.getElementById("mainImage");
+        mainImage.src = product.images.length > 0 ? product.images[0] : "placeholder.jpg";
+        mainImage.alt = product.name;
+
         const thumbnailsContainer = document.getElementById("thumbnails");
+        thumbnailsContainer.innerHTML = ""; 
+        product.images.forEach((imgSrc, index) => {
+            const thumbnail = document.createElement("img");
+            thumbnail.src = imgSrc;
+            thumbnail.classList.add("img-thumbnail");
+            thumbnail.onclick = () => changeImage(imgSrc);
+            thumbnailsContainer.appendChild(thumbnail);
+        });
+
         const deliveryInfo = document.querySelector(".delivery-time");
         const stockInfo = document.querySelector(".stock-info");
         const quantityInfo = document.querySelector(".quantity-info");
+
+        deliveryInfo.textContent = `Llega gratis el jueves. Comprando dentro de las próximas 23 h 50 min`;
+        stockInfo.textContent = `Stock disponible: ${product.stock || 0}`;
+        quantityInfo.textContent = `Cantidad: 1 unidad (+${product.stock || 0} disponibles)`;
+
         const specsList = document.getElementById("productSpecs");
-
-        if (productName) productName.textContent = product.name;
-        if (productPrice) productPrice.textContent = formatPrice(product.price, product.currency);
-        if (productDescription) productDescription.textContent = product.description;
-        if (sellerInfo) sellerInfo.innerHTML = `Publicado por: <strong>${product.userId?.fullName || "Vendedor desconocido"}</strong>`;
-
-        if (mainImage) {
-            mainImage.src = product.images.length > 0 ? product.images[0] : "placeholder.jpg";
-            mainImage.alt = product.name;
-        }
-
-        if (thumbnailsContainer) {
-            thumbnailsContainer.innerHTML = "";
-            product.images.forEach((imgSrc, index) => {
-                const thumbnail = document.createElement("img");
-                thumbnail.src = imgSrc;
-                thumbnail.classList.add("img-thumbnail");
-                thumbnail.onclick = () => changeImage(imgSrc);
-                thumbnailsContainer.appendChild(thumbnail);
+        specsList.innerHTML = "";
+        if (product.specifications) {
+            product.specifications.forEach(spec => {
+                const listItem = document.createElement("li");
+                listItem.textContent = spec;
+                specsList.appendChild(listItem);
             });
         }
-
-        if (deliveryInfo) deliveryInfo.textContent = `Llega gratis el jueves. Comprando dentro de las próximas 23 h 50 min`;
-        if (stockInfo) stockInfo.textContent = `Stock disponible: ${product.stock || 0}`;
-        if (quantityInfo) quantityInfo.textContent = `Cantidad: 1 unidad (+${product.stock || 0} disponibles)`;
-
-        if (specsList) {
-            specsList.innerHTML = "";
-            if (product.specifications) {
-                product.specifications.forEach(spec => {
-                    const listItem = document.createElement("li");
-                    listItem.textContent = spec;
-                    specsList.appendChild(listItem);
-                });
-            }
-        }
     } catch (error) {
-        console.error("Error al cargar detalles del producto:", error);
+        console.error("Error:", error);
         alert("Hubo un error al cargar el producto.");
-    }
-}
-
-function changeImage(src) {
-    const mainImage = document.getElementById("mainImage");
-    if (mainImage) mainImage.src = src;
-}
-
-// import { setupNotificationPanel, loadNotifications, handleNewNotification } from './notifications.js'; // Mantén esta línea si usas notifications.js
-
-document.addEventListener('DOMContentLoaded', async () => {
-    // Estas líneas son de tu `main.js` original
-    // if (typeof setupNotificationPanel === 'function') setupNotificationPanel(); // Si usas notifications.js
-    // if (typeof loadNotifications === 'function') await loadNotifications(); // Si usas notifications.js
-
-    // Configurar WebSocket para notificaciones en tiempo real
-    // const userId = localStorage.getItem('userId');
-    // const ws = new WebSocket("ws://localhost:3000"); // Asegúrate de que tu backend tenga un servidor WebSocket en este puerto
-
-    // ws.onopen = () => {
-    //     if (userId) {
-    //         ws.send(JSON.stringify({ type: "joinRoom", userId: userId }));
-    //     }
-    // };
-
-    // ws.onmessage = (event) => {
-    //     const data = JSON.parse(event.data);
-    //     if (data.type === "notification") {
-    //         console.log("Nueva notificación:", data.notification);
-    //         if (typeof handleNewNotification === 'function') handleNewNotification(data.notification);
-    //     }
-    // };
-
-    // Cargar el carrito cuando la página se carga (NUEVO)
-    await loadCart(); // Es mejor usar await aquí para asegurar que el carrito se carga antes de que el usuario interactúe
-
-    // Toggle del mini-carrito al hacer clic en el icono (NUEVO)
-    if (cartIcon && miniCartDropdown) {
-        cartIcon.addEventListener('click', (event) => {
-            event.stopPropagation(); // Evitar que el clic se propague al documento
-            miniCartDropdown.classList.toggle('hidden');
-        });
-
-        // Ocultar el mini-carrito si se hace clic fuera de él
-        document.addEventListener('click', (event) => {
-            // Asegúrate de que el evento.target no sea el icono del carrito ni esté dentro del mini-carrito
-            if (miniCartDropdown && !miniCartDropdown.contains(event.target) && cartIcon && !cartIcon.contains(event.target)) {
-                miniCartDropdown.classList.add('hidden');
 =======
-// public/js/main.js
-
-document.addEventListener('DOMContentLoaded', () => {
-    // MODAL DE LOGIN
-    const loginModal = document.getElementById('loginModal');
-    const openModalBtn = document.getElementById('openModalBtn');
-    const openModalBtnFooter = document.getElementById('openModalBtnFooter'); // Nuevo botón en el footer
-    const closeModalBtn = loginModal.querySelector('.close-modal');
-    const modalLoginForm = document.getElementById('modalLoginForm');
-    const modalLoginMessage = document.getElementById('modalLoginMessage');
-
-    // Función para abrir el modal
-    function openLoginModal() {
-        loginModal.classList.remove('hidden');
-        // Forzar reflow para que la transición CSS funcione
-        void loginModal.offsetWidth; 
-        loginModal.classList.add('open');
-        document.body.classList.add('overflow-hidden'); // Evita scroll en el body
-    }
-
     // Función para cerrar el modal
     function closeLoginModal() {
         loginModal.classList.remove('open');
@@ -657,79 +597,10 @@ document.addEventListener('DOMContentLoaded', () => {
         loginModal.addEventListener('click', (e) => {
             if (e.target === loginModal) {
                 closeLoginModal();
->>>>>>> 6fb3a610a10de6b9a0bc26251e722b7c59f60226
             }
         });
     }
 
-<<<<<<< HEAD
-    // Manejar el botón de checkout (NUEVO)
-    if (checkoutButton) {
-        checkoutButton.addEventListener('click', () => {
-            if (cart.length === 0) {
-                alert('Tu carrito está vacío. Agrega productos antes de proceder al pago.');
-                return;
-            }
-            window.location.href = '/checkout.html';
-        });
-    }
-
-
-    const products = await loadProducts();
-    // Solo carga el Hero Banner si los elementos existen
-    if (document.querySelector('.carousel')) {
-        loadHeroBanner(products);
-    }
-    displayProducts(products);
-    checkUserSession();
-    await loadOfertasDelDia(); // Asegura que se espera la carga de ofertas
-    await loadNuevosIngresos(); // Asegura que se espera la carga de nuevos ingresos
-
-    const categoryButtons = document.querySelectorAll("[data-category]");
-    categoryButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-            const category = button.getAttribute("data-category");
-            const filteredProducts = filterProductsByCategory(products, category);
-            displayProducts(filteredProducts);
-        });
-    });
-
-    const searchInput = document.getElementById("searchInput");
-    const searchButton = document.getElementById("searchButton");
-    if (searchButton && searchInput) {
-        searchButton.addEventListener("click", () => {
-            const searchText = searchInput.value.trim();
-            const filteredProducts = filterProductsBySearch(products, searchText);
-            displayProducts(filteredProducts);
-        });
-
-        searchInput.addEventListener("keyup", (event) => {
-            if (event.key === "Enter") {
-                const searchText = searchInput.value.trim();
-                const filteredProducts = filterProductsBySearch(products, searchText);
-                displayProducts(filteredProducts);
-            }
-        });
-    }
-
-
-    // --- Lógica de Login/Registro/Perfil (existente) ---
-    const loginForm = document.getElementById('loginForm');
-    const loginMessage = document.getElementById('loginMessage');
-    // const loginBtn = document.getElementById('loginBtn'); // No usado, se quita
-    // const registerBtn = document.getElementById('registerBtn'); // No usado, se quita
-    const registerForm = document.getElementById('registerForm');
-    const registerMessage = document.getElementById('registerMessage');
-
-    if (loginForm) {
-        loginForm.addEventListener('submit', async function(event) {
-            event.preventDefault();
-            const email = loginForm.email.value;
-            const password = loginForm.password.value;
-
-            try {
-                const response = await fetch(`${API_URL}/api/auth/login`, {
-=======
     // Manejo del formulario de Login (Simulación)
     if (modalLoginForm) {
         modalLoginForm.addEventListener('submit', async (e) => {
@@ -744,7 +615,6 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 // Asumiendo que tu backend de login está en /api/login
                 const response = await fetch('/api/login', {
->>>>>>> 6fb3a610a10de6b9a0bc26251e722b7c59f60226
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -755,30 +625,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await response.json();
 
                 if (response.ok) {
-<<<<<<< HEAD
-                    localStorage.setItem('authToken', data.token); // Usar 'authToken'
-                    if (loginMessage) {
-                        loginMessage.textContent = 'Inicio de sesión exitoso.';
-                        loginMessage.classList.remove('hidden', 'bg-red-100', 'text-red-700');
-                        loginMessage.classList.add('bg-green-100', 'text-green-700');
-                    }
-                    alert('Inicio de sesión exitoso!');
-                    window.location.href = '/dashboard.html'; // O la ruta a tu página principal/perfil
-                } else {
-                    if (loginMessage) {
-                        loginMessage.textContent = data.message || 'Credenciales inválidas.';
-                        loginMessage.classList.remove('hidden', 'bg-green-100', 'text-green-700');
-                        loginMessage.classList.add('bg-red-100', 'text-red-700');
-                    }
-                }
-            } catch (error) {
-                console.error('Error al iniciar sesión:', error);
-                if (loginMessage) {
-                    loginMessage.textContent = 'Hubo un error de conexión al iniciar sesión.';
-                    loginMessage.classList.remove('hidden', 'bg-green-100', 'text-green-700');
-                    loginMessage.classList.add('bg-red-100', 'text-red-700');
-                }
-=======
                     modalLoginMessage.textContent = '¡Inicio de sesión exitoso! Redirigiendo...';
                     modalLoginMessage.classList.remove('hidden');
                     modalLoginMessage.classList.add('bg-green-100', 'text-green-700');
@@ -801,84 +647,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 modalLoginMessage.textContent = 'No se pudo conectar con el servidor. Inténtalo más tarde.';
                 modalLoginMessage.classList.remove('hidden');
                 modalLoginMessage.classList.add('bg-red-100', 'text-red-700');
->>>>>>> 6fb3a610a10de6b9a0bc26251e722b7c59f60226
             }
         });
     }
 
-<<<<<<< HEAD
-    if (registerForm) {
-        registerForm.addEventListener('submit', async function(event) {
-            event.preventDefault();
-            const username = registerForm.username.value;
-            const email = registerForm.email.value;
-            const password = registerForm.password.value;
-            const confirmPassword = registerForm.confirmPassword.value;
-
-            if (password !== confirmPassword) {
-                if (registerMessage) {
-                    registerMessage.textContent = 'Las contraseñas no coinciden.';
-                    registerMessage.classList.remove('hidden');
-                    registerMessage.classList.add('bg-red-100', 'text-red-700');
-                }
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_URL}/api/auth/register`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ username, email, password })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    if (registerMessage) {
-                        registerMessage.textContent = 'Registro exitoso. ¡Ahora puedes iniciar sesión!';
-                        registerMessage.classList.remove('hidden', 'bg-red-100', 'text-red-700');
-                        registerMessage.classList.add('bg-green-100', 'text-green-700');
-                    }
-                    alert('Registro exitoso!');
-                    window.location.href = '/login.html';
-                } else {
-                    if (registerMessage) {
-                        registerMessage.textContent = data.message || 'Error al registrar usuario.';
-                        registerMessage.classList.remove('hidden');
-                        registerMessage.classList.add('bg-red-100', 'text-red-700');
-                    }
-                }
-            } catch (error) {
-                console.error('Error al registrar:', error);
-                if (registerMessage) {
-                    registerMessage.textContent = 'Hubo un error de conexión al registrar tu cuenta.';
-                    registerMessage.classList.remove('hidden');
-                    registerMessage.classList.add('bg-red-100', 'text-red-700');
-                }
-            }
-        });
-    }
-
-    const addressInput = document.getElementById('address');
-    const editAddressButton = document.getElementById('editAddressButton');
-
-    if (addressInput && editAddressButton) {
-        const savedAddress = localStorage.getItem('address');
-        if (savedAddress) {
-            addressInput.value = savedAddress;
-        }
-
-        editAddressButton.addEventListener('click', function() {
-            const newAddress = prompt("Introduce tu nueva dirección:");
-            if (newAddress) {
-                addressInput.value = newAddress;
-                localStorage.setItem('address', newAddress);
-                alert('Dirección guardada.');
-            } else {
-                alert('Por favor, introduce una dirección válida.');
-=======
     // MINI CARRITO
     const miniCart = document.getElementById('miniCart');
     const openCartBtn = document.getElementById('openCartBtn');
@@ -1009,40 +781,24 @@ document.addEventListener('DOMContentLoaded', () => {
             miniCart.classList.remove('open-cart');
             document.body.classList.remove('overflow-hidden');
         });
+>>>>>>> 6fb3a610a10de6b9a0bc26251e722b7c59f60226
     }
 
+<<<<<<< HEAD
+function changeImage(src) {
+    document.getElementById("mainImage").src = src;
+}
+=======
     // Cerrar mini carrito al hacer clic fuera del contenido
     if (miniCart) {
         miniCart.addEventListener('click', (e) => {
             if (e.target === miniCart) {
                 miniCart.classList.remove('open-cart');
                 document.body.classList.remove('overflow-hidden');
->>>>>>> 6fb3a610a10de6b9a0bc26251e722b7c59f60226
             }
         });
     }
 
-<<<<<<< HEAD
-    // --- Lógica para agregar al carrito desde las páginas de productos (EXISTENTE, PERO CRÍTICO) ---
-    // Esta parte se asegura de que todos los botones con la clase 'add-to-cart-btn' llamen a la función addToCart.
-    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-        button.addEventListener('click', (event) => {
-            const productId = event.target.dataset.productId;
-            if (productId) {
-                addToCart(productId); // Llama a la función global addToCart
-            } else {
-                console.error('El botón "Agregar al Carrito" no tiene un data-product-id.');
-            }
-        });
-    });
-});
-
-// EXPONER addToCart GLOBALMENTE para que los onclick inline FUNCIONEN
-window.addToCart = addToCart;
-
-// Puedes exportar otras funciones si las necesitas en otros módulos de tu frontend
-// export { loadCart, updateMiniCartUI, addToCart };
-=======
     // Botones de acción del carrito
     if (proceedToCheckoutBtn) {
         proceedToCheckoutBtn.addEventListener('click', () => {
