@@ -3,420 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TuTTi - Tu Mercado Online</title>
-    <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
-
+    <title>TuTTi - Tu Tienda Online</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#0071e3', // Azul vibrante para elementos clave
-                        secondary: '#f5f5f7', // Gris claro para fondos suaves
-                        accent: '#FFD700', // Dorado para resaltar (ej. ofertas)
-                        dark: '#1a1a1a', // Negro oscuro para texto principal y fondos
-                        light: '#ffffff', // Blanco puro
-                        grayish: '#e0e0e0', // Gris para bordes y separadores
+                        primary: '#0071e3',
+                        secondary: '#f5f5f7',
                     },
                     fontFamily: {
-                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
                     },
-                    spacing: {
-                        '128': '32rem',
-                        '144': '36rem',
-                    },
-                    borderRadius: {
-                        'xl': '0.75rem',
-                        '2xl': '1rem',
-                        '3xl': '1.5rem',
-                    }
                 }
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-    <style>
-        /* Hide scrollbar for category menu on smaller screens */
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-        }
-        .scrollbar-hide {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
-        }
-
-        /* Modal specific styles */
-        .modal-overlay {
-            background-color: rgba(0, 0, 0, 0.7); /* Oscurece el fondo */
-            -webkit-backdrop-filter: blur(5px);
-                    backdrop-filter: blur(5px); /* Efecto blur */
-        }
-
-        /* Animations for modals */
-        .modal-enter-from, .modal-leave-to {
-            opacity: 0;
-            transform: scale(0.95);
-        }
-        .modal-enter-active, .modal-leave-active {
-            transition: opacity 0.2s ease-out, transform 0.2s ease-out;
-        }
-
-        /* Mini cart slide-in animation */
-        .mini-cart-enter-from {
-            transform: translateX(100%);
-        }
-        .mini-cart-enter-active {
-            transition: transform 0.3s ease-out;
-        }
-        .mini-cart-leave-to {
-            transform: translateX(100%);
-        }
-        .mini-cart-leave-active {
-            transition: transform 0.3s ease-in;
-        }
-    </style>
-  <script type="module" crossorigin src="/assets/index-Dha-ho4I.js"></script>
+    
 </head>
-<body class="bg-gray-50 font-sans text-dark antialiased leading-normal tracking-tight">
-
-    <header class="bg-light backdrop-blur-lg sticky top-0 z-50 shadow-md border-b border-gray-100">
-        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
-            <div class="flex-shrink-0">
-                <a href="/" class="block w-28 md:w-36">
-                    <img src="/img/logo.png" alt="TuTTi Logo" class="w-full h-auto">
-                </a>
-            </div>
-
-            <div class="flex-1 mx-4 max-w-xl hidden md:block">
-                <div class="relative">
-                    <input type="text"
-                           id="searchInput"
-                           placeholder="¿Qué estás buscando en TuTTi?"
-                           class="w-full pl-5 pr-10 py-2 bg-gray-100 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 placeholder-gray-500 text-sm">
-                    <button id="searchButton" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-primary transition-colors">
-                        <i class="fas fa-search text-lg"></i>
-                    </button>
+<body class="bg-white font-sans">
+    <!-- Header -->
+    <header class="bg-white backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="w-24">
+                    <img src="img/logo.png" alt="Tutti Market Logo" class="w-full">
                 </div>
-            </div>
-
-            <nav class="flex items-center space-x-4 md:space-x-6">
-                <div id="auth-links" class="flex space-x-2 md:space-x-4">
-                    <button onclick="openLoginModal()" class="text-gray-700 hover:text-primary transition-colors text-sm font-medium">Iniciar Sesión</button>
-                    <a href="register.html" class="text-gray-700 hover:text-primary transition-colors text-sm font-medium hidden md:block">Registrarse</a>
-                </div>
-
-                <div id="user-dropdown-container" class="relative hidden">
-                    <button id="account-dropdown-toggle" class="flex items-center space-x-2 p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary">
-                        <i class="fas fa-user-circle text-xl text-gray-700"></i>
-                        <span id="username-display" class="font-semibold text-gray-700 text-sm hidden md:block"></span>
-                        <i class="fas fa-chevron-down text-xs ml-1 text-gray-700 hidden md:block"></i>
-                    </button>
-                    <div id="account-dropdown-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20 text-gray-800 border border-gray-200">
-                        <a href="perfil.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-user mr-2"></i>Mi Perfil
-                        </a>
-                        <a href="mis-ordenes.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-box-open mr-2"></i>Mis Órdenes
-                        </a>
-                        <hr class="my-1 border-gray-200">
-                        <button id="logout-btn" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
-                            <i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión
+                <!-- Search Bar -->
+                <div class="flex-1 mx-4">
+                    <div class="relative">
+                        <input type="text"
+                               id="searchInput"
+                               placeholder="¿Qué estás buscando?"
+                               class="w-full px-1 py-1 bg-white bg-opacity-80 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <button id="searchButton" class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                            <i class="fas fa-search text-gray-400"></i>
                         </button>
                     </div>
                 </div>
-
-                <a href="/favoritos" class="text-gray-700 hover:text-primary transition-colors text-lg relative group">
-                    <i class="fas fa-heart"></i>
-                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    </span>
-                </a>
-
-                <div class="relative">
-                    <button id="cart-icon" class="relative p-2 rounded-full text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary" onclick="openMiniCartModal()">
-                        <i class="fas fa-shopping-cart text-lg"></i>
-                        <span id="cart-count" class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
-                    </button>
-                </div>
-
-                <div class="relative">
-                    <button id="notificationIcon" class="cursor-pointer text-gray-700 hover:text-primary transition-colors relative p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary">
-                        <i class="fas fa-bell text-lg"></i>
-                        <span id="notificationCount" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
-                    </button>
-                    <div id="notificationPanel" class="absolute right-0 mt-3 w-80 bg-light rounded-lg shadow-xl hidden overflow-hidden z-50 border border-gray-200 transform origin-top-right scale-95 opacity-0 transition-all duration-200">
-                        <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
-                            <h3 class="text-sm font-semibold text-gray-800">Notificaciones</h3>
-                        </div>
-                        <ul id="notificationList" class="max-h-96 overflow-y-auto divide-y divide-gray-200 text-sm text-gray-700">
-                            <li class="py-3 px-4 text-gray-500 text-center">No hay notificaciones</li>
-                        </ul>
-                        <div class="bg-gray-100 px-4 py-3 border-t border-gray-200 flex justify-end">
-                            <a href="#" class="text-primary hover:underline text-sm font-medium">Ver todas</a>
-                        </div>
-                    </div>
-                </div>
-            </nav>
+                <!-- Navigation -->
+<!-- Navigation -->
+<nav class="flex items-center space-x-4">
+    <div class="flex items-center">
+        <a href="#" id="accountLink" class="flex items-center"></a>
+        <div id="sessionButtonContainer" class="ml-2"></div>
+    </div>
+    <a href="/favoritos" class="text-gray-700 hover:text-primary transition-colors">
+        <i class="fas fa-heart"></i>
+    </a>
+    <a href="/carrito" class="text-gray-700 hover:text-primary transition-colors" id="cartLink">
+        <i class="fas fa-shopping-cart"></i>
+    </a>
+<!-- Botón de notificaciones -->
+<div class="relative">
+    <div id="notificationIcon" class="cursor-pointer">
+        <i class="fas fa-bell text-gray-600 hover:text-gray-800 text-xl"></i>
+        <span id="notificationCount" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+    </div>
+    <div id="notificationPanel" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl hidden overflow-hidden z-50">
+        <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+            <h3 class="text-sm font-semibold text-gray-700">Notificaciones</h3>
+        </div>
+        <ul id="notificationList" class="max-h-96 overflow-y-auto divide-y divide-gray-200">
+            <!-- Las notificaciones se insertarán aquí -->
+        </ul>
+        <div class="bg-gray-100 px-4 py-3 border-t border-gray-200">
+            <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium">Ver todas</a>
+        </div>
+    </div>
+</div>
+            </div>
         </div>
     </header>
 
-    <div class="bg-white border-b border-gray-100 shadow-sm">
+    <!-- Categories Bar -->
+    <div class="bg-white border-b">
         <div class="container mx-auto px-4 py-3">
-            <div class="flex space-x-6 overflow-x-auto scrollbar-hide md:justify-center">
-                <button data-category="Celulares" class="text-sm md:text-base text-gray-600 hover:text-primary hover:font-medium transition-all whitespace-nowrap px-3 py-1 rounded-full hover:bg-gray-100">Celulares</button>
-                <button data-category="Computadoras" class="text-sm md:text-base text-gray-600 hover:text-primary hover:font-medium transition-all whitespace-nowrap px-3 py-1 rounded-full hover:bg-gray-100">Computadoras</button>
-                <button data-category="Audio" class="text-sm md:text-base text-gray-600 hover:text-primary hover:font-medium transition-all whitespace-nowrap px-3 py-1 rounded-full hover:bg-gray-100">Audio</button>
-                <button data-category="Tablets" class="text-sm md:text-base text-gray-600 hover:text-primary hover:font-medium transition-all whitespace-nowrap px-3 py-1 rounded-full hover:bg-gray-100">Tablets</button>
-                <button data-category="Accesorios" class="text-sm md:text-base text-gray-600 hover:text-primary hover:font-medium transition-all whitespace-nowrap px-3 py-1 rounded-full hover:bg-gray-100">Accesorios</button>
-                <button data-category="Smart TV" class="text-sm md:text-base text-gray-600 hover:text-primary hover:font-medium transition-all whitespace-nowrap px-3 py-1 rounded-full hover:bg-gray-100">Smart TV</button>
-                <button data-category="Gaming" class="text-sm md:text-base text-gray-600 hover:text-primary hover:font-medium transition-all whitespace-nowrap px-3 py-1 rounded-full hover:bg-gray-100">Gaming</button>
+            <div class="flex space-x-6 overflow-x-auto scrollbar-hide">
+                <button data-category="Celulares" class="text-sm text-gray-600 hover:text-primary transition-colors whitespace-nowrap">Celulares</button>
+                <button data-category="Computadoras" class="text-sm text-gray-600 hover:text-primary transition-colors whitespace-nowrap">Computadoras</button>
+                <button data-category="Audio" class="text-sm text-gray-600 hover:text-primary transition-colors whitespace-nowrap">Audio</button>
+                <button data-category="Tablets" class="text-sm text-gray-600 hover:text-primary transition-colors whitespace-nowrap">Tablets</button>
+                <button data-category="Accesorios" class="text-sm text-gray-600 hover:text-primary transition-colors whitespace-nowrap">Accesorios</button>
+                <button data-category="Smart TV" class="text-sm text-gray-600 hover:text-primary transition-colors whitespace-nowrap">Smart TV</button>
+                <button data-category="Gaming" class="text-sm text-gray-600 hover:text-primary transition-colors whitespace-nowrap">Gaming</button>
             </div>
         </div>
     </div>
 
-    <main class="container mx-auto px-4 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <div class="container mx-auto px-4 py-4">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
             <div class="lg:col-span-3">
-                <section class="carousel bg-white rounded-2xl shadow-lg overflow-hidden h-64 sm:h-80 md:h-96 lg:h-128 relative">
-                    <div class="absolute inset-0 flex items-center justify-center text-gray-400">
-                        <p class="text-xl">Carrusel Principal (Cargado por JS)</p>
-                    </div>
-                </section>
+                <div class="carousel">
+                    <!-- El carrusel se cargará aquí dinámicamente -->
+                </div>
             </div>
-
-            <div class="lg:col-span-1 space-y-6">
-                <section class="ofertas-del-dia bg-white rounded-2xl shadow-lg p-6">
-                    <h3 class="text-lg font-semibold mb-4 text-dark">Ofertas del Día</h3>
-                    <div id="ofertas-del-dia" class="space-y-4"> <p class="text-sm text-gray-500">Cargando ofertas...</p>
-                    </div>
-                </section>
-                <section class="nuevos-ingresos bg-white rounded-2xl shadow-lg p-6">
-                    <h3 class="text-lg font-semibold mb-4 text-dark">Nuevos Ingresos</h3>
-                    <div id="nuevos-ingresos" class="space-y-4"> <p class="text-sm text-gray-500">Cargando nuevos productos...</p>
-                    </div>
-                </section>
+            <div class="lg:col-span-1 space-y-4">
+                <div class="ofertas-del-dia bg-white rounded-lg shadow-md p-2">
+                    <!-- Las ofertas del día se cargarán aquí -->
+                </div>
+                <div class="nuevos-ingresos bg-white rounded-lg shadow-md p-2">
+                    <!-- Los nuevos ingresos se cargarán aquí -->
+                </div>
             </div>
         </div>
-    </main>
+    </div>
 
-    <section class="container mx-auto px-4 py-8">
-        <h2 class="text-2xl font-bold mb-6 text-dark">Categorías Destacadas</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <a href="#" class="block bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                <img src="/img/category-phones.jpg" alt="Celulares" class="w-full h-40 object-cover rounded-lg mb-4">
-                <h3 class="text-xl font-semibold text-dark">Celulares</h3>
-                <p class="text-gray-600 text-sm">Explora los últimos modelos y ofertas.</p>
-            </a>
-            <a href="#" class="block bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                <img src="/img/category-laptops.jpg" alt="Computadoras" class="w-full h-40 object-cover rounded-lg mb-4">
-                <h3 class="text-xl font-semibold text-dark">Computadoras</h3>
-                <p class="text-gray-600 text-sm">Portátiles y de escritorio para tu trabajo o estudio.</p>
-            </a>
-            <a href="#" class="block bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                <img src="/img/category-audio.jpg" alt="Audio" class="w-full h-40 object-cover rounded-lg mb-4">
-                <h3 class="text-xl font-semibold text-dark">Audio</h3>
-                <p class="text-gray-600 text-sm">Audífonos, parlantes y más para una experiencia inmersiva.</p>
-            </a>
-        </div>
-    </section>
-
-    <section class="container mx-auto px-4 py-8">
-        <h2 class="text-2xl font-bold mb-6 text-dark">Productos Recientes</h2>
+    <!-- Recent Products -->
+    <section class="container mx-auto px-4 py-12">
+        <h2 class="text-2xl font-bold mb-6">Productos Recientes</h2>
         <div id="recent-products" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <p class="text-gray-500 col-span-full text-center">Cargando productos recientes...</p>
+            <!-- Los productos se cargarán aquí dinámicamente -->
         </div>
     </section>
 
-    <section class="bg-primary text-white py-16 px-4 rounded-2xl mx-auto container my-12 shadow-xl">
-        <div class="text-center max-w-3xl mx-auto">
-            <h2 class="text-3xl md:text-4xl font-extrabold mb-4 leading-tight">Encuentra Exactamente lo que Buscas</h2>
-            <p class="text-lg mb-8 opacity-90">Explora miles de productos nuevos y usados, conecta con vendedores y haz compras seguras.</p>
-            <a href="/productos" class="inline-block bg-white text-primary font-bold py-3 px-8 rounded-full text-lg hover:bg-gray-100 transition-colors duration-300 shadow-lg transform hover:scale-105">Explorar Productos</a>
-        </div>
-    </section>
-
+    <!-- Benefits Section -->
     <section class="bg-secondary py-16">
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                <div class="p-6 bg-white rounded-xl shadow-md">
-                    <i class="fas fa-truck text-5xl text-primary mb-4"></i>
-                    <h3 class="text-xl font-semibold mb-2 text-dark">Envío Rápido y Seguro</h3>
-                    <p class="text-gray-600 text-sm">Recibe tus productos en tiempo récord y con total seguridad.</p>
+                <div>
+                    <i class="fas fa-truck text-4xl text-primary mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Envío Gratis</h3>
+                    <p class="text-gray-600">En compras superiores a $500</p>
                 </div>
-                <div class="p-6 bg-white rounded-xl shadow-md">
-                    <i class="fas fa-shield-alt text-5xl text-primary mb-4"></i>
-                    <h3 class="text-xl font-semibold mb-2 text-dark">Compra Protegida</h3>
-                    <p class="text-gray-600 text-sm">Garantía de satisfacción y protección al comprador en cada transacción.</p>
+                <div>
+                    <i class="fas fa-shield-alt text-4xl text-primary mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Compra Segura</h3>
+                    <p class="text-gray-600">Garantía de satisfacción</p>
                 </div>
-                <div class="p-6 bg-white rounded-xl shadow-md">
-                    <i class="fas fa-headset text-5xl text-primary mb-4"></i>
-                    <h3 class="text-xl font-semibold mb-2 text-dark">Soporte Dedicado 24/7</h3>
-                    <p class="text-gray-600 text-sm">Estamos aquí para ayudarte en cualquier momento que lo necesites.</p>
+                <div>
+                    <i class="fas fa-headset text-4xl text-primary mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Soporte 24/7</h3>
+                    <p class="text-gray-600">Atención personalizada</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer class="bg-dark text-white py-12">
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
-                    <h4 class="text-lg font-semibold mb-4 text-light">TuTTi Mercado</h4>
-                    <p class="text-gray-400 text-sm">Tu plataforma de confianza para comprar y vender tecnología y mucho más.</p>
-                    <div class="flex space-x-4 mt-4">
-                        <a href="#" class="text-gray-400 hover:text-primary transition-colors"><i class="fab fa-facebook-f text-xl"></i></a>
-                        <a href="#" class="text-gray-400 hover:text-primary transition-colors"><i class="fab fa-twitter text-xl"></i></a>
-                        <a href="#" class="text-gray-400 hover:text-primary transition-colors"><i class="fab fa-instagram text-xl"></i></a>
-                        <a href="#" class="text-gray-400 hover:text-primary transition-colors"><i class="fab fa-linkedin-in text-xl"></i></a>
-                    </div>
+                    <h4 class="text-lg font-semibold mb-4">Sobre Nosotros</h4>
+                    <p class="text-gray-400">Tu tienda de tecnología de confianza con los mejores precios del mercado.</p>
                 </div>
                 <div>
-                    <h4 class="text-lg font-semibold mb-4 text-light">Enlaces Rápidos</h4>
-                    <ul class="space-y-2 text-gray-400 text-sm">
-                        <li><a href="#" class="hover:text-light transition-colors">Inicio</a></li>
-                        <li><a href="/productos" class="hover:text-light transition-colors">Explorar Productos</a></li>
-                        <li><a href="/ofertas" class="hover:text-light transition-colors">Ofertas Especiales</a></li>
-                        <li><a href="/vender" class="hover:text-light transition-colors">Vender en TuTTi</a></li>
-                        <li><a href="/contacto" class="hover:text-light transition-colors">Contacto</a></li>
+                    <h4 class="text-lg font-semibold mb-4">Enlaces Rápidos</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Inicio</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Productos</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Ofertas</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Contacto</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-lg font-semibold mb-4 text-light">Soporte y Ayuda</h4>
-                    <ul class="space-y-2 text-gray-400 text-sm">
-                        <li><a href="/faq" class="hover:text-light transition-colors">Preguntas Frecuentes</a></li>
-                        <li><a href="/terminos" class="hover:text-light transition-colors">Términos y Condiciones</a></li>
-                        <li><a href="/privacidad" class="hover:text-light transition-colors">Política de Privacidad</a></li>
-                        <li><a href="/devoluciones" class="hover:text-light transition-colors">Devoluciones y Reembolsos</a></li>
+                    <h4 class="text-lg font-semibold mb-4">Contacto</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><i class="fas fa-map-marker-alt mr-2"></i>Calle Principal 123</li>
+                        <li><i class="fas fa-phone mr-2"></i>099 123 456</li>
+                        <li><i class="fas fa-envelope mr-2"></i>info@tuttimarket.com</li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-lg font-semibold mb-4 text-light">Suscríbete a Nuestro Newsletter</h4>
-                    <p class="text-gray-400 text-sm mb-4">Recibe las últimas ofertas y noticias directamente en tu bandeja de entrada.</p>
+                    <h4 class="text-lg font-semibold mb-4">Newsletter</h4>
                     <form class="flex">
                         <input type="email"
-                               placeholder="Tu dirección de email"
-                               class="flex-1 px-4 py-2 rounded-l-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm">
-                        <button class="bg-primary text-white px-5 py-2 rounded-r-lg hover:bg-blue-600 transition-colors duration-300 font-medium text-sm">Suscribir</button>
+                               placeholder="Tu email"
+                               class="flex-1 px-4 py-2 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                        <button class="bg-primary text-white px-4 py-2 rounded-r-lg hover:bg-blue-600 transition-colors">Suscribir</button>
                     </form>
                 </div>
-            </div>
-            <div class="border-t border-gray-700 mt-10 pt-8 text-center text-gray-500 text-sm">
-                &copy; 2024 TuTTi Mercado. Todos los derechos reservados.
+                <!-- Scripts -->
+               <script type="module" src="js/main.js"></script>
+               <script type="module" src="js/notifications.js"></script>
             </div>
         </div>
     </footer>
-
-    <div id="login-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 modal-overlay">
-        <div class="bg-white rounded-lg shadow-2xl w-full max-w-sm mx-auto p-6 md:p-8 relative modal-enter-from">
-            <button class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl" onclick="closeLoginModal()">
-                <i class="fas fa-times"></i>
-            </button>
-            <h2 class="text-2xl font-bold text-center mb-6 text-dark">Iniciar Sesión</h2>
-
-            <form id="loginForm" class="space-y-4">
-                <div>
-                    <label for="login-email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <input type="email" id="login-email" name="email" required
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition-all duration-200 text-sm">
-                </div>
-                <div>
-                    <label for="login-password" class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
-                    <input type="password" id="login-password" name="password" required
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition-all duration-200 text-sm">
-                </div>
-                <div class="flex items-center justify-between text-sm">
-                    <a href="/forgot-password.html" class="text-primary hover:underline">¿Olvidaste tu contraseña?</a>
-                </div>
-                <div id="loginMessage" class="hidden p-3 rounded-lg text-sm text-center"></div>
-
-                <button type="submit"
-                        class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200">
-                    Iniciar Sesión
-                </button>
-                <p class="text-center text-sm text-gray-600 mt-4">
-                    ¿No tienes cuenta? <a href="/register.html" class="text-primary hover:underline">Crea una</a>
-                </p>
-            </form>
-        </div>
-    </div>
-
-    <div id="mini-cart-modal" class="fixed inset-0 z-[100] hidden overflow-hidden modal-overlay flex justify-end">
-        <div class="bg-white p-6 md:p-8 h-full w-full max-w-xs sm:max-w-sm relative shadow-2xl mini-cart-enter-from flex flex-col">
-            <div class="flex justify-between items-center pb-4 border-b border-gray-200 mb-4">
-                <h2 class="text-2xl font-bold text-dark">Tu Carrito</h2>
-                <button class="text-gray-500 hover:text-gray-800 text-2xl" onclick="closeMiniCartModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-
-            <div id="mini-cart-items-container" class="flex-grow overflow-y-auto pr-2 -mr-2">
-                <ul id="mini-cart-items-list-modal" class="divide-y divide-gray-200">
-                    </ul>
-                <p id="empty-cart-message-modal" class="text-gray-500 text-center py-4">Tu carrito está vacío.</p>
-            </div>
-
-            <div class="mt-6 border-t border-gray-200 pt-4">
-                <div class="flex justify-between items-center mb-4">
-                    <span class="text-lg font-semibold">Total:</span>
-                    <span id="mini-cart-total-modal" class="text-primary text-2xl font-bold">$0.00</span>
-                </div>
-                <a href="/checkout.html" class="block w-full bg-primary text-white py-3 rounded-lg text-center font-semibold hover:bg-blue-700 transition-colors duration-200 mb-2">
-                    Finalizar Compra
-                </a>
-                <button onclick="closeMiniCartModal()" class="block w-full bg-gray-200 text-gray-800 py-3 rounded-lg text-center font-semibold hover:bg-gray-300 transition-colors duration-200">
-                    Seguir Comprando
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <div id="product-detail-modal" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4 modal-overlay">
-        <div class="bg-white rounded-lg shadow-2xl w-full max-w-5xl mx-auto p-6 md:p-8 relative modal-enter-from overflow-y-auto max-h-[90vh]">
-            <button class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl" onclick="closeProductDetailModal()">
-                <i class="fas fa-times"></i>
-            </button>
-            <div id="product-detail-content" class="flex flex-col md:flex-row gap-6 md:gap-8">
-                <div class="md:w-1/2 flex flex-col items-center">
-                    <img id="detail-product-image" src="https://via.placeholder.com/400x400" alt="Imagen del Producto" class="w-full max-w-md h-auto rounded-lg shadow-md mb-4 object-contain">
-                    <div id="detail-thumbnails" class="flex space-x-2 overflow-x-auto w-full max-w-md justify-center">
-                        </div>
-                </div>
-                <div class="md:w-1/2">
-                    <h3 id="detail-product-name" class="text-2xl md:text-3xl font-bold text-dark mb-2">Nombre del Producto</h3>
-                    <p class="text-gray-600 text-base md:text-lg mb-4">Categoría: <span id="detail-product-category" class="font-medium"></span></p>
-                    <p id="detail-product-description" class="text-gray-700 mb-6 leading-relaxed text-sm md:text-base">
-                        Descripción detallada del producto irá aquí.
-                    </p>
-                    <div class="flex items-center mb-6">
-                        <span id="detail-product-price" class="text-primary text-3xl md:text-4xl font-bold mr-4">$0.00</span>
-                        <span id="detail-product-stock" class="text-gray-500 text-sm md:text-base">Stock: 0 unidades</span>
-                    </div>
-                    <button id="detail-add-to-cart-btn" class="w-full bg-primary text-white py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors duration-200">
-                        <i class="fas fa-cart-plus mr-2"></i> Agregar al Carrito
-                    </button>
-
-                    <div class="mt-6 border-t border-gray-200 pt-4">
-                        <h4 class="font-bold text-lg mb-3">Preguntas y Respuestas</h4>
-                        <div id="detail-comments-section" class="space-y-4 max-h-60 overflow-y-auto pr-2">
-                            <p class="text-gray-500 text-sm">Sé el primero en preguntar sobre este producto.</p>
-                        </div>
-                        <div class="mt-4">
-                            <input type="text" id="new-comment-input" placeholder="Haz una pregunta..."
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary text-sm">
-                            <button id="post-comment-btn" class="mt-2 bg-primary text-white py-2 px-4 rounded-lg text-sm hover:bg-blue-700">Publicar pregunta</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <script type="module" src="/js/main.js"></script>
-    <script type="module" src="/js/notifications.js"></script>
-
 </body>
 </html>
